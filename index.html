@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SVG Pro Studio | Swiper Edition V43</title>
+    <title>SVG Pro Studio | Swiper Edition V44</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;700;800&family=Nunito:wght@400;700&family=Open+Sans:wght@400;700&family=Oswald:wght@400;700&family=Pacifico&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;700&family=Raleway:wght@400;700&family=Roboto:wght@400;700&family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root{--accent:#10b981;--bg:#0f172a;--panel:#1e293b;--border:#334155;--handle-move:#3b82f6;--handle-rotate:#f59e0b;--handle-radius:#ec4899}
@@ -166,7 +166,7 @@
 
 <div id="login-screen">
     <div class="login-card">
-        <h2 style="margin-top:0; color:white;">Pro Studio V43 (Swiper)</h2>
+        <h2 style="margin-top:0; color:white;">Pro Studio V44 (Swiper)</h2>
         <div style="font-size:12px; color:#94a3b8; margin-bottom:20px;">Lütfen Cloudflare Worker şifrenizi girin.</div>
         <input type="password" id="passInput" placeholder="Sunucu Şifresi">
         <button id="loginBtn" onclick="window.login()">Sunucuya Bağlan</button>
@@ -197,7 +197,7 @@
         </div>
         <div id="status-bar">
             <div id="status-count">Nesne Sayısı: 0</div>
-            <div>SVG Pro Studio Ultimate V43</div>
+            <div>SVG Pro Studio Ultimate V44</div>
             <div id="status-time">Son Kayıt: Bekleniyor...</div>
         </div>
     </div>
@@ -228,7 +228,7 @@
                 </div>
             </details>
 
-            <details style="margin-bottom: 10px;">
+            <details style="margin-bottom: 10px;" open>
                 <summary style="font-size:11px; font-weight:bold; color:#10b981; cursor:pointer; margin-bottom:5px;">🌐 SWIPER GEÇİŞ AYARLARI (İNDEX.HTML)</summary>
                 <div class="group-box" style="margin-top:5px;">
                     <div style="font-size:10px; color:#94a3b8; margin-bottom:10px; font-style:italic;">index.html dosyasındaki Swiper init parametrelerini (speed, effect) düzenler.</div>
@@ -248,6 +248,7 @@
                         <input type="number" step="0.1" id="html-effect-duration" value="1.5">
                     </div>
                     <button class="action-btn" style="width:100%; background:#10b981; color:white;" onclick="window.saveHtmlSettings()">💾 İNDEX.HTML'E KAYDET</button>
+                    <button class="action-btn danger" style="width:100%; margin-top:10px; background:#dc2626;" onclick="window.upgradePlayer()">🚀 OYNATICIYI SWIPER V44'E YÜKSELT</button>
                 </div>
             </details>
 
@@ -298,7 +299,7 @@
     </div>
 </div>
 <script>
-    const WORKER_URL = "https://sw.tafbilgiislem.workers.dev"; 
+    const WORKER_URL = "https://tvinfoeditor.tafbilgiislem.workers.dev"; 
     
     let SHA_KEY = "", SESSION_PASS = "", settingsData = [], settingsSha = "";
     let indexHtmlContent = "", indexHtmlSha = "";
@@ -412,14 +413,15 @@
     window.updateHtmlEffectUI = function() {
         if(!indexHtmlContent) return;
         
-        // Swiper Scripti İçindeki Hız (speed) Değerini Bul
         const speedMatch = indexHtmlContent.match(/speed\s*:\s*(\d+)/i);
         if (speedMatch && speedMatch[1]) {
             document.getElementById('html-effect-duration').value = parseInt(speedMatch[1]) / 1000;
         }
 
-        // Swiper Scripti İçindeki Efekt (effect) Değerini Bul
-        const effectMatch = indexHtmlContent.match(/effect\s*:\s*['"](.*?)['"]/i);
+        const effectMatch = indexHtmlContent.match(/effect\s*:\s*SWIPER_CONFIG\.effect/i) ? 
+                            indexHtmlContent.match(/effect\s*:\s*['"](.*?)['"]/i) : // Config array check
+                            indexHtmlContent.match(/effect\s*:\s*['"](.*?)['"]/i); // Direct Check
+        
         if (effectMatch && effectMatch[1]) {
             const select = document.getElementById('html-global-effect');
             for(let i=0; i<select.options.length; i++) {
@@ -429,7 +431,7 @@
     };
 
     window.saveHtmlSettings = async function() {
-        if(!indexHtmlContent) { alert("index.html içeriği sunucudan okunamadı. Lütfen sayfayı yenileyip sunucuya tekrar bağlanın."); return; }
+        if(!indexHtmlContent) { alert("index.html içeriği sunucudan okunamadı. Lütfen 'Sistemi Yükselt' butonuna basarak güncel kurulum yapın."); return; }
         const st = document.getElementById('status-info'); st.innerText = "SWIPER AYARLARI GÜNCELLENİYOR..."; st.style.display = "block";
         
         try {
@@ -437,19 +439,17 @@
             const durationSec = parseFloat(document.getElementById('html-effect-duration').value);
             const durationMs = Math.round(durationSec * 1000);
 
-            // 1. Swiper Hızını Güncelle (Örn: speed: 1500)
             if (/speed\s*:\s*\d+/i.test(indexHtmlContent)) {
                 indexHtmlContent = indexHtmlContent.replace(/(speed\s*:\s*)(\d+)/gi, `$1${durationMs}`);
             } else {
-                alert("Swiper 'speed' parametresi index.html içinde bulunamadı. Lütfen yeni oynatıcı kodunu eklediğinizden emin olun.");
+                alert("Oynatıcı eski sürümde. Lütfen 'Oynatıcıyı Swiper V44'e Yükselt' butonunu kullanın.");
                 st.style.display="none"; return;
             }
 
-            // 2. Swiper Efektini Güncelle (Örn: effect: 'cube')
             if (/effect\s*:\s*['"][^'"]*['"]/i.test(indexHtmlContent)) {
                 indexHtmlContent = indexHtmlContent.replace(/(effect\s*:\s*['"])(.*?)(['"])/gi, `$1${effect}$3`);
             } else {
-                alert("Swiper 'effect' parametresi index.html içinde bulunamadı.");
+                alert("Oynatıcı eski sürümde. Lütfen 'Oynatıcıyı Swiper V44'e Yükselt' butonunu kullanın.");
                 st.style.display="none"; return;
             }
 
@@ -506,7 +506,7 @@
             const res = await fetch(WORKER_URL, { 
                 method: "PUT", 
                 headers: { "X-Auth-Key": SESSION_PASS, "X-File-Name": fileName }, 
-                body: JSON.stringify({message: "Pro Studio Ultimate Fix V43", content: b64, sha: SHA_KEY}) 
+                body: JSON.stringify({message: "Pro Studio Ultimate Fix V44", content: b64, sha: SHA_KEY}) 
             });
             
             if(res.ok) { 
@@ -1377,6 +1377,120 @@
             if(!selectedEl.classList.contains('duzenlenebilir')) selectedEl.classList.add('duzenlenebilir'); 
             window.saveState(); window.setupLayers(); window.updateEditorUI(selectedEl); window.renderEditor(); 
         } catch(err) { alert('Hata: Lütfen geçerli bir SVG kodu girin.'); }
+    };
+
+    // --- OYNATICIYI SWIPER V44'E YÜKSELTME SİHİRBAZI ---
+    window.upgradePlayer = async function() {
+        if(!confirm("DİKKAT: Sunucudaki mevcut index.html dosyası tamamen silinip, yerine yeni Swiper V44 oynatıcısı kurulacak. İşleme devam edilsin mi?")) return;
+        
+        const st = document.getElementById('status-info'); 
+        st.innerText = "SİSTEM SWIPER V44'E YÜKSELTİLİYOR LÜTFEN BEKLEYİN..."; 
+        st.style.display = "block";
+        
+        const v44Html = `<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Ekran Oynatıcı - Swiper TV Optimize V44</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: sans-serif; }
+        .swiper { width: 100%; height: 100%; }
+        .swiper-slide { display: flex; align-items: center; justify-content: center; background: #000; }
+        .swiper-slide object { width: 100%; height: 100%; object-fit: contain; pointer-events: none; border: none; }
+    </style>
+</head>
+<body>
+    <div class="swiper mySwiper"><div class="swiper-wrapper" id="slide-container"></div></div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"><\/script>
+    <script>
+        const SWIPER_CONFIG = { speed: 1500, effect: 'cube' };
+        let currentSettingsString = ""; let swiperInstance = null;
+
+        setTimeout(() => { const d = document.documentElement; const r = d.requestFullscreen || d.webkitRequestFullScreen || d.mozRequestFullScreen || d.msRequestFullscreen; if (r) r.call(d).catch(e=>{}); }, 5000);
+        setTimeout(() => window.location.reload(), 4 * 60 * 60 * 1000);
+
+        async function initSlider() {
+            try {
+                let cacheBuster = Math.floor(Date.now() / 30000);
+                const setRes = await fetch('settings.json?t=' + cacheBuster);
+                const settings = await setRes.json();
+                currentSettingsString = JSON.stringify(settings);
+                
+                const container = document.getElementById('slide-container'); container.innerHTML = ""; 
+                
+                for (let slide of settings) {
+                    const slideDiv = document.createElement('div');
+                    slideDiv.className = 'swiper-slide';
+                    slideDiv.setAttribute('data-swiper-autoplay', slide.duration || 5000);
+                    
+                    const obj = document.createElement("object");
+                    obj.data = slide.file + '?v=' + cacheBuster; obj.type = "image/svg+xml";
+
+                    obj.addEventListener('load', function() {
+                        try {
+                            const svgDoc = obj.contentDocument; if (!svgDoc) return;
+                            const setupRotation = (id, images) => {
+                                const imgEl = svgDoc.getElementById(id);
+                                if (imgEl) {
+                                    let idx = 0; imgEl.setAttribute("href", images[0]); imgEl.setAttributeNS("http://www.w3.org/1999/xlink", "href", images[0]);
+                                    setInterval(() => {
+                                        if (settings.length > 1 && !slideDiv.classList.contains("swiper-slide-active") && !slideDiv.classList.contains("swiper-slide-duplicate-active")) return;
+                                        idx = (idx + 1) % images.length; imgEl.setAttribute("href", images[idx]); imgEl.setAttributeNS("http://www.w3.org/1999/xlink", "href", images[idx]);
+                                    }, 3000); 
+                                }
+                            };
+                            setupRotation("degisen-resim-1", ["resim1.jpg", "resim2.jpg", "resim3.jpg"]);
+                            setupRotation("degisen-resim-2", ["resim4.jpg", "resim5.jpg", "resim6.jpg"]);
+                        } catch(e) {}
+                    });
+                    slideDiv.appendChild(obj); container.appendChild(slideDiv);
+                }
+
+                setTimeout(() => {
+                    swiperInstance = new Swiper('.mySwiper', {
+                        effect: SWIPER_CONFIG.effect, speed: SWIPER_CONFIG.speed, grabCursor: true, loop: settings.length > 1, observer: true, observeParents: true,
+                        autoplay: settings.length > 1 ? { delay: 5000, disableOnInteraction: false } : false,
+                        cubeEffect: { shadow: true, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 },
+                        coverflowEffect: { rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true },
+                        cardsEffect: { slideShadows: true }
+                    });
+                }, 100);
+                
+                setInterval(async () => {
+                    try {
+                        const r = await fetch('settings.json?t=' + Math.floor(Date.now() / 30000));
+                        const nConf = await r.json();
+                        if (JSON.stringify(nConf) !== currentSettingsString) window.location.reload();
+                    } catch (e) {}
+                }, 10000);
+            } catch (error) { setTimeout(initSlider, 5000); }
+        }
+        initSlider();
+    <\/script>
+</body>
+</html>`;
+
+        const b64 = btoa(unescape(encodeURIComponent(v44Html)));
+        try {
+            const putRes = await fetch(WORKER_URL, {
+                method: "PUT",
+                headers: { "X-Auth-Key": SESSION_PASS, "X-File-Name": "index.html" },
+                body: JSON.stringify({message: "Sistem Swiper V44 Kurulumu", content: b64, sha: indexHtmlSha})
+            });
+
+            if(putRes.ok) {
+                st.innerText = "BAŞARILI! SİSTEM YÜKSELTİLDİ. LÜTFEN BEKLEYİN...";
+                setTimeout(() => window.location.reload(), 2000);
+            } else {
+                st.innerText = "YÜKSELTME BAŞARISIZ! (API Hatası)";
+                setTimeout(() => st.style.display="none", 3000);
+            }
+        } catch(e) {
+            alert("Bağlantı hatası oluştu.");
+            st.style.display="none";
+        }
     };
 </script>
 </body>
