@@ -11,7 +11,6 @@
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
         html,body{margin:0;padding:0;width:100%;height:100vh;height:100dvh;overflow:hidden;background:var(--bg);color:#fff;font-family:'Inter', 'Roboto', sans-serif;overscroll-behavior-y:none}
         
-        /* ÖZEL KAYDIRMA ÇUBUKLARI (Custom Scrollbar) */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
@@ -90,7 +89,6 @@
         .prop-group{margin-bottom:20px;}
         .prop-group-title{font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:6px; display:flex; align-items:center; gap:6px;}
         
-        /* SEKME YAZILIMI (TABS) */
         .tabs-header { display: flex; gap: 4px; margin-bottom: 15px; background: #0f172a; padding: 4px; border-radius: 8px; border: 1px solid var(--border); }
         .tab-btn { flex: 1; background: transparent; border: none; color: #94a3b8; font-size: 11px; font-weight: 700; padding: 10px 4px; cursor: pointer; border-radius: 6px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .tab-btn i { font-size: 16px; }
@@ -108,12 +106,10 @@
         .ctx-item{padding:10px 15px;font-size:13px;cursor:pointer;color:#e2e8f0;border-radius:4px;display:flex;justify-content:space-between;align-items:center; gap:10px;}
         .ctx-item i {font-size: 16px; color:#94a3b8;}
         .ctx-item:hover{background:var(--accent);color:#fff}
-        .ctx-item:hover i{color:#fff;}
         .ctx-item.danger:hover{background:#ef4444}
         
         #status-bar{position:absolute;bottom:0;left:0;width:100%;height:25px;background:#0f172a;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:0 20px;font-size:11px;color:#94a3b8;z-index:400;font-family:monospace}
         
-        /* TOAST BİLDİRİM SİSTEMİ (MODERN) */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events:none;}
         .toast { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 14px 24px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); transform: translateX(120%); animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; font-size: 13px; font-weight: 700; transition: all 0.3s ease;}
         .toast.success i { color: var(--accent); font-size: 22px; }
@@ -122,7 +118,6 @@
 
         .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:30000;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
         .modal-content{background:#1e293b;border:1px solid var(--border);padding:30px;border-radius:16px;width:450px;box-shadow:0 25px 50px rgba(0,0,0,.5);position:relative;max-height:90vh;display:flex;flex-direction:column}
-        
         .close-modal{position:absolute;top:15px;right:15px;cursor:pointer;color:#94a3b8;font-size:24px;font-weight:700;line-height:1}
         .close-modal:hover{color:#fff}
         .shortcut-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px; align-items:center;}
@@ -132,6 +127,9 @@
         .color-swatch{width:26px;height:26px;border-radius:6px;cursor:pointer;border:1px solid var(--border);transition:transform .1s}
         .color-swatch:hover{transform:scale(1.2);border-color:#fff; z-index:2;}
         
+        .mini-screen-dummy { stroke-dasharray: 10,5; animation: dash 2s linear infinite; }
+        @keyframes dash { to { stroke-dashoffset: -30; } }
+
         @media (max-width:1023px){#app-container{flex-direction:column}#sidebar{width:100%;height:50%;border-top:1px solid var(--border);border-left:none;order:2}#main-view{width:100%;height:50%;order:1;padding-left:0;padding-top:0;}#zoom-container{margin:0;width:100%;height:100%;}.floating-tools{bottom:auto;top:10px;left:50%;transform:translateX(-50%)}}
     </style>
 </head>
@@ -232,7 +230,7 @@
     <div id="sidebar">
         <div class="sidebar-scroll-area">
             <div style="display:flex; gap:5px; margin-bottom: 10px;">
-                <button onclick="window.saveData()" class="action-btn active" style="flex:2; font-size:12px;"><i class="ph ph-floppy-disk"></i> KAYDET</button>
+                <button onclick="window.saveData()" class="action-btn active" style="flex:2; font-size:12px;"><i class="ph ph-floppy-disk"></i> SVG KAYDET</button>
                 <button onclick="window.openExport('png')" class="action-btn special" style="flex:1; background:#0284c7;"><i class="ph ph-image"></i> PNG</button>
                 <button onclick="window.openExport('svg')" class="action-btn svg" style="flex:1; background:#ea580c;"><i class="ph ph-file-svg"></i> SVG</button>
             </div>
@@ -246,25 +244,31 @@
             <details style="margin-bottom: 10px;" open>
                 <summary style="font-size:11px; font-weight:bold; color:#3b82f6; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-television" style="font-size:14px;"></i> MİNİ EKRAN VE YAYIN KONTROLÜ</summary>
                 <div class="group-box" style="margin-top:5px; border-color:#3b82f6;">
-                    <div style="font-size:10px; color:#94a3b8; margin-bottom:10px; font-style:italic;">Sağ ve Sol köşe yayınlarını yönetin. Değişiklikler JSON'a kaydedilir.</div>
+                    <div style="font-size:10px; color:#94a3b8; margin-bottom:10px; font-style:italic;">Mini ekranları Göster dediğinizde tuval üzerinde beliren kutuları fareyle sürükleyip boyutlandırabilirsiniz.</div>
                     
                     <div class="label-text" style="color:#60a5fa;">SOL EKRAN (CANLI YAYIN - M3U8)</div>
                     <input type="text" id="m38u-url" placeholder="m3u8 Linki Yapıştırın" onchange="window.updateMiniScreenSetting('left')" style="margin-bottom:5px;">
+                    <div style="display:flex; gap:5px; margin-bottom:5px;">
+                        <input type="number" id="m38u-x" placeholder="X" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('left')">
+                        <input type="number" id="m38u-y" placeholder="Y" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('left')">
+                    </div>
                     <div style="display:flex; gap:5px; margin-bottom:15px;">
-                        <button id="btn-m38u-toggle" onclick="window.toggleMiniScreen('left')" class="action-btn" style="flex:2;">GÖSTER/GİZLE</button>
-                        <input type="number" id="m38u-w" placeholder="Genişlik (vw)" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('left')">
-                        <input type="number" id="m38u-h" placeholder="Yükseklik (vw)" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('left')">
+                        <button id="btn-m38u-toggle" onclick="window.toggleMiniScreen('left')" class="action-btn" style="flex:1.5;">GÖSTER/GİZLE</button>
+                        <input type="number" id="m38u-w" placeholder="Genişlik" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('left')">
+                        <input type="number" id="m38u-h" placeholder="Yükseklik" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('left')">
                     </div>
 
                     <div class="label-text" style="color:#f59e0b;">SAĞ EKRAN (RESİM LİSTESİ)</div>
                     <textarea id="right-images" placeholder="Resim dosyalarını virgülle ayırın (örn: r1.jpg, r2.jpg)" style="height:60px; margin-bottom:5px;" onchange="window.updateMiniScreenSetting('right')"></textarea>
-                    <div style="display:flex; gap:5px; margin-bottom:10px;">
-                        <button id="btn-right-toggle" onclick="window.toggleMiniScreen('right')" class="action-btn" style="flex:2;">GÖSTER/GİZLE</button>
-                        <input type="number" id="right-w" placeholder="Genişlik (vw)" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('right')">
-                        <input type="number" id="right-h" placeholder="Yükseklik (vw)" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('right')">
+                    <div style="display:flex; gap:5px; margin-bottom:5px;">
+                        <input type="number" id="right-x" placeholder="X" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('right')">
+                        <input type="number" id="right-y" placeholder="Y" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('right')">
                     </div>
-
-                    <button class="action-btn active" style="width:100%; background:#3b82f6;" onclick="window.saveAllSettingsToCloud()"><i class="ph ph-cloud-arrow-up"></i> YAYIN AYARLARINI KAYDET (JSON)</button>
+                    <div style="display:flex; gap:5px; margin-bottom:10px;">
+                        <button id="btn-right-toggle" onclick="window.toggleMiniScreen('right')" class="action-btn" style="flex:1.5;">GÖSTER/GİZLE</button>
+                        <input type="number" id="right-w" placeholder="Genişlik" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('right')">
+                        <input type="number" id="right-h" placeholder="Yükseklik" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('right')">
+                    </div>
                 </div>
             </details>
             
@@ -288,30 +292,7 @@
                             <option value="none">Efektsiz</option>
                         </select>
                     </div>
-                    <button class="action-btn" style="width:100%; background:#f59e0b; color:black;" onclick="window.saveAllSettingsToCloud()"><i class="ph ph-database"></i> AYARLARI KAYDET (JSON)</button>
-                </div>
-            </details>
-
-            <details style="margin-bottom: 10px;">
-                <summary style="font-size:11px; font-weight:bold; color:#10b981; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-globe" style="font-size:14px;"></i> İNDEX.HTML EFEKT AYARLARI</summary>
-                <div class="group-box" style="margin-top:5px;">
-                    <div style="font-size:10px; color:#94a3b8; margin-bottom:10px; font-style:italic;">index.html dosyasındaki CSS geçiş (.active) sürelerini düzenler.</div>
-                    <div class="input-group" style="margin-bottom:10px;">
-                        <span class="label-text">EFEKT SEÇİMİ</span>
-                        <select id="html-effect-select" class="font-select" onchange="window.updateHtmlEffectUI()">
-                            <option value="fade">Fade (Yumuşak Geçiş)</option>
-                            <option value="slide">Slide (Kaydırma)</option>
-                            <option value="zoom">Zoom (Yakınlaştırma)</option>
-                            <option value="cube">Cube (3D Küp)</option>
-                            <option value="coverflow">Coverflow (3D Galeri)</option>
-                            <option value="flip">Flip (Kart Çevirme)</option>
-                        </select>
-                    </div>
-                    <div class="input-group" style="margin-bottom:10px;">
-                        <span class="label-text">GEÇİŞ SÜRESİ (Saniye / "1.5" gibi)</span>
-                        <input type="number" step="0.1" id="html-effect-duration" value="1.5">
-                    </div>
-                    <button class="action-btn" style="width:100%; background:#10b981; color:white;" onclick="window.saveHtmlSettings()"><i class="ph ph-code"></i> İNDEX.HTML'E KAYDET</button>
+                    <button class="action-btn" style="width:100%; background:#f59e0b; color:black;" onclick="window.saveAllSettingsToCloud()"><i class="ph ph-database"></i> JSON KAYDET</button>
                 </div>
             </details>
 
@@ -499,18 +480,18 @@
                 let parsedData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
                 
                 if (Array.isArray(parsedData)) {
-                    settingsData = { slides: parsedData, mini_screens: { left: {visible:true, w:32, h:18, url:""}, right: {visible:true, w:32, h:18, images:[]} } };
+                    settingsData = { slides: parsedData, mini_screens: { left: {visible:true, x:50, y:800, w:400, h:250, url:""}, right: {visible:true, x:1470, y:800, w:400, h:250, images:[]} } };
                 } else {
                     settingsData = parsedData;
                     if(!settingsData.slides) settingsData.slides = [];
-                    if(!settingsData.mini_screens) settingsData.mini_screens = { left: {visible:true, w:32, h:18, url:""}, right: {visible:true, w:32, h:18, images:[]} };
+                    if(!settingsData.mini_screens) settingsData.mini_screens = { left: {visible:true, x:50, y:800, w:400, h:250, url:""}, right: {visible:true, x:1470, y:800, w:400, h:250, images:[]} };
                 }
             } else { 
-                settingsData = { slides: [ {file: "slayt.svg", effect: "fade", duration: 5000} ], mini_screens: { left: {visible:true, w:32, h:18, url:""}, right: {visible:true, w:32, h:18, images:[]} } };
+                settingsData = { slides: [ {file: "slayt.svg", effect: "fade", duration: 5000} ], mini_screens: { left: {visible:true, x:50, y:800, w:400, h:250, url:""}, right: {visible:true, x:1470, y:800, w:400, h:250, images:[]} } };
             }
             window.updateSettingsUI();
         } catch (e) { 
-            settingsData = { slides: [], mini_screens: { left: {visible:true, w:32, h:18, url:""}, right: {visible:true, w:32, h:18, images:[]} } };
+            settingsData = { slides: [], mini_screens: { left: {visible:true, x:50, y:800, w:400, h:250, url:""}, right: {visible:true, x:1470, y:800, w:400, h:250, images:[]} } };
             window.updateSettingsUI(); 
         }
     };
@@ -532,15 +513,54 @@
             const ms = settingsData.mini_screens;
             if(ms.left) {
                 document.getElementById('m38u-url').value = ms.left.url || "";
-                document.getElementById('m38u-w').value = ms.left.w || 32;
-                document.getElementById('m38u-h').value = ms.left.h || 18;
+                document.getElementById('m38u-x').value = ms.left.x || 50;
+                document.getElementById('m38u-y').value = ms.left.y || 800;
+                document.getElementById('m38u-w').value = ms.left.w || 400;
+                document.getElementById('m38u-h').value = ms.left.h || 250;
                 document.getElementById('btn-m38u-toggle').style.background = ms.left.visible ? "#10b981" : "#991b1b";
             }
             if(ms.right) {
                 document.getElementById('right-images').value = (ms.right.images || []).join(", ");
-                document.getElementById('right-w').value = ms.right.w || 32;
-                document.getElementById('right-h').value = ms.right.h || 18;
+                document.getElementById('right-x').value = ms.right.x || 1470;
+                document.getElementById('right-y').value = ms.right.y || 800;
+                document.getElementById('right-w').value = ms.right.w || 400;
+                document.getElementById('right-h').value = ms.right.h || 250;
                 document.getElementById('btn-right-toggle').style.background = ms.right.visible ? "#10b981" : "#991b1b";
+            }
+        }
+        
+        window.syncDummyElement('left');
+        window.syncDummyElement('right');
+    };
+
+    // TUVALDE MİNİ EKRAN GÖSTERGESİ OLUŞTURMA
+    window.syncDummyElement = function(side) {
+        const id = side === 'left' ? 'mini_left' : 'mini_right';
+        if(!settingsData.mini_screens) return;
+        const ms = settingsData.mini_screens[side];
+        let el = document.getElementById(id);
+        const svg = document.querySelector('#canvas-inner svg');
+        if(!svg) return;
+
+        if(ms.visible) {
+            if(!el) {
+                el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                el.id = id;
+                el.setAttribute("class", "duzenlenebilir mini-screen-dummy");
+                el.setAttribute("fill", side === 'left' ? "rgba(59, 130, 246, 0.4)" : "rgba(245, 158, 11, 0.4)");
+                el.setAttribute("stroke", side === 'left' ? "#3b82f6" : "#f59e0b");
+                el.setAttribute("stroke-width", "6");
+                window.setD(el, "locked", "false");
+                svg.appendChild(el);
+            }
+            el.setAttribute("x", ms.x || 50);
+            el.setAttribute("y", ms.y || 50);
+            el.setAttribute("width", ms.w || 400);
+            el.setAttribute("height", ms.h || 250);
+        } else {
+            if(el) {
+                el.remove();
+                if(selectedEl && selectedEl.id === id) { selectedEl = null; document.getElementById('control-layer').innerHTML = ""; window.renderProperties(); }
             }
         }
     };
@@ -549,24 +569,31 @@
         if(!settingsData.mini_screens) return;
         settingsData.mini_screens[side].visible = !settingsData.mini_screens[side].visible;
         window.updateSettingsUI();
+        window.saveAllSettingsToCloud(true); // Sessiz kayıt
     };
 
     window.updateMiniScreenSetting = function(side) {
         if(!settingsData.mini_screens) return;
         if(side === 'left') {
             settingsData.mini_screens.left.url = document.getElementById('m38u-url').value;
-            settingsData.mini_screens.left.w = parseInt(document.getElementById('m38u-w').value) || 32;
-            settingsData.mini_screens.left.h = parseInt(document.getElementById('m38u-h').value) || 18;
+            settingsData.mini_screens.left.x = parseInt(document.getElementById('m38u-x').value) || 50;
+            settingsData.mini_screens.left.y = parseInt(document.getElementById('m38u-y').value) || 800;
+            settingsData.mini_screens.left.w = parseInt(document.getElementById('m38u-w').value) || 400;
+            settingsData.mini_screens.left.h = parseInt(document.getElementById('m38u-h').value) || 250;
         } else {
             let imgs = document.getElementById('right-images').value;
             settingsData.mini_screens.right.images = imgs.split(',').map(s => s.trim()).filter(s => s !== "");
-            settingsData.mini_screens.right.w = parseInt(document.getElementById('right-w').value) || 32;
-            settingsData.mini_screens.right.h = parseInt(document.getElementById('right-h').value) || 18;
+            settingsData.mini_screens.right.x = parseInt(document.getElementById('right-x').value) || 1470;
+            settingsData.mini_screens.right.y = parseInt(document.getElementById('right-y').value) || 800;
+            settingsData.mini_screens.right.w = parseInt(document.getElementById('right-w').value) || 400;
+            settingsData.mini_screens.right.h = parseInt(document.getElementById('right-h').value) || 250;
         }
+        window.syncDummyElement(side);
+        window.saveAllSettingsToCloud(true);
     };
 
-    window.saveAllSettingsToCloud = async function() {
-        if (!WORKER_URL || WORKER_URL === "") { window.showToast("Worker URL eksik!", "error"); return; }
+    window.saveAllSettingsToCloud = async function(silent = false) {
+        if (!WORKER_URL || WORKER_URL === "") return;
         
         try {
             const currentFile = document.getElementById('file-selector').value;
@@ -590,9 +617,9 @@
             const putRes = await fetch(WORKER_URL, { method: "PUT", headers: { "X-Auth-Key": SESSION_PASS, "X-File-Name": "settings.json" }, body: JSON.stringify({message: "Sistem Ayarı Senkronizasyonu", content: b64, sha: settingsSha}) });
             if(putRes.ok) { 
                 try { const data = await putRes.json(); settingsSha = data.content?.sha || data.sha || settingsSha; } catch(e) {}
-                window.showToast("Tüm Yayın Ayarları Başarıyla Kaydedildi!");
-            } else { window.showToast("Ayar Kayıt Hatası!", "error"); }
-        } catch (e) { window.showToast("Ayarlar kaydedilemedi.", "error"); }
+                if(!silent) window.showToast("Tüm Yayın Ayarları Başarıyla Kaydedildi!");
+            }
+        } catch (e) { if(!silent) window.showToast("Ayarlar kaydedilemedi.", "error"); }
     };
 
     window.loadIndexHtml = async function() {
@@ -603,8 +630,8 @@
                 indexHtmlSha = data.sha || (data.content && data.content.sha) || "";
                 indexHtmlContent = decodeURIComponent(escape(atob(data.content)));
                 window.updateHtmlEffectUI();
-            } else { console.error("index.html yüklenemedi."); }
-        } catch (e) { console.error("index.html bağlantı hatası", e); }
+            }
+        } catch (e) {}
     };
 
     window.updateHtmlEffectUI = function() {
@@ -615,15 +642,13 @@
         
         if (match && match[1]) {
             const transMatch = match[1].match(/transition:[^;]*?([\d\.]+)(s|ms)/i);
-            if (transMatch && transMatch[1]) {
-                document.getElementById('html-effect-duration').value = transMatch[1];
-            } else { document.getElementById('html-effect-duration').value = "1.5"; }
+            if (transMatch && transMatch[1]) { document.getElementById('html-effect-duration').value = transMatch[1]; } 
+            else { document.getElementById('html-effect-duration').value = "1.5"; }
         } else { document.getElementById('html-effect-duration').value = "1.5"; }
     };
 
     window.saveHtmlSettings = async function() {
         if(!indexHtmlContent) { window.showToast("index.html içeriği okunamadı. Sayfayı yenileyin.", "error"); return; }
-        
         try {
             const effect = document.getElementById('html-effect-select').value;
             const duration = document.getElementById('html-effect-duration').value;
@@ -665,7 +690,7 @@
                 document.getElementById('canvas-inner').innerHTML = decodeURIComponent(escape(atob(data.content)));
             }
             historyStack = []; historyIndex = -1;
-            setTimeout(() => { window.setupLayers(); window.initCanvasSettings(); window.resetZoom(); window.saveState(); }, 200);
+            setTimeout(() => { window.setupLayers(); window.initCanvasSettings(); window.resetZoom(); window.saveState(); window.updateSettingsUI(); }, 200);
             window.showToast("Slayt Yüklendi!");
         } catch(e) { window.showToast("Sunucuya Bağlanılamadı!", "error"); document.getElementById('login-screen').style.display = "flex"; document.getElementById('app-container').style.display = "none"; }
     };
@@ -675,7 +700,13 @@
         
         try {
             document.getElementById('control-layer').innerHTML = ""; window.hideGuides(true);
-            const svgText = new XMLSerializer().serializeToString(document.querySelector('#canvas-inner svg')); 
+            
+            // Dummy Mini Ekranları SVG'den çıkararak kaydet (sadece JSON'da kalsın)
+            const svg = document.querySelector('#canvas-inner svg').cloneNode(true);
+            const dl = svg.querySelector('#mini_left'); if(dl) dl.remove();
+            const dr = svg.querySelector('#mini_right'); if(dr) dr.remove();
+
+            const svgText = new XMLSerializer().serializeToString(svg); 
             const b64 = btoa(unescape(encodeURIComponent(svgText)));
             window.hideGuides(false);
             
@@ -754,6 +785,21 @@
         if(el.tagName === 'text') window.applyTextCurve(el);
         if(el.tagName === 'image' || el.tagName === 'rect') window.applyShapeMask(el);
         if(window.updateEditorUI) window.updateEditorUI(el);
+
+        // MİNİ EKRAN SENKRONİZASYONU
+        if (id === 'mini_left' || id === 'mini_right') {
+            const side = id === 'mini_left' ? 'left' : 'right';
+            settingsData.mini_screens[side].x = Math.round(parseFloat(el.getAttribute('x')));
+            settingsData.mini_screens[side].y = Math.round(parseFloat(el.getAttribute('y')));
+            settingsData.mini_screens[side].w = Math.round(parseFloat(el.getAttribute('width')));
+            settingsData.mini_screens[side].h = Math.round(parseFloat(el.getAttribute('height')));
+            
+            document.getElementById(side==='left'?'m38u-x':'right-x').value = settingsData.mini_screens[side].x;
+            document.getElementById(side==='left'?'m38u-y':'right-y').value = settingsData.mini_screens[side].y;
+            document.getElementById(side==='left'?'m38u-w':'right-w').value = settingsData.mini_screens[side].w;
+            document.getElementById(side==='left'?'m38u-h':'right-h').value = settingsData.mini_screens[side].h;
+            window.saveAllSettingsToCloud(true);
+        }
     };
 
     window.changeSetting = function(id, key, val, elUI) {
@@ -960,7 +1006,14 @@
             const step = e.shiftKey ? 10 : 1; let moved = false; let x = parseFloat(selectedEl.getAttribute("x")) || 0, y = parseFloat(selectedEl.getAttribute("y")) || 0;
             if (e.key === 'ArrowUp') { y -= step; moved = true; } if (e.key === 'ArrowDown') { y += step; moved = true; } if (e.key === 'ArrowLeft') { x -= step; moved = true; } if (e.key === 'ArrowRight') { x += step; moved = true; }
             if (moved) { e.preventDefault(); selectedEl.setAttribute("x", x); selectedEl.setAttribute("y", y); if(selectedEl.tagName === 'image' || selectedEl.tagName === 'rect') window.applyShapeMask(selectedEl); if(selectedEl.tagName === 'text') window.applyTextCurve(selectedEl); if(window.updateEditorUI) window.updateEditorUI(selectedEl); isModified = true; }
-            if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); selectedEl.remove(); document.getElementById('control-layer').innerHTML = ''; selectedEl = null; window.saveState(); window.renderEditor(); }
+            if (e.key === 'Delete' || e.key === 'Backspace') { 
+                e.preventDefault(); 
+                if(selectedEl.id === 'mini_left' || selectedEl.id === 'mini_right') {
+                    window.toggleMiniScreen(selectedEl.id === 'mini_left' ? 'left' : 'right');
+                } else {
+                    selectedEl.remove(); document.getElementById('control-layer').innerHTML = ''; selectedEl = null; window.saveState(); window.renderEditor(); 
+                }
+            }
             if (e.ctrlKey && e.key === 'c') { e.preventDefault(); clipboard = selectedEl.cloneNode(true); }
         }
         if (e.ctrlKey && e.key === 'v' && clipboard) { e.preventDefault(); const clone = clipboard.cloneNode(true); clone.id = "el_" + Date.now(); clone.setAttribute("x", (parseFloat(clone.getAttribute("x")) || 0) + 30); clone.setAttribute("y", (parseFloat(clone.getAttribute("y")) || 0) + 30); document.querySelector('#canvas-inner svg').appendChild(clone); selectedEl = clone; window.saveState(); window.setupLayers(); window.updateEditorUI(clone); window.renderEditor(); }
@@ -1154,9 +1207,9 @@
         if (mainSvg.hasAttribute('viewBox')) { const vb = mainSvg.getAttribute('viewBox').split(/\s+|,/); if(vb.length >= 4) { w = parseFloat(vb[2]); h = parseFloat(vb[3]); } }
         ctrl.setAttribute("viewBox", `0 0 ${w} ${h}`);
         
-        let editables = mainSvg.querySelectorAll('.duzenlenebilir');
-        if (editables.length === 0) { mainSvg.querySelectorAll('text, image, rect, g:not(#guides-group), svg:not(#control-layer), path:not(svg path):not(g path)').forEach(el => { if(el.id !== 'control-layer' && el.id !== 'canvas-background' && !el.closest('#control-layer') && !el.classList.contains('guide-line')) { el.classList.add('duzenlenebilir'); } }); }
-        mainSvg.querySelectorAll('.duzenlenebilir').forEach(el => {
+        let editables = mainSvg.querySelectorAll('.duzenlenebilir:not(.mini-screen-dummy)');
+        if (editables.length === 0) { mainSvg.querySelectorAll('text, image, rect, g:not(#guides-group), svg:not(#control-layer), path:not(svg path):not(g path)').forEach(el => { if(el.id !== 'control-layer' && el.id !== 'canvas-background' && !el.closest('#control-layer') && !el.classList.contains('guide-line') && !el.classList.contains('mini-screen-dummy')) { el.classList.add('duzenlenebilir'); } }); }
+        mainSvg.querySelectorAll('.duzenlenebilir:not(.mini-screen-dummy)').forEach(el => {
             if(!el.id) el.id = "el_" + Math.random().toString(36).substr(2,9);
             if(window.getD(el, 'locked') === "true") el.classList.add('locked');
             if(el.tagName === 'text' && window.getD(el, 'curve')) window.applyTextCurve(el);
@@ -1197,7 +1250,7 @@
             
             const el = target.closest('.duzenlenebilir');
             if (el) {
-                if (e.altKey && window.getD(el, 'locked') !== "true") { const clone = el.cloneNode(true); clone.id = "el_" + Date.now(); clone.classList.add("duzenlenebilir"); el.parentNode.insertBefore(clone, el.nextSibling); selectedEl = clone; } else { selectedEl = el; }
+                if (e.altKey && window.getD(el, 'locked') !== "true" && !el.classList.contains('mini-screen-dummy')) { const clone = el.cloneNode(true); clone.id = "el_" + Date.now(); clone.classList.add("duzenlenebilir"); el.parentNode.insertBefore(clone, el.nextSibling); selectedEl = clone; } else { selectedEl = el; }
                 isDraggingElement = true; offset.x = p.x - (parseFloat(selectedEl.getAttribute("x")) || 0); offset.y = p.y - (parseFloat(selectedEl.getAttribute("y")) || 0); 
                 window.updateUI(selectedEl); window.renderEditor();
                 if(window.getD(selectedEl, 'locked') !== "true") { try { wrapper.setPointerCapture(e.pointerId); } catch(err){} }
@@ -1302,6 +1355,22 @@
             if (isDrawing) { isDrawing = false; selectedEl = currentPath; currentPath = null; isDrawingMode = false; document.getElementById('btn-draw').classList.remove('active'); document.getElementById('svg-wrapper').classList.remove('draw-mode'); window.saveState(); window.renderEditor(); window.updateUI(selectedEl); return; }
             if (isDraggingGuide) { isDraggingGuide = false; currentGuide = null; window.saveState(); return; }
             
+            // Eğer boyutlandırılan/taşınan bir mini ekran dummysi ise, hemen JSON'a işle!
+            if (isModified && selectedEl && selectedEl.classList.contains('mini-screen-dummy')) {
+                const side = selectedEl.id === 'mini_left' ? 'left' : 'right';
+                settingsData.mini_screens[side].x = Math.round(parseFloat(selectedEl.getAttribute('x')));
+                settingsData.mini_screens[side].y = Math.round(parseFloat(selectedEl.getAttribute('y')));
+                settingsData.mini_screens[side].w = Math.round(parseFloat(selectedEl.getAttribute('width')));
+                settingsData.mini_screens[side].h = Math.round(parseFloat(selectedEl.getAttribute('height')));
+                
+                document.getElementById(side==='left'?'m38u-x':'right-x').value = settingsData.mini_screens[side].x;
+                document.getElementById(side==='left'?'m38u-y':'right-y').value = settingsData.mini_screens[side].y;
+                document.getElementById(side==='left'?'m38u-w':'right-w').value = settingsData.mini_screens[side].w;
+                document.getElementById(side==='left'?'m38u-h':'right-h').value = settingsData.mini_screens[side].h;
+                
+                window.saveAllSettingsToCloud(true);
+            }
+
             if (isModified) { window.saveState(); if(selectedEl) window.renderProperties(); }
             resizingEl = null; rotatingEl = null; radiusingEl = null; activeHandle = null; isModified = false; 
             document.querySelectorAll('.snap-line').forEach(l=>l.remove()); 
@@ -1347,8 +1416,11 @@
         const s = 24; const corners = [{ id: 'tl', x: b.x, y: b.y, cur: 'nwse-resize' }, { id: 'tr', x: b.x + b.width, y: b.y, cur: 'nesw-resize' }, { id: 'bl', x: b.x, y: b.y + b.height, cur: 'nesw-resize' }, { id: 'br', x: b.x + b.width, y: b.y + b.height, cur: 'nwse-resize' }];
         corners.forEach(c => { const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect"); rect.setAttribute("x", c.x - s/2); rect.setAttribute("y", c.y - s/2); rect.setAttribute("width", s); rect.setAttribute("height", s); rect.setAttribute("class", "handle handle-resize"); rect.dataset.id = el.id; rect.dataset.handle = c.id; rect.style.cursor = c.cur; g.appendChild(rect); });
         
-        const rotY = b.y - 40; const line = document.createElementNS("http://www.w3.org/2000/svg", "line"); line.setAttribute("x1", b.x + b.width/2); line.setAttribute("y1", b.y); line.setAttribute("x2", b.x + b.width/2); line.setAttribute("y2", rotY); line.setAttribute("stroke", "var(--handle-rotate)"); line.setAttribute("stroke-width", "2"); g.appendChild(line);
-        const rotH = document.createElementNS("http://www.w3.org/2000/svg", "circle"); rotH.setAttribute("cx", b.x + b.width/2); rotH.setAttribute("cy", rotY); rotH.setAttribute("r", s/2.5); rotH.setAttribute("class", "handle handle-rotate"); rotH.dataset.id = el.id; g.appendChild(rotH);
+        // Mini Ekranlar için Döndürme (Rotate) açısını kapatıyoruz (gerek yok)
+        if(!el.classList.contains('mini-screen-dummy')) {
+            const rotY = b.y - 40; const line = document.createElementNS("http://www.w3.org/2000/svg", "line"); line.setAttribute("x1", b.x + b.width/2); line.setAttribute("y1", b.y); line.setAttribute("x2", b.x + b.width/2); line.setAttribute("y2", rotY); line.setAttribute("stroke", "var(--handle-rotate)"); line.setAttribute("stroke-width", "2"); g.appendChild(line);
+            const rotH = document.createElementNS("http://www.w3.org/2000/svg", "circle"); rotH.setAttribute("cx", b.x + b.width/2); rotH.setAttribute("cy", rotY); rotH.setAttribute("r", s/2.5); rotH.setAttribute("class", "handle handle-rotate"); rotH.dataset.id = el.id; g.appendChild(rotH);
+        }
 
         if ((el.tagName === "image" || el.tagName === "rect") && window.getD(el, 'mask-shape') && window.getD(el, 'mask-shape') === 'squircle') {
             const radH = document.createElementNS("http://www.w3.org/2000/svg", "circle"); radH.setAttribute("cx", b.x + b.width); radH.setAttribute("cy", b.y + (parseFloat(window.getD(el, 'rx')) || 0)); radH.setAttribute("r", s/2.5); radH.setAttribute("class", "handle handle-radius"); radH.dataset.id = el.id; g.appendChild(radH);
@@ -1357,6 +1429,7 @@
     
     window.updateEditorUI = window.updateUI; 
 
+    // YENİ: SEKMELİ YAPI KONTROLCÜSÜ
     window.switchTab = function(btn, tabId) {
         const wrapper = btn.closest('#editor-fields');
         if (!wrapper) return;
@@ -1365,7 +1438,6 @@
         btn.classList.add('active');
         wrapper.querySelector('#' + tabId).classList.add('active');
         
-        // SEKME HAFIZASI
         currentActiveTab = tabId;
     };
 
@@ -1382,7 +1454,7 @@
 
     window.renderLayers = function() {
         const list = document.getElementById('layers-list'); list.innerHTML = "";
-        const elements = Array.from(document.querySelectorAll('.duzenlenebilir')).reverse();
+        const elements = Array.from(document.querySelectorAll('.duzenlenebilir:not(.mini-screen-dummy)')).reverse();
         document.getElementById('status-count').innerText = `Nesne Sayısı: ${elements.length}`;
         
         elements.forEach((el) => {
@@ -1429,12 +1501,24 @@
         const f = document.getElementById('editor-fields');
         if (!selectedEl || !selectedEl.tagName) { window.renderEditor(); return; }
         
-        // KAYDIRMA HAFIZASI
         const currentScroll = f.scrollTop;
 
         try {
             const el = selectedEl; const id = el.id; const tag = el.tagName.toLowerCase();
             const isLocked = window.getD(el, 'locked') === "true"; const isPath = tag === 'path'; const isText = tag === 'text'; const isShape = tag === 'rect'; const isImage = tag === 'image'; const isIcon = tag === 'svg' || tag === 'g';
+            const isMiniDummy = el.classList.contains('mini-screen-dummy');
+
+            // Eğer mini ekransa özel ve kısıtlı bir menü göster
+            if (isMiniDummy) {
+                const sideName = id === 'mini_left' ? 'SOL EKRAN (M3U8)' : 'SAĞ EKRAN (RESİMLER)';
+                f.innerHTML = `
+                <div style="text-align:center; padding:20px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:12px;">
+                    <i class="ph ph-television" style="font-size:40px; color:#3b82f6; margin-bottom:10px; display:block;"></i>
+                    <h3 style="margin:0 0 10px 0; color:#fff;">SİSTEM KATMANI:<br>${sideName}</h3>
+                    <p style="font-size:12px; color:#94a3b8; line-height:1.5;">Bu alan ana yayındaki mini ekranın boyutunu ve yerini belirler.<br><br><b>Fare ile tutup sürükleyebilir veya köşelerinden büyütebilirsiniz.</b> Her hareket otomatik olarak JSON'a kaydedilir.</p>
+                </div>`;
+                return;
+            }
             
             let typeName = tag.toUpperCase(); let headerIcon = 'ph-square';
             if (isShape) { typeName = 'ŞEKİL'; headerIcon = 'ph-square'; } 
@@ -1466,16 +1550,12 @@
                 return; 
             }
 
-            // SEKME HAFIZASI MANTIĞI
             let isTextTabActive = (currentActiveTab === 'tab-text' && isText) ? 'active' : '';
             let isStyleTabActive = (currentActiveTab === 'tab-style') ? 'active' : '';
             let isCodeTabActive = (currentActiveTab === 'tab-code') ? 'active' : '';
             let isLayoutTabActive = (currentActiveTab === 'tab-layout' || (currentActiveTab === 'tab-text' && !isText)) ? 'active' : '';
             
-            // Eğer hiçbir sekme aktif değilse varsayılan Layout
-            if (!isTextTabActive && !isLayoutTabActive && !isStyleTabActive && !isCodeTabActive) {
-                isLayoutTabActive = 'active';
-            }
+            if (!isTextTabActive && !isLayoutTabActive && !isStyleTabActive && !isCodeTabActive) { isLayoutTabActive = 'active'; }
 
             let tabsNav = `
                 <div class="tabs-header">
