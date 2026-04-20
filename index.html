@@ -241,9 +241,7 @@
                 <option value="slayt.svg">Ana Slayt (slayt.svg)</option>
                 <option value="kampanya.svg">Kampanya (kampanya.svg)</option>
                 <option value="duyuru.svg">Duyuru (duyuru.svg)</option>
-                <option value="m38u.svg">Sol Köşe Ekranı (m38u.svg)</option>
-                <option value="sag_resim.svg">Sağ Köşe Ekranı (sag_resim.svg)</option>
-            </select>
+                </select>
 
             <details style="margin-bottom: 10px;" open>
                 <summary style="font-size:11px; font-weight:bold; color:#3b82f6; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-television" style="font-size:14px;"></i> MİNİ EKRAN VE YAYIN KONTROLÜ</summary>
@@ -376,12 +374,14 @@
     </div>
 </div>
 <script>
-    const WORKER_URL = "https://sw.tafbilgiislem.workers.dev"; 
+    const WORKER_URL = "https://tvinfoeditor.tafbilgiislem.workers.dev"; 
     
     let SHA_KEY = "", SESSION_PASS = "", settingsData = {}, settingsSha = "";
     let indexHtmlContent = "", indexHtmlSha = "";
 
-    // MODERN TOAST BİLDİRİM SİSTEMİ
+    // YENİ EKLENTİ: Sekme hafızasını korumak için
+    let currentActiveTab = 'tab-layout';
+
     window.showToast = function(msg, type = 'success') {
         const container = document.getElementById('toast-container');
         if(!container) return;
@@ -417,20 +417,13 @@
 
     window.updateEditorUI = null;
 
-    // GENİŞLETİLMİŞ FONT KÜTÜPHANESİ
     const googleFonts = [
-        { name: "Varsayılan", val: "sans-serif" },
-        { name: "Roboto", val: "'Roboto', sans-serif" },
-        { name: "Montserrat", val: "'Montserrat', sans-serif" },
-        { name: "Poppins", val: "'Poppins', sans-serif" },
-        { name: "Open Sans", val: "'Open Sans', sans-serif" },
-        { name: "Lato", val: "'Lato', sans-serif" },
-        { name: "Merriweather", val: "'Merriweather', serif" },
-        { name: "Nunito", val: "'Nunito', sans-serif" },
-        { name: "Oswald", val: "'Oswald', sans-serif" },
-        { name: "Pacifico", val: "'Pacifico', cursive" },
-        { name: "Playfair Display", val: "'Playfair Display', serif" },
-        { name: "Raleway", val: "'Raleway', sans-serif" },
+        { name: "Varsayılan", val: "sans-serif" }, { name: "Roboto", val: "'Roboto', sans-serif" },
+        { name: "Montserrat", val: "'Montserrat', sans-serif" }, { name: "Poppins", val: "'Poppins', sans-serif" },
+        { name: "Open Sans", val: "'Open Sans', sans-serif" }, { name: "Lato", val: "'Lato', sans-serif" },
+        { name: "Merriweather", val: "'Merriweather', serif" }, { name: "Nunito", val: "'Nunito', sans-serif" },
+        { name: "Oswald", val: "'Oswald', sans-serif" }, { name: "Pacifico", val: "'Pacifico', cursive" },
+        { name: "Playfair Display", val: "'Playfair Display', serif" }, { name: "Raleway", val: "'Raleway', sans-serif" },
         { name: "Ubuntu", val: "'Ubuntu', sans-serif" }
     ];
 
@@ -455,7 +448,6 @@
     document.getElementById('passInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') window.login(); });
     document.getElementById('file-selector').addEventListener('change', async () => { await window.loadSlide(); window.updateSettingsUI(); });
 
-    // --- Otomatik Metin Yerleştirme Modülü ---
     window.refreshAutoTextFields = function() {
         const list = document.getElementById('auto-fields-list');
         const svg = document.querySelector('#canvas-inner svg');
@@ -463,8 +455,8 @@
 
         const varElements = svg.querySelectorAll('[data-var-name]');
         list.innerHTML = "";
-
         let hasVars = false;
+
         varElements.forEach(el => {
             const varName = el.getAttribute('data-var-name');
             if(!varName || varName.trim() === "") return;
@@ -498,7 +490,6 @@
         }
     };
 
-    // --- YENİLENMİŞ JSON VE MİNİ EKRAN MODÜLÜ ---
     window.loadSettings = async function() {
         try {
             const res = await fetch(WORKER_URL, { headers: {"X-Auth-Key": SESSION_PASS, "X-File-Name": "settings.json"} });
@@ -507,7 +498,6 @@
                 settingsSha = data.sha || (data.content && data.content.sha) || "";
                 let parsedData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
                 
-                // Eski array formatından yeni obje formatına geçişi destekle
                 if (Array.isArray(parsedData)) {
                     settingsData = { slides: parsedData, mini_screens: { left: {visible:true, w:32, h:18, url:""}, right: {visible:true, w:32, h:18, images:[]} } };
                 } else {
@@ -538,7 +528,6 @@
             document.getElementById('slide-effect').value = 'fade'; 
         }
 
-        // Mini Ekran UI Güncelleme
         if(settingsData.mini_screens) {
             const ms = settingsData.mini_screens;
             if(ms.left) {
@@ -576,7 +565,6 @@
         }
     };
 
-    // Tüm ayarları JSON olarak kaydetme fonksiyonu (eski saveSlideSettings yerine geçer)
     window.saveAllSettingsToCloud = async function() {
         if (!WORKER_URL || WORKER_URL === "") { window.showToast("Worker URL eksik!", "error"); return; }
         
@@ -607,7 +595,6 @@
         } catch (e) { window.showToast("Ayarlar kaydedilemedi.", "error"); }
     };
 
-    // --- Index HTML (Efekt) Modülü ---
     window.loadIndexHtml = async function() {
         try {
             const res = await fetch(WORKER_URL, { headers: {"X-Auth-Key": SESSION_PASS, "X-File-Name": "index.html"} });
@@ -665,7 +652,6 @@
         } catch(e) { window.showToast("index.html kaydedilirken hata oluştu.", "error"); }
     };
 
-    // --- Slayt ve Çizim Modülleri ---
     window.loadSlide = async function() {
         const file = document.getElementById('file-selector').value;
         try {
@@ -1371,7 +1357,6 @@
     
     window.updateEditorUI = window.updateUI; 
 
-    // YENİ: SEKMELİ YAPI KONTROLCÜSÜ
     window.switchTab = function(btn, tabId) {
         const wrapper = btn.closest('#editor-fields');
         if (!wrapper) return;
@@ -1379,6 +1364,9 @@
         wrapper.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
         wrapper.querySelector('#' + tabId).classList.add('active');
+        
+        // SEKME HAFIZASI
+        currentActiveTab = tabId;
     };
 
     window.renderEditor = function() { 
@@ -1441,6 +1429,9 @@
         const f = document.getElementById('editor-fields');
         if (!selectedEl || !selectedEl.tagName) { window.renderEditor(); return; }
         
+        // KAYDIRMA HAFIZASI
+        const currentScroll = f.scrollTop;
+
         try {
             const el = selectedEl; const id = el.id; const tag = el.tagName.toLowerCase();
             const isLocked = window.getD(el, 'locked') === "true"; const isPath = tag === 'path'; const isText = tag === 'text'; const isShape = tag === 'rect'; const isImage = tag === 'image'; const isIcon = tag === 'svg' || tag === 'g';
@@ -1475,12 +1466,23 @@
                 return; 
             }
 
+            // SEKME HAFIZASI MANTIĞI
+            let isTextTabActive = (currentActiveTab === 'tab-text' && isText) ? 'active' : '';
+            let isStyleTabActive = (currentActiveTab === 'tab-style') ? 'active' : '';
+            let isCodeTabActive = (currentActiveTab === 'tab-code') ? 'active' : '';
+            let isLayoutTabActive = (currentActiveTab === 'tab-layout' || (currentActiveTab === 'tab-text' && !isText)) ? 'active' : '';
+            
+            // Eğer hiçbir sekme aktif değilse varsayılan Layout
+            if (!isTextTabActive && !isLayoutTabActive && !isStyleTabActive && !isCodeTabActive) {
+                isLayoutTabActive = 'active';
+            }
+
             let tabsNav = `
                 <div class="tabs-header">
-                    <button class="tab-btn active" onclick="window.switchTab(this, 'tab-layout')"><i class="ph ph-bounding-box"></i> Düzen</button>
-                    <button class="tab-btn" onclick="window.switchTab(this, 'tab-style')"><i class="ph ph-palette"></i> Stil</button>
-                    ${isText ? `<button class="tab-btn" onclick="window.switchTab(this, 'tab-text')"><i class="ph ph-text-t"></i> Metin</button>` : ''}
-                    <button class="tab-btn" onclick="window.switchTab(this, 'tab-code')"><i class="ph ph-code"></i> Kod</button>
+                    <button class="tab-btn ${isLayoutTabActive}" onclick="window.switchTab(this, 'tab-layout')"><i class="ph ph-bounding-box"></i> Düzen</button>
+                    <button class="tab-btn ${isStyleTabActive}" onclick="window.switchTab(this, 'tab-style')"><i class="ph ph-palette"></i> Stil</button>
+                    ${isText ? `<button class="tab-btn ${isTextTabActive}" onclick="window.switchTab(this, 'tab-text')"><i class="ph ph-text-t"></i> Metin</button>` : ''}
+                    <button class="tab-btn ${isCodeTabActive}" onclick="window.switchTab(this, 'tab-code')"><i class="ph ph-code"></i> Kod</button>
                 </div>
             `;
 
@@ -1708,10 +1710,13 @@
 
             // TÜM SEKMELERİ BİRLEŞTİR
             f.innerHTML = headerHtml + tabsNav + 
-                `<div id="tab-layout" class="tab-content active">${layoutHtml}</div>` +
-                `<div id="tab-style" class="tab-content">${styleHtml}</div>` +
-                (isText ? `<div id="tab-text" class="tab-content">${textHtml}</div>` : '') +
-                `<div id="tab-code" class="tab-content">${codeHtml}</div>`;
+                `<div id="tab-layout" class="tab-content ${isLayoutTabActive}">${layoutHtml}</div>` +
+                `<div id="tab-style" class="tab-content ${isStyleTabActive}">${styleHtml}</div>` +
+                (isText ? `<div id="tab-text" class="tab-content ${isTextTabActive}">${textHtml}</div>` : '') +
+                `<div id="tab-code" class="tab-content ${isCodeTabActive}">${codeHtml}</div>`;
+
+            // KAYDIRMA POZİSYONUNU GERİ YÜKLE
+            f.scrollTop = currentScroll;
 
         } catch(err) {
             console.error("Özellik Paneli Hatası:", err);
