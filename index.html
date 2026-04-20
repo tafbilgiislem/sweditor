@@ -3,71 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SVG Pro Studio | Premium CMS V42 Full</title>
+    <title>SVG Pro Studio | Premium CMS V42</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;700;800&family=Nunito:wght@400;700&family=Open+Sans:wght@400;700&family=Oswald:wght@400;700&family=Pacifico&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;700&family=Raleway:wght@400;700&family=Roboto:wght@400;700&family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         :root{--accent:#10b981;--bg:#0f172a;--panel:#1e293b;--border:#334155;--handle-move:#3b82f6;--handle-rotate:#f59e0b;--handle-radius:#ec4899}
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        html,body{margin:0;padding:0;width:100%;height:100vh;height:100dvh;overflow:hidden;background:var(--bg);color:#fff;font-family:'Inter', 'Roboto', sans-serif;overscroll-behavior-y:none}
+        html,body{margin:0;padding:0;width:100%;height:100vh;overflow:hidden;background:var(--bg);color:#fff;font-family:'Inter', sans-serif;}
         
+        /* Kaydırma Çubukları */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
         #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:10000}
-        .login-card{background:var(--panel);padding:40px;border-radius:20px;width:340px;text-align:center;border:1px solid var(--border);box-shadow:0 20px 50px rgba(0,0,0,.5)}
-        .login-card input{width:100%;padding:14px;margin-bottom:15px;border-radius:10px;border:1px solid var(--border);background:#000;color:#fff;text-align:center;outline:none;font-size:14px}
-        .login-card button{width:100%;padding:14px;background:var(--accent);border:none;color:#fff;font-weight:700;border-radius:10px;cursor:pointer;transition:.2s;font-size:14px}
+        .login-card{background:var(--panel);padding:40px;border-radius:20px;width:340px;text-align:center;border:1px solid var(--border);}
         
         #app-container{display:none;height:100%;width:100%;flex-direction:row}
-        #sidebar{width:480px;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100%;z-index:100;position:relative}
-        .sidebar-scroll-area{flex-shrink:0;max-height:65%;overflow-y:auto;background:#111827;padding:15px;border-bottom:2px solid var(--border)}
+        #sidebar{width:480px;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100%;z-index:100;}
+        
+        .sidebar-scroll-area{flex-shrink:0;max-height:70%;overflow-y:auto;background:#111827;padding:15px;border-bottom:2px solid var(--border)}
         #editor-fields{flex:1;min-height:0;overflow-y:auto;padding:20px;background:rgba(0,0,0,.2);padding-bottom:80px}
         
-        #main-view{flex:1;background:#020617;overflow:hidden;position:relative;height:calc(100% - 25px);display:flex}
-        #zoom-container{flex:1;display:flex;align-items:center;justify-content:center;transform-origin:center center;transition:transform .2s ease-out;position:relative; margin-left: 20px; margin-top: 20px;}
+        #main-view{flex:1;background:#020617;overflow:hidden;position:relative;display:flex}
+        #zoom-container{flex:1;display:flex;align-items:center;justify-content:center;transform-origin:center center;transition:transform .2s ease-out;}
         #svg-wrapper{position:relative;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px #000;touch-action:none;}
-        #canvas-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-        #canvas-inner svg{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;overflow:visible}
         
-        .floating-tools{position:fixed;bottom:45px;left:40px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:8px;display:flex;gap:8px;box-shadow:0 10px 25px rgba(0,0,0,.5);z-index:500;align-items:center}
-        .tool-btn{background:#0f172a;color:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:700;transition:.2s; display:flex; align-items:center; gap:6px;}
-        .tool-btn:hover{background:var(--accent);border-color:var(--accent)}
-        
-        .duzenlenebilir{cursor:move;pointer-events:all}
-        .handle{fill:#fff;stroke-width:2;pointer-events:all;transition:fill .2s;}
-        .handle:hover{fill:var(--accent);}
-        
-        input[type="text"],input[type="number"],textarea{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:#000;color:#fff;outline:none;font-size:13px; margin-bottom:10px;}
-        .font-select{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:#000;color:#fff;margin-bottom:5px;outline:none;font-size:13px;cursor:pointer}
-        
-        .action-btn{flex:1;background:#334155;color:#fff;border:none;border-radius:8px;padding:10px 15px;font-size:12px;font-weight:700;cursor:pointer;text-align:center; display:flex; align-items:center; justify-content:center; gap:6px;}
-        .action-btn.active{background:var(--accent);color:#fff}
+        .floating-tools{position:fixed;bottom:45px;left:40px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:8px;display:flex;gap:8px;z-index:500;}
+        .tool-btn{background:#0f172a;color:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:700;display:flex;align-items:center;gap:6px;}
+        .tool-btn:hover{background:var(--accent);}
+
+        .action-btn{flex:1;background:#334155;color:#fff;border:none;border-radius:8px;padding:10px 15px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+        .action-btn.active{background:var(--accent);}
         .action-btn.special{background:#0284c7}
         
         .group-box{background:rgba(0,0,0,.2);padding:12px;border-radius:10px;border:1px solid #1e293b;margin-bottom:15px}
-        .label-text{font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:block;}
+        .label-text{font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;margin-bottom:5px;display:block;}
         
-        .layer-item{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-bottom:1px solid var(--border);cursor:pointer;font-size:12px;background:#1e293b;color:#cbd5e1}
-        .layer-item.active{border-left:4px solid var(--accent);background:rgba(16,185,129,.15);color:#fff;}
-        
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events:none;}
-        .toast { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 14px 24px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); transform: translateX(120%); animation: slideIn 0.4s forwards;}
-        @keyframes slideIn { to { transform: translateX(0); } }
+        /* Form Elemanları */
+        input[type="text"], input[type="number"], textarea, select { width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:#000; color:#fff; outline:none; font-size:13px; margin-bottom:10px; }
 
+        /* Katmanlar */
+        .layer-item{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-bottom:1px solid var(--border);cursor:pointer;font-size:12px;background:#1e293b;}
+        .layer-item.active{border-left:4px solid var(--accent);background:rgba(16,185,129,.15);}
+
+        /* Toast */
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 14px 24px; border-radius: 12px; animation: slideIn 0.4s forwards; }
+        @keyframes slideIn { from { transform: translateX(120%); } to { transform: translateX(0); } }
+
+        /* Sekme Sistemi */
         .tabs-header { display: flex; gap: 4px; margin-bottom: 15px; background: #0f172a; padding: 4px; border-radius: 8px; }
         .tab-btn { flex: 1; background: transparent; border: none; color: #94a3b8; font-size: 11px; font-weight: 700; padding: 10px 4px; cursor: pointer; border-radius: 6px; }
         .tab-btn.active { background: var(--panel); color: var(--accent); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        #context-menu{display:none;position:absolute;background:#1e293b;border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,.7);border-radius:8px;padding:5px;z-index:20000;min-width:200px}
-        .ctx-item{padding:10px 15px;font-size:13px;cursor:pointer;color:#e2e8f0;border-radius:4px;display:flex;justify-content:space-between;align-items:center;}
-        .ctx-item:hover{background:var(--accent);color:#fff}
-        
-        #status-bar{position:absolute;bottom:0;left:0;width:100%;height:25px;background:#0f172a;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:0 20px;font-size:11px;color:#94a3b8;z-index:400;font-family:monospace}
+        #control-layer circle, #control-layer rect { pointer-events: all; }
     </style>
 </head>
 <body>
@@ -78,7 +70,7 @@
     <div class="login-card">
         <h2 style="color:white;"><i class="ph ph-shield-check" style="color:var(--accent); font-size:32px;"></i> Pro Studio V42</h2>
         <input type="password" id="passInput" placeholder="Sunucu Şifresi">
-        <button id="loginBtn" onclick="window.login()">Sunucuya Bağlan</button>
+        <button onclick="window.login()">Sunucuya Bağlan</button>
     </div>
 </div>
 
@@ -87,10 +79,9 @@
         <div class="floating-tools">
             <button class="tool-btn" onclick="window.undo()"><i class="ph ph-arrow-u-up-left"></i></button>
             <button class="tool-btn" onclick="window.redo()"><i class="ph ph-arrow-u-up-right"></i></button>
-            <div style="width: 1px; background: var(--border); height: 20px;"></div>
-            <button class="tool-btn" onclick="window.changeZoom(-0.1)"><i class="ph ph-magnifying-glass-minus"></i></button>
-            <button class="tool-btn" id="zoom-val" onclick="window.resetZoom()">100%</button>
             <button class="tool-btn" onclick="window.changeZoom(0.1)"><i class="ph ph-magnifying-glass-plus"></i></button>
+            <button class="tool-btn" id="zoom-val" onclick="window.resetZoom()">100%</button>
+            <button class="tool-btn" onclick="window.changeZoom(-0.1)"><i class="ph ph-magnifying-glass-minus"></i></button>
         </div>
 
         <div id="zoom-container">
@@ -99,67 +90,56 @@
                 <svg id="control-layer" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;"></svg>
             </div>
         </div>
-        
-        <div id="status-bar">
-            <div id="status-count">Nesne Sayısı: 0</div>
-            <div>SVG Pro Studio Ultimate V42</div>
-            <div id="status-time">Son Kayıt: Bekleniyor...</div>
-        </div>
     </div>
     
     <div id="sidebar">
         <div class="sidebar-scroll-area">
             <div style="display:flex; gap:5px; margin-bottom: 10px;">
                 <button onclick="window.saveData()" class="action-btn active" style="flex:2;"><i class="ph ph-floppy-disk"></i> KAYDET</button>
-                <button onclick="window.openExport('png')" class="action-btn special"><i class="ph ph-image"></i> PNG</button>
+                <button onclick="window.saveAllSettingsToCloud()" class="action-btn" style="background:#3b82f6;"><i class="ph ph-cloud-arrow-up"></i> AYARLARI YAYINLA</button>
             </div>
             
-            <select id="file-selector" style="margin-bottom:10px;" onchange="window.loadSlide(); window.updateSettingsUI();">
+            <select id="file-selector" onchange="window.loadSlide(); window.updateSettingsUI();">
                 <option value="slayt.svg">Ana Slayt (slayt.svg)</option>
                 <option value="kampanya.svg">Kampanya (kampanya.svg)</option>
-                <option value="duyuru.svg">Duyuru (duyuru.svg)</option>
-                <option value="m38u.svg">Sol Köşe (m38u.svg)</option>
-                <option value="sag_resim.svg">Sağ Köşe (sag_resim.svg)</option>
+                <option value="m38u.svg">Sol Köşe Ekranı</option>
+                <option value="sag_resim.svg">Sağ Köşe Ekranı</option>
             </select>
 
             <details style="margin-bottom: 10px;" open>
                 <summary style="font-size:11px; font-weight:bold; color:#3b82f6; cursor:pointer; margin-bottom:5px;">
-                    <i class="ph ph-layout"></i> MİNİ EKRAN & YAYIN KONTROLÜ
+                    <i class="ph ph-television"></i> MİNİ EKRAN VE YAYIN AYARLARI
                 </summary>
                 <div class="group-box" style="border-color:#3b82f6;">
-                    <div class="label-text" style="color:#60a5fa;">SOL EKRAN (M3U8 / CANLI)</div>
-                    <div style="display:flex; gap:5px; margin-bottom:8px;">
-                        <button id="btn-m3u8-toggle" onclick="window.toggleMiniScreen('left')" class="action-btn">AÇ/KAPAT</button>
-                        <input type="number" id="m3u8-w" placeholder="W%" style="width:65px; margin:0;">
-                        <input type="number" id="m3u8-h" placeholder="H%" style="width:65px; margin:0;">
+                    <span class="label-text">SOL EKRAN (CANLI YAYIN URL)</span>
+                    <input type="text" id="m3u8-url" placeholder="m3u8 linki yapıştırın" onchange="window.updateMiniData('left')">
+                    <div style="display:flex; gap:5px; margin-bottom:10px;">
+                        <button id="btn-m3u8-v" onclick="window.toggleMini('left')" class="action-btn">GÖSTER/GİZLE</button>
+                        <input type="number" id="m3u8-w" placeholder="W%" style="width:70px; margin:0;" onchange="window.updateMiniData('left')">
+                        <input type="number" id="m3u8-h" placeholder="H%" style="width:70px; margin:0;" onchange="window.updateMiniData('left')">
                     </div>
-                    <input type="text" id="m3u8-url" placeholder="M3U8 Linki" onchange="window.updateMiniScreenSetting('left')">
-
-                    <div class="label-text" style="color:#f59e0b; margin-top:10px;">SAĞ EKRAN (RESİM LİSTESİ)</div>
-                    <div style="display:flex; gap:5px; margin-bottom:8px;">
-                        <button id="btn-right-toggle" onclick="window.toggleMiniScreen('right')" class="action-btn">AÇ/KAPAT</button>
-                        <input type="number" id="right-w" placeholder="W%" style="width:65px; margin:0;">
-                        <input type="number" id="right-h" placeholder="H%" style="width:65px; margin:0;">
-                    </div>
-                    <textarea id="right-images" placeholder="Resimler (virgülle ayır)" style="height:60px; margin:0;" onchange="window.updateMiniScreenSetting('right')"></textarea>
                     
-                    <button class="action-btn active" style="width:100%; background:#3b82f6; margin-top:10px;" onclick="window.saveAllSettingsToCloud()">
-                        <i class="ph ph-cloud-arrow-up"></i> TÜM AYARLARI (JSON) GÜNCELLE
-                    </button>
+                    <span class="label-text">SAĞ EKRAN (RESİM LİSTESİ)</span>
+                    <textarea id="right-imgs" placeholder="resim1.jpg, resim2.jpg" style="height:60px;" onchange="window.updateMiniData('right')"></textarea>
+                    <div style="display:flex; gap:5px;">
+                        <button id="btn-right-v" onclick="window.toggleMini('right')" class="action-btn">GÖSTER/GİZLE</button>
+                        <input type="number" id="right-w" placeholder="W%" style="width:70px; margin:0;" onchange="window.updateMiniData('right')">
+                        <input type="number" id="right-h" placeholder="H%" style="width:70px; margin:0;" onchange="window.updateMiniData('right')">
+                    </div>
                 </div>
             </details>
 
             <details style="margin-bottom: 10px;">
                 <summary style="font-size:11px; font-weight:bold; color:#f59e0b; cursor:pointer;">
-                    <i class="ph ph-film-script"></i> SLAYT GEÇİŞ AYARLARI
+                    <i class="ph ph-clock"></i> SLAYT GEÇİŞ SÜRELERİ
                 </summary>
                 <div class="group-box">
-                    <span class="label-text">EKRANDA KALMA SÜRESİ (MS)</span>
-                    <input type="number" id="slide-time" value="7000">
-                    <span class="label-text">GEÇİŞ EFEKTİ</span>
-                    <select id="slide-effect" class="font-select">
-                        <option value="cube">Cube (3D Küp)</option>
-                        <option value="fade">Fade (Yumuşak)</option>
+                    <span class="label-text">GÖRÜNME SÜRESİ (MS)</span>
+                    <input type="number" id="slide-dur" value="7000">
+                    <span class="label-text">EFEKT</span>
+                    <select id="slide-eff">
+                        <option value="cube">3D Cube</option>
+                        <option value="fade">Fade</option>
                         <option value="zoom">Zoom</option>
                     </select>
                 </div>
@@ -167,55 +147,40 @@
 
             <details style="margin-bottom: 10px;" open>
                 <summary style="font-size:11px; font-weight:bold; color:#8b5cf6; cursor:pointer;">
-                    <i class="ph ph-paint-brush"></i> NESNE EKLE & ARAÇLAR
+                    <i class="ph ph-plus-circle"></i> NESNE EKLE
                 </summary>
                 <div class="group-box">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                        <button onclick="window.addNewText()" class="action-btn"><i class="ph ph-text-t"></i> YAZI</button>
-                        <button onclick="document.getElementById('img-in').click()" class="action-btn"><i class="ph ph-image-square"></i> RESİM</button>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+                        <button onclick="window.addNewText()" class="action-btn"><i class="ph ph-text-t"></i> METİN</button>
+                        <button onclick="document.getElementById('img-in').click()" class="action-btn"><i class="ph ph-image"></i> RESİM</button>
                         <button onclick="window.addShape('rect')" class="action-btn"><i class="ph ph-square"></i> KARE</button>
-                        <button id="btn-draw" onclick="window.toggleDrawMode()" class="action-btn"><i class="ph ph-pencil-simple"></i> ÇİZİM</button>
+                        <button onclick="window.toggleDrawMode()" class="action-btn"><i class="ph ph-pencil"></i> ÇİZİM</button>
                     </div>
                 </div>
             </details>
 
-            <details open id="layers-panel">
+            <details open>
                 <summary style="font-size:11px; font-weight:bold; color:#06b6d4; cursor:pointer;">
                     <i class="ph ph-layers"></i> KATMANLAR
                 </summary>
-                <div id="layers-list" style="max-height: 200px; overflow-y: auto; margin-top:5px;"></div>
+                <div id="layers-list"></div>
             </details>
-
-            <input type="file" id="img-in" accept="image/*" hidden>
         </div>
 
         <div id="editor-fields"></div>
+        <input type="file" id="img-in" hidden onchange="window.handleFile(this)">
     </div>
 </div>
 
 <script>
+    // --- ÇEKİRDEK DEĞİŞKENLER ---
     const WORKER_URL = "https://tvinfoeditor.tafbilgiislem.workers.dev";
-    let SESSION_PASS = "", SHA_KEY = "", settingsData = {}, settingsSha = "";
-    let selectedEl = null, currentZoom = 1, historyStack = [], historyIndex = -1;
-    let recentColors = ['#10b981', '#3b82f6', '#ef4444', '#f59e0b', '#ffffff'];
+    let SESSION_PASS = "", SHA_KEY = "", settingsSha = "", settingsData = {};
+    let selectedEl = null, currentZoom = 1, history = [], hIndex = -1;
 
-    // --- TEMEL FONKSİYONLAR ---
-    window.showToast = (msg, type = 'success') => {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = `toast`;
-        toast.innerHTML = `<i class="ph ${type === 'success' ? 'ph-check-circle' : 'ph-warning-circle'}"></i> <span>${msg}</span>`;
-        container.appendChild(toast);
-        setTimeout(() => { toast.remove(); }, 3000);
-    };
-
-    window.setD = (el, key, val) => { if(el) el.setAttribute('data-' + key, val); };
-    window.getD = (el, key) => el ? el.getAttribute('data-' + key) : null;
-
-    // --- LOGIN & LOADING ---
+    // --- BAŞLATMA ---
     window.login = async () => {
         SESSION_PASS = document.getElementById('passInput').value;
-        if(!SESSION_PASS) return;
         await window.loadSettings();
         await window.loadSlide();
     };
@@ -223,81 +188,59 @@
     window.loadSettings = async () => {
         try {
             const res = await fetch(WORKER_URL, { headers: {"X-Auth-Key": SESSION_PASS, "X-File-Name": "settings.json"} });
-            if (res.ok) {
-                const data = await res.json();
-                settingsSha = data.sha;
-                settingsData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-                window.updateSettingsUI();
-            }
-        } catch (e) { console.error("Settings load error"); }
-    };
-
-    window.loadSlide = async () => {
-        const file = document.getElementById('file-selector').value;
-        try {
-            const res = await fetch(WORKER_URL, { headers: {"X-Auth-Key": SESSION_PASS, "X-File-Name": file} });
-            if (res.status === 401) { alert("Şifre Hatalı"); return; }
-            document.getElementById('login-screen').style.display = "none";
-            document.getElementById('app-container').style.display = "flex";
             const data = await res.json();
-            SHA_KEY = data.sha || "";
-            document.getElementById('canvas-inner').innerHTML = decodeURIComponent(escape(atob(data.content)));
-            window.setupLayers();
-            window.saveState();
-        } catch(e) { window.showToast("Yükleme Hatası", "error"); }
+            settingsData = JSON.parse(atob(data.content));
+            settingsSha = data.sha;
+            window.updateSettingsUI();
+        } catch(e) { window.showToast("Settings.json yüklenemedi", "error"); }
     };
 
-    // --- JSON YÖNETİMİ ---
     window.updateSettingsUI = () => {
-        const currentFile = document.getElementById('file-selector').value;
-        const slides = settingsData.slides || [];
-        const config = slides.find(s => s.file === currentFile);
+        const file = document.getElementById('file-selector').value;
+        const config = (settingsData.slides || []).find(s => s.file === file);
         if(config) {
-            document.getElementById('slide-time').value = config.duration || 7000;
-            document.getElementById('slide-effect').value = config.effect || 'cube';
+            document.getElementById('slide-dur').value = config.duration;
+            document.getElementById('slide-eff').value = config.effect;
         }
-
         const ms = settingsData.mini_screens;
         if(ms) {
-            document.getElementById('m3u8-url').value = ms.left.url || "";
-            document.getElementById('m3u8-w').value = ms.left.w || 32;
-            document.getElementById('m3u8-h').value = ms.left.h || 18;
-            document.getElementById('btn-m3u8-toggle').style.background = ms.left.visible ? "var(--accent)" : "#991b1b";
-
-            document.getElementById('right-images').value = (ms.right.images || []).join(', ');
-            document.getElementById('right-w').value = ms.right.w || 32;
-            document.getElementById('right-h').value = ms.right.h || 18;
-            document.getElementById('btn-right-toggle').style.background = ms.right.visible ? "var(--accent)" : "#991b1b";
+            document.getElementById('m3u8-url').value = ms.left.url;
+            document.getElementById('m3u8-w').value = ms.left.w;
+            document.getElementById('m3u8-h').value = ms.left.h;
+            document.getElementById('btn-m3u8-v').style.background = ms.left.visible ? "#10b981" : "#475569";
+            
+            document.getElementById('right-imgs').value = ms.right.images.join(', ');
+            document.getElementById('right-w').value = ms.right.w;
+            document.getElementById('right-h').value = ms.right.h;
+            document.getElementById('btn-right-v').style.background = ms.right.visible ? "#10b981" : "#475569";
         }
     };
 
-    window.toggleMiniScreen = (side) => {
+    window.toggleMini = (side) => {
         settingsData.mini_screens[side].visible = !settingsData.mini_screens[side].visible;
         window.updateSettingsUI();
     };
 
-    window.updateMiniScreenSetting = (side) => {
+    window.updateMiniData = (side) => {
         const ms = settingsData.mini_screens[side];
         if(side === 'left') {
             ms.url = document.getElementById('m3u8-url').value;
             ms.w = parseInt(document.getElementById('m3u8-w').value);
             ms.h = parseInt(document.getElementById('m3u8-h').value);
         } else {
-            ms.images = document.getElementById('right-images').value.split(',').map(i => i.trim());
+            ms.images = document.getElementById('right-imgs').value.split(',').map(s => s.trim());
             ms.w = parseInt(document.getElementById('right-w').value);
             ms.h = parseInt(document.getElementById('right-h').value);
         }
     };
 
     window.saveAllSettingsToCloud = async () => {
-        const currentFile = document.getElementById('file-selector').value;
-        const slides = settingsData.slides || [];
-        let config = slides.find(s => s.file === currentFile);
-        if(config) {
-            config.duration = parseInt(document.getElementById('slide-time').value);
-            config.effect = document.getElementById('slide-effect').value;
+        const file = document.getElementById('file-selector').value;
+        let slide = settingsData.slides.find(s => s.file === file);
+        if(slide) {
+            slide.duration = parseInt(document.getElementById('slide-dur').value);
+            slide.effect = document.getElementById('slide-eff').value;
         }
-
         const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(settingsData, null, 2))));
         const res = await fetch(WORKER_URL, {
             method: "PUT",
@@ -305,100 +248,112 @@
             body: JSON.stringify({content: b64, sha: settingsSha})
         });
         if(res.ok) {
-            const data = await res.json();
-            settingsSha = data.content?.sha || data.sha;
-            window.showToast("Sistem Ayarları Güncellendi");
+            const d = await res.json(); settingsSha = d.content.sha;
+            window.showToast("Tüm ayarlar (JSON) güncellendi!");
         }
     };
 
-    // --- SVG EDİTÖR ÇEKİRDEĞİ ---
-    window.saveData = async () => {
+    // --- ESKİ SVG DÜZENLEME MANTIKLARI (Kavis, Stil, Katman) ---
+    window.loadSlide = async () => {
+        const file = document.getElementById('file-selector').value;
+        const res = await fetch(WORKER_URL, { headers: {"X-Auth-Key": SESSION_PASS, "X-File-Name": file} });
+        const data = await res.json();
+        SHA_KEY = data.sha;
+        document.getElementById('canvas-inner').innerHTML = decodeURIComponent(escape(atob(data.content)));
+        document.getElementById('login-screen').style.display = "none";
+        document.getElementById('app-container').style.display = "flex";
+        window.initEditorCore();
+    };
+
+    window.initEditorCore = () => {
         const svg = document.querySelector('#canvas-inner svg');
-        document.getElementById('control-layer').innerHTML = "";
-        const svgText = new XMLSerializer().serializeToString(svg);
-        const b64 = btoa(unescape(encodeURIComponent(svgText)));
+        svg.querySelectorAll('*').forEach(el => {
+            if(!el.id && el.tagName !== 'defs') el.id = "id_" + Math.random().toString(36).substr(2, 9);
+            el.classList.add('duzenlenebilir');
+        });
+        window.renderLayers();
+        window.saveState();
         
+        // Sürükleme ve Tıklama
+        svg.onmousedown = (e) => {
+            const el = e.target.closest('.duzenlenebilir');
+            if(el) { 
+                selectedEl = el; 
+                window.renderProperties(); 
+                window.updateControlUI(); 
+                window.renderLayers();
+            }
+        };
+    };
+
+    window.updateControlUI = () => {
+        const ctrl = document.getElementById('control-layer');
+        ctrl.innerHTML = "";
+        if(!selectedEl) return;
+        const b = selectedEl.getBBox();
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", b.x); rect.setAttribute("y", b.y);
+        rect.setAttribute("width", b.width); rect.setAttribute("height", b.height);
+        rect.setAttribute("fill", "none"); rect.setAttribute("stroke", "var(--accent)");
+        rect.setAttribute("stroke-dasharray", "4,2");
+        ctrl.appendChild(rect);
+    };
+
+    window.renderLayers = () => {
+        const list = document.getElementById('layers-list'); list.innerHTML = "";
+        const els = Array.from(document.querySelectorAll('.duzenlenebilir')).reverse();
+        els.forEach(el => {
+            const div = document.createElement('div');
+            div.className = `layer-item ${selectedEl === el ? 'active' : ''}`;
+            div.innerHTML = `<span>${el.tagName} (#${el.id.substr(0,4)})</span><i class="ph ph-trash" onclick="document.getElementById('${el.id}').remove(); window.renderLayers();"></i>`;
+            div.onclick = () => { selectedEl = el; window.updateControlUI(); window.renderProperties(); window.renderLayers(); };
+            list.appendChild(div);
+        });
+    };
+
+    window.renderProperties = () => {
+        const f = document.getElementById('editor-fields');
+        if(!selectedEl) { f.innerHTML = ""; return; }
+        const tag = selectedEl.tagName;
+        let h = `<div class="group-box"><span class="label-text">${tag} ÖZELLİKLERİ</span>`;
+        if(tag === 'text') {
+            h += `<input type="text" value="${selectedEl.textContent}" oninput="selectedEl.textContent=this.value; window.updateControlUI();">`;
+            h += `<span class="label-text">PUNTO</span><input type="number" value="${selectedEl.getAttribute('font-size') || 40}" oninput="selectedEl.setAttribute('font-size', this.value); window.updateControlUI();">`;
+        }
+        h += `<span class="label-text">RENK</span><input type="color" value="${selectedEl.getAttribute('fill') || '#ffffff'}" oninput="selectedEl.setAttribute('fill', this.value);">`;
+        h += `<button class="action-btn danger" onclick="selectedEl.remove(); selectedEl=null; window.renderLayers(); window.renderProperties(); window.updateControlUI();">SİL</button></div>`;
+        f.innerHTML = h;
+    };
+
+    window.saveData = async () => {
+        document.getElementById('control-layer').innerHTML = "";
+        const svg = document.querySelector('#canvas-inner svg');
+        const txt = new XMLSerializer().serializeToString(svg);
+        const b64 = btoa(unescape(encodeURIComponent(txt)));
         const res = await fetch(WORKER_URL, {
             method: "PUT",
             headers: { "X-Auth-Key": SESSION_PASS, "X-File-Name": document.getElementById('file-selector').value },
             body: JSON.stringify({content: b64, sha: SHA_KEY})
         });
-        if(res.ok) {
-            const data = await res.json();
-            SHA_KEY = data.content?.sha || data.sha;
-            window.showToast("SVG Kaydedildi");
-        }
-    };
-
-    window.setupLayers = () => {
-        const svg = document.querySelector('#canvas-inner svg');
-        svg.querySelectorAll('*').forEach(el => {
-            if(!el.id && el.tagName !== 'defs') el.id = "el_" + Math.random().toString(36).substr(2, 9);
-            if(el.id && el.id !== 'canvas-background') el.classList.add('duzenlenebilir');
-        });
-        window.initEngine(svg);
-        window.renderLayers();
-    };
-
-    window.initEngine = (svg) => {
-        const wrapper = document.getElementById('svg-wrapper');
-        wrapper.onmousedown = (e) => {
-            const el = e.target.closest('.duzenlenebilir');
-            if(el) {
-                selectedEl = el;
-                window.renderProperties();
-                window.renderLayers();
-                // Sürükleme mantığı buraya eklenebilir (offset hesaplama)
-            }
-        };
-    };
-
-    window.renderLayers = () => {
-        const list = document.getElementById('layers-list');
-        list.innerHTML = "";
-        const elements = Array.from(document.querySelectorAll('.duzenlenebilir')).reverse();
-        elements.forEach(el => {
-            const item = document.createElement('div');
-            item.className = `layer-item ${selectedEl === el ? 'active' : ''}`;
-            item.innerHTML = `<span>${el.tagName} (#${el.id.substr(0,5)})</span>`;
-            item.onclick = () => { selectedEl = el; window.renderProperties(); window.renderLayers(); };
-            list.appendChild(item);
-        });
-        document.getElementById('status-count').innerText = "Nesne Sayısı: " + elements.length;
-    };
-
-    // --- DİNAMİK ÖZELLİK PANELİ ---
-    window.renderProperties = () => {
-        const f = document.getElementById('editor-fields');
-        if(!selectedEl) { f.innerHTML = ""; return; }
-        
-        const tag = selectedEl.tagName.toLowerCase();
-        let html = `<div class="group-box"><h3>${tag.toUpperCase()} AYARLARI</h3>`;
-        
-        if(tag === 'text') {
-            html += `<span class="label-text">METİN İÇERİĞİ</span>
-                     <input type="text" value="${selectedEl.textContent}" oninput="selectedEl.textContent = this.value; window.saveState();">`;
-        }
-        
-        html += `<span class="label-text">RENK</span>
-                 <input type="color" value="${selectedEl.getAttribute('fill') || '#ffffff'}" oninput="selectedEl.setAttribute('fill', this.value); window.saveState();">`;
-        
-        html += `<button class="action-btn" style="background:#ef4444; margin-top:10px;" onclick="selectedEl.remove(); selectedEl=null; window.renderLayers(); window.renderProperties();">NESNEYİ SİL</button></div>`;
-        
-        f.innerHTML = html;
+        if(res.ok) { window.showToast("SVG Kaydedildi"); const d = await res.json(); SHA_KEY = d.content.sha; }
     };
 
     window.saveState = () => {
         const svg = document.querySelector('#canvas-inner svg');
-        historyStack.push(svg.innerHTML);
-        historyIndex++;
+        history = history.slice(0, hIndex + 1);
+        history.push(svg.innerHTML);
+        hIndex++;
     };
 
-    window.undo = () => { if(historyIndex > 0) { historyIndex--; document.querySelector('#canvas-inner svg').innerHTML = historyStack[historyIndex]; window.renderLayers(); } };
+    window.undo = () => { if(hIndex > 0) { hIndex--; document.querySelector('#canvas-inner svg').innerHTML = history[hIndex]; window.initEditorCore(); } };
+    window.showToast = (m, t='success') => {
+        const c = document.getElementById('toast-container');
+        const d = document.createElement('div'); d.className = 'toast'; d.innerText = m;
+        c.appendChild(d); setTimeout(() => d.remove(), 3000);
+    };
 
-    window.resetZoom = () => { currentZoom = 1; window.applyZoom(); };
-    window.changeZoom = (v) => { currentZoom += v; window.applyZoom(); };
-    window.applyZoom = () => { document.getElementById('svg-wrapper').style.transform = `scale(${currentZoom})`; document.getElementById('zoom-val').innerText = Math.round(currentZoom*100) + "%"; };
+    window.changeZoom = (v) => { currentZoom += v; document.getElementById('svg-wrapper').style.transform = `scale(${currentZoom})`; document.getElementById('zoom-val').innerText = Math.round(currentZoom*100) + "%"; };
+    window.resetZoom = () => { currentZoom = 1; window.changeZoom(0); };
 
 </script>
 </body>
