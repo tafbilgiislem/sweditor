@@ -230,7 +230,7 @@
     <div id="sidebar">
         <div class="sidebar-scroll-area">
             <div style="display:flex; gap:5px; margin-bottom: 10px;">
-                <button onclick="window.saveData()" class="action-btn active" style="flex:2; font-size:12px;"><i class="ph ph-floppy-disk"></i> SVG KAYDET</button>
+                <button onclick="window.saveData()" class="action-btn active" style="flex:2; font-size:12px;"><i class="ph ph-floppy-disk"></i> KAYDET</button>
                 <button onclick="window.openExport('png')" class="action-btn special" style="flex:1; background:#0284c7;"><i class="ph ph-image"></i> PNG</button>
                 <button onclick="window.openExport('svg')" class="action-btn svg" style="flex:1; background:#ea580c;"><i class="ph ph-file-svg"></i> SVG</button>
             </div>
@@ -239,7 +239,7 @@
                 <option value="slayt.svg">Ana Slayt (slayt.svg)</option>
                 <option value="kampanya.svg">Kampanya (kampanya.svg)</option>
                 <option value="duyuru.svg">Duyuru (duyuru.svg)</option>
-                </select>
+            </select>
 
             <details style="margin-bottom: 10px;" open>
                 <summary style="font-size:11px; font-weight:bold; color:#3b82f6; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-television" style="font-size:14px;"></i> MİNİ EKRAN VE YAYIN KONTROLÜ</summary>
@@ -269,9 +269,26 @@
                         <input type="number" id="right-w" placeholder="Genişlik" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('right')">
                         <input type="number" id="right-h" placeholder="Yükseklik" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('right')">
                     </div>
+
+                    <button class="action-btn active" style="width:100%; background:#3b82f6;" onclick="window.saveAllSettingsToCloud()"><i class="ph ph-cloud-arrow-up"></i> YAYIN AYARLARINI KAYDET (JSON)</button>
                 </div>
             </details>
             
+            <details style="margin-bottom: 10px;" open>
+                <summary style="font-size:11px; font-weight:bold; color:#ec4899; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-article" style="font-size:14px;"></i> KAYAN YAZI VE SAAT</summary>
+                <div class="group-box" style="margin-top:5px; border-color:#ec4899;">
+                    <div style="display:flex; gap:5px; margin-bottom:10px;">
+                        <button id="btn-ticker-toggle" onclick="window.toggleTicker()" class="action-btn" style="flex:1;">GÖSTER/GİZLE</button>
+                        <button id="btn-clock-toggle" onclick="window.toggleClock()" class="action-btn" style="flex:1; background:#8b5cf6;">SAAT AÇIK</button>
+                    </div>
+                    <div class="label-text" style="color:#ec4899;">KAYAN YAZI METNİ (Sondakika, Duyuru vb.)</div>
+                    <input type="text" id="ticker-text" placeholder="Ekranda kayacak metni buraya yazın..." onchange="window.updateTickerSetting()">
+                    
+                    <div class="label-text" style="color:#94a3b8; margin-top:10px;">KAYMA HIZI (Saniye - Düşük sayı = Hızlı)</div>
+                    <input type="number" id="ticker-speed" value="20" onchange="window.updateTickerSetting()">
+                </div>
+            </details>
+
             <details style="margin-bottom: 10px;">
                 <summary style="font-size:11px; font-weight:bold; color:#f59e0b; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-film-script" style="font-size:14px;"></i> SEÇİLİ SLAYT AYARLARI (JSON)</summary>
                 <div class="group-box" style="margin-top:5px;">
@@ -292,7 +309,30 @@
                             <option value="none">Efektsiz</option>
                         </select>
                     </div>
-                    <button class="action-btn" style="width:100%; background:#f59e0b; color:black;" onclick="window.saveAllSettingsToCloud()"><i class="ph ph-database"></i> JSON KAYDET</button>
+                    <button class="action-btn" style="width:100%; background:#f59e0b; color:black;" onclick="window.saveAllSettingsToCloud()"><i class="ph ph-database"></i> AYARLARI KAYDET (JSON)</button>
+                </div>
+            </details>
+
+            <details style="margin-bottom: 10px;">
+                <summary style="font-size:11px; font-weight:bold; color:#10b981; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-globe" style="font-size:14px;"></i> İNDEX.HTML EFEKT AYARLARI</summary>
+                <div class="group-box" style="margin-top:5px;">
+                    <div style="font-size:10px; color:#94a3b8; margin-bottom:10px; font-style:italic;">index.html dosyasındaki CSS geçiş (.active) sürelerini düzenler.</div>
+                    <div class="input-group" style="margin-bottom:10px;">
+                        <span class="label-text">EFEKT SEÇİMİ</span>
+                        <select id="html-effect-select" class="font-select" onchange="window.updateHtmlEffectUI()">
+                            <option value="fade">Fade (Yumuşak Geçiş)</option>
+                            <option value="slide">Slide (Kaydırma)</option>
+                            <option value="zoom">Zoom (Yakınlaştırma)</option>
+                            <option value="cube">Cube (3D Küp)</option>
+                            <option value="coverflow">Coverflow (3D Galeri)</option>
+                            <option value="flip">Flip (Kart Çevirme)</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom:10px;">
+                        <span class="label-text">GEÇİŞ SÜRESİ (Saniye / "1.5" gibi)</span>
+                        <input type="number" step="0.1" id="html-effect-duration" value="1.5">
+                    </div>
+                    <button class="action-btn" style="width:100%; background:#10b981; color:white;" onclick="window.saveHtmlSettings()"><i class="ph ph-code"></i> İNDEX.HTML'E KAYDET</button>
                 </div>
             </details>
 
@@ -355,12 +395,10 @@
     </div>
 </div>
 <script>
-    const WORKER_URL = "https://sw.tafbilgiislem.workers.dev"; 
+    const WORKER_URL = "https://tvinfoeditor.tafbilgiislem.workers.dev"; 
     
     let SHA_KEY = "", SESSION_PASS = "", settingsData = {}, settingsSha = "";
     let indexHtmlContent = "", indexHtmlSha = "";
-
-    // YENİ EKLENTİ: Sekme hafızasını korumak için
     let currentActiveTab = 'tab-layout';
 
     window.showToast = function(msg, type = 'success') {
@@ -528,12 +566,21 @@
                 document.getElementById('btn-right-toggle').style.background = ms.right.visible ? "#10b981" : "#991b1b";
             }
         }
+
+        // Kayan Yazı ve Saat UI Güncelleme (YENİ EKLENTİ)
+        if (!settingsData.ticker) {
+            settingsData.ticker = { visible: false, showClock: true, text: "Yayın sistemine hoş geldiniz...", speed: 20 };
+        }
+        document.getElementById('ticker-text').value = settingsData.ticker.text;
+        document.getElementById('ticker-speed').value = settingsData.ticker.speed;
+        document.getElementById('btn-ticker-toggle').style.background = settingsData.ticker.visible ? "#10b981" : "#991b1b";
+        document.getElementById('btn-clock-toggle').style.background = settingsData.ticker.showClock ? "#10b981" : "#991b1b";
+        document.getElementById('btn-clock-toggle').innerText = settingsData.ticker.showClock ? "SAAT AÇIK" : "SAAT KAPALI";
         
         window.syncDummyElement('left');
         window.syncDummyElement('right');
     };
 
-    // TUVALDE MİNİ EKRAN GÖSTERGESİ OLUŞTURMA
     window.syncDummyElement = function(side) {
         const id = side === 'left' ? 'mini_left' : 'mini_right';
         if(!settingsData.mini_screens) return;
@@ -569,7 +616,7 @@
         if(!settingsData.mini_screens) return;
         settingsData.mini_screens[side].visible = !settingsData.mini_screens[side].visible;
         window.updateSettingsUI();
-        window.saveAllSettingsToCloud(true); // Sessiz kayıt
+        window.saveAllSettingsToCloud(true);
     };
 
     window.updateMiniScreenSetting = function(side) {
@@ -592,8 +639,30 @@
         window.saveAllSettingsToCloud(true);
     };
 
+    // YENİ: KAYAN YAZI VE SAAT İŞLEMLERİ
+    window.toggleTicker = function() {
+        if(!settingsData.ticker) return;
+        settingsData.ticker.visible = !settingsData.ticker.visible;
+        window.updateSettingsUI();
+        window.saveAllSettingsToCloud(true);
+    };
+
+    window.toggleClock = function() {
+        if(!settingsData.ticker) return;
+        settingsData.ticker.showClock = !settingsData.ticker.showClock;
+        window.updateSettingsUI();
+        window.saveAllSettingsToCloud(true);
+    };
+
+    window.updateTickerSetting = function() {
+        if(!settingsData.ticker) return;
+        settingsData.ticker.text = document.getElementById('ticker-text').value;
+        settingsData.ticker.speed = parseInt(document.getElementById('ticker-speed').value) || 20;
+        window.saveAllSettingsToCloud(true);
+    };
+
     window.saveAllSettingsToCloud = async function(silent = false) {
-        if (!WORKER_URL || WORKER_URL === "") return;
+        if (!WORKER_URL || WORKER_URL === "") { window.showToast("Worker URL eksik!", "error"); return; }
         
         try {
             const currentFile = document.getElementById('file-selector').value;
@@ -701,7 +770,6 @@
         try {
             document.getElementById('control-layer').innerHTML = ""; window.hideGuides(true);
             
-            // Dummy Mini Ekranları SVG'den çıkararak kaydet (sadece JSON'da kalsın)
             const svg = document.querySelector('#canvas-inner svg').cloneNode(true);
             const dl = svg.querySelector('#mini_left'); if(dl) dl.remove();
             const dr = svg.querySelector('#mini_right'); if(dr) dr.remove();
@@ -786,7 +854,6 @@
         if(el.tagName === 'image' || el.tagName === 'rect') window.applyShapeMask(el);
         if(window.updateEditorUI) window.updateEditorUI(el);
 
-        // MİNİ EKRAN SENKRONİZASYONU
         if (id === 'mini_left' || id === 'mini_right') {
             const side = id === 'mini_left' ? 'left' : 'right';
             settingsData.mini_screens[side].x = Math.round(parseFloat(el.getAttribute('x')));
@@ -1103,7 +1170,6 @@
     window.autoFitText = function(el) { 
         if (el.tagName !== 'text') return; 
         
-        // --- Kutuya Sabitleme (Bounding Box) Mantığı ---
         const boundRectId = window.getD(el, 'bound-rect');
         if (boundRectId) {
             const rect = document.getElementById(boundRectId);
@@ -1355,7 +1421,6 @@
             if (isDrawing) { isDrawing = false; selectedEl = currentPath; currentPath = null; isDrawingMode = false; document.getElementById('btn-draw').classList.remove('active'); document.getElementById('svg-wrapper').classList.remove('draw-mode'); window.saveState(); window.renderEditor(); window.updateUI(selectedEl); return; }
             if (isDraggingGuide) { isDraggingGuide = false; currentGuide = null; window.saveState(); return; }
             
-            // Eğer boyutlandırılan/taşınan bir mini ekran dummysi ise, hemen JSON'a işle!
             if (isModified && selectedEl && selectedEl.classList.contains('mini-screen-dummy')) {
                 const side = selectedEl.id === 'mini_left' ? 'left' : 'right';
                 settingsData.mini_screens[side].x = Math.round(parseFloat(selectedEl.getAttribute('x')));
@@ -1416,7 +1481,6 @@
         const s = 24; const corners = [{ id: 'tl', x: b.x, y: b.y, cur: 'nwse-resize' }, { id: 'tr', x: b.x + b.width, y: b.y, cur: 'nesw-resize' }, { id: 'bl', x: b.x, y: b.y + b.height, cur: 'nesw-resize' }, { id: 'br', x: b.x + b.width, y: b.y + b.height, cur: 'nwse-resize' }];
         corners.forEach(c => { const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect"); rect.setAttribute("x", c.x - s/2); rect.setAttribute("y", c.y - s/2); rect.setAttribute("width", s); rect.setAttribute("height", s); rect.setAttribute("class", "handle handle-resize"); rect.dataset.id = el.id; rect.dataset.handle = c.id; rect.style.cursor = c.cur; g.appendChild(rect); });
         
-        // Mini Ekranlar için Döndürme (Rotate) açısını kapatıyoruz (gerek yok)
         if(!el.classList.contains('mini-screen-dummy')) {
             const rotY = b.y - 40; const line = document.createElementNS("http://www.w3.org/2000/svg", "line"); line.setAttribute("x1", b.x + b.width/2); line.setAttribute("y1", b.y); line.setAttribute("x2", b.x + b.width/2); line.setAttribute("y2", rotY); line.setAttribute("stroke", "var(--handle-rotate)"); line.setAttribute("stroke-width", "2"); g.appendChild(line);
             const rotH = document.createElementNS("http://www.w3.org/2000/svg", "circle"); rotH.setAttribute("cx", b.x + b.width/2); rotH.setAttribute("cy", rotY); rotH.setAttribute("r", s/2.5); rotH.setAttribute("class", "handle handle-rotate"); rotH.dataset.id = el.id; g.appendChild(rotH);
@@ -1429,7 +1493,6 @@
     
     window.updateEditorUI = window.updateUI; 
 
-    // YENİ: SEKMELİ YAPI KONTROLCÜSÜ
     window.switchTab = function(btn, tabId) {
         const wrapper = btn.closest('#editor-fields');
         if (!wrapper) return;
@@ -1437,7 +1500,6 @@
         wrapper.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
         wrapper.querySelector('#' + tabId).classList.add('active');
-        
         currentActiveTab = tabId;
     };
 
@@ -1496,7 +1558,6 @@
         return `<div class="prop-group"><div class="prop-group-title">${title}</div>${content}</div>`;
     }
 
-    // ÖZELLİKLER PANELİ (YENİ SEKMELİ YAPI)
     window.renderProperties = function() {
         const f = document.getElementById('editor-fields');
         if (!selectedEl || !selectedEl.tagName) { window.renderEditor(); return; }
@@ -1508,7 +1569,6 @@
             const isLocked = window.getD(el, 'locked') === "true"; const isPath = tag === 'path'; const isText = tag === 'text'; const isShape = tag === 'rect'; const isImage = tag === 'image'; const isIcon = tag === 'svg' || tag === 'g';
             const isMiniDummy = el.classList.contains('mini-screen-dummy');
 
-            // Eğer mini ekransa özel ve kısıtlı bir menü göster
             if (isMiniDummy) {
                 const sideName = id === 'mini_left' ? 'SOL EKRAN (M3U8)' : 'SAĞ EKRAN (RESİMLER)';
                 f.innerHTML = `
@@ -1527,10 +1587,7 @@
             if (isImage) { typeName = 'RESİM'; headerIcon = 'ph-image'; } 
             if (isText) { typeName = 'METİN'; headerIcon = 'ph-text-t'; }
 
-            let layoutHtml = "";
-            let styleHtml = "";
-            let textHtml = "";
-            let codeHtml = "";
+            let layoutHtml = ""; let styleHtml = ""; let textHtml = ""; let codeHtml = "";
 
             let headerHtml = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--border);">
@@ -1554,7 +1611,6 @@
             let isStyleTabActive = (currentActiveTab === 'tab-style') ? 'active' : '';
             let isCodeTabActive = (currentActiveTab === 'tab-code') ? 'active' : '';
             let isLayoutTabActive = (currentActiveTab === 'tab-layout' || (currentActiveTab === 'tab-text' && !isText)) ? 'active' : '';
-            
             if (!isTextTabActive && !isLayoutTabActive && !isStyleTabActive && !isCodeTabActive) { isLayoutTabActive = 'active'; }
 
             let tabsNav = `
@@ -1566,7 +1622,6 @@
                 </div>
             `;
 
-            // --- 1. DÜZEN (LAYOUT) SEKMESİ ---
             if(!isPath) {
                 let alignHtml = `
                 <div class="action-row" style="margin-bottom:8px;">
@@ -1640,8 +1695,6 @@
                 layoutHtml += createPropGroup("<i class='ph ph-scissors'></i> Form & Maskeleme", formHtml);
             }
 
-
-            // --- 2. STİL SEKMESİ ---
             if (!isImage) {
                 const fillType = window.getD(el, 'fill-type') || 'solid'; const col1 = window.getD(el, 'color1') || '#10b981'; const col2 = window.getD(el, 'color2') || '#3b82f6'; const solidCol = window.getD(el, 'solid-color') || (el.getAttribute('fill') === 'none' ? el.getAttribute('stroke') : el.getAttribute('fill')) || "#ffffff";
                 let swatchHtml = `<div class="label-text" style="margin-top:15px; margin-bottom:8px;">PROJE RENKLERİ</div><div class="swatch-container">` + recentColors.map(c => `<div class="color-swatch" style="background:${c}" onclick="window.applyRecentColor('${id}', '${c}')" title="${c}"></div>`).join('') + `</div>`;
@@ -1706,11 +1759,9 @@
             </div>`;
             styleHtml += createPropGroup("<i class='ph ph-magic-wand'></i> Efektler & Görünüm", fxHtml);
 
-            // --- 3. METİN SEKMESİ ---
             if (isText) {
                 const rawText = (window.getD(el, 'raw-text') || el.textContent).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
                 const varName = window.getD(el, 'var-name') || "";
-                
                 let rectOptions = `<option value="">-- Serbest Bırak (Sabitleme Yok) --</option>`;
                 document.querySelectorAll('#canvas-inner svg rect.duzenlenebilir, #canvas-inner svg image.duzenlenebilir').forEach(r => {
                     const isSelected = window.getD(el, 'bound-rect') === r.id ? 'selected' : '';
@@ -1782,20 +1833,17 @@
                 textHtml += createPropGroup("<i class='ph ph-text-aa'></i> Yazı Tipi & Biçimlendirme", fontHtml);
             }
 
-            // --- 4. KOD SEKMESİ ---
             const rawSvgCode = el.outerHTML.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             let editorCodeHtml = `<textarea id="raw-svg-code" style="width:100%; height:250px; background:#000; color:var(--accent); font-family:monospace; font-size:11px; padding:10px; border-radius:8px; border:1px solid var(--border); resize:vertical;" onchange="window.saveState()">${rawSvgCode}</textarea>
             <button class="action-btn active" style="width:100%; margin-top:10px; padding:12px;" onclick="window.applyRawCode('${id}')"><i class="ph ph-terminal-window"></i> KODU UYGULA</button>`;
             codeHtml += createPropGroup("<i class='ph ph-file-code'></i> Canlı SVG Kodu", editorCodeHtml);
 
-            // TÜM SEKMELERİ BİRLEŞTİR
             f.innerHTML = headerHtml + tabsNav + 
                 `<div id="tab-layout" class="tab-content ${isLayoutTabActive}">${layoutHtml}</div>` +
                 `<div id="tab-style" class="tab-content ${isStyleTabActive}">${styleHtml}</div>` +
                 (isText ? `<div id="tab-text" class="tab-content ${isTextTabActive}">${textHtml}</div>` : '') +
                 `<div id="tab-code" class="tab-content ${isCodeTabActive}">${codeHtml}</div>`;
 
-            // KAYDIRMA POZİSYONUNU GERİ YÜKLE
             f.scrollTop = currentScroll;
 
         } catch(err) {
