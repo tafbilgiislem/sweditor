@@ -60,6 +60,7 @@
         .tool-btn{background:#0f172a;color:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:700;transition:.2s; display:flex; align-items:center; gap:6px;}
         .tool-btn i{font-size:16px;}
         .tool-btn:hover{background:var(--accent);border-color:var(--accent)}
+        .tool-btn.active{background:var(--accent);border-color:var(--accent);color:#000;}
         
         .duzenlenebilir{cursor:move;pointer-events:all}
         .locked{cursor:not-allowed!important}
@@ -275,17 +276,48 @@
             </details>
             
             <details style="margin-bottom: 10px;" open>
-                <summary style="font-size:11px; font-weight:bold; color:#ec4899; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-article" style="font-size:14px;"></i> KAYAN YAZI VE SAAT</summary>
+                <summary style="font-size:11px; font-weight:bold; color:#ec4899; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-article" style="font-size:14px;"></i> KAYAN YAZI (TICKER) VE SAAT</summary>
                 <div class="group-box" style="margin-top:5px; border-color:#ec4899;">
+                    <div style="font-size:10px; color:#94a3b8; margin-bottom:10px; font-style:italic;">Göster dediğinizde beliren kutuyu sürükleyip boyutlandırarak kayan yazının yerini ayarlayabilirsiniz.</div>
+                    
                     <div style="display:flex; gap:5px; margin-bottom:10px;">
                         <button id="btn-ticker-toggle" onclick="window.toggleTicker()" class="action-btn" style="flex:1;">GÖSTER/GİZLE</button>
                         <button id="btn-clock-toggle" onclick="window.toggleClock()" class="action-btn" style="flex:1; background:#8b5cf6;">SAAT AÇIK</button>
                     </div>
-                    <div class="label-text" style="color:#ec4899;">KAYAN YAZI METNİ (Sondakika, Duyuru vb.)</div>
-                    <input type="text" id="ticker-text" placeholder="Ekranda kayacak metni buraya yazın..." onchange="window.updateTickerSetting()">
                     
-                    <div class="label-text" style="color:#94a3b8; margin-top:10px;">KAYMA HIZI (Saniye - Düşük sayı = Hızlı)</div>
-                    <input type="number" id="ticker-speed" value="20" onchange="window.updateTickerSetting()">
+                    <div class="label-text" style="color:#ec4899;">KAYAN YAZI METNİ (Sondakika, Duyuru vb.)</div>
+                    <input type="text" id="ticker-text" placeholder="Ekranda kayacak metni buraya yazın..." onchange="window.updateTickerSetting()" style="margin-bottom:10px;">
+                    
+                    <div style="display:flex; gap:5px; margin-bottom:5px;">
+                        <input type="number" id="ticker-x" placeholder="X" style="flex:1; margin:0;" onchange="window.updateTickerSetting()">
+                        <input type="number" id="ticker-y" placeholder="Y" style="flex:1; margin:0;" onchange="window.updateTickerSetting()">
+                    </div>
+                    <div style="display:flex; gap:5px; margin-bottom:10px;">
+                        <input type="number" id="ticker-w" placeholder="Genişlik" style="flex:1; margin:0;" onchange="window.updateTickerSetting()">
+                        <input type="number" id="ticker-h" placeholder="Yükseklik" style="flex:1; margin:0;" onchange="window.updateTickerSetting()">
+                    </div>
+
+                    <div class="label-text" style="color:#94a3b8; margin-top:10px;">YAZI TİPİ VE GÖRÜNÜM AYARLARI</div>
+                    <select id="ticker-font" class="font-select" onchange="window.updateTickerSetting()" style="margin-bottom:5px;">
+                        <option value="sans-serif">Varsayılan (Sans-serif)</option>
+                        <option value="'Roboto', sans-serif">Roboto</option>
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Poppins', sans-serif">Poppins</option>
+                        <option value="'Oswald', sans-serif">Oswald</option>
+                        <option value="'Bebas Neue', sans-serif">Bebas Neue</option>
+                    </select>
+                    
+                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                        <span class="label-text" style="flex:1;">YAZI / ARKA PLAN RENGİ:</span>
+                        <input type="color" id="ticker-color" onchange="window.updateTickerSetting()" title="Yazı Rengi" style="width:35px; height:35px; cursor:pointer; border:none; background:none;">
+                        <input type="color" id="ticker-bg-color" onchange="window.updateTickerSetting()" title="Arka Plan Rengi" style="width:35px; height:35px; cursor:pointer; border:none; background:none;">
+                    </div>
+                    
+                    <div style="display:flex; gap:5px; margin-bottom:15px;">
+                        <input type="number" id="ticker-speed" placeholder="Hız" title="Kayma Hızı (Düşük Sayı = Hızlı)" style="flex:1; margin:0;" onchange="window.updateTickerSetting()">
+                        <input type="number" id="ticker-opacity" placeholder="Opak" title="Arka Plan Opaklığı (0.0 - 1.0)" step="0.1" min="0" max="1" style="flex:1; margin:0;" onchange="window.updateTickerSetting()">
+                        <input type="number" id="ticker-font-size" placeholder="Punto" title="Yazı Puntosu" style="flex:1; margin:0;" onchange="window.updateTickerSetting()">
+                    </div>
                 </div>
             </details>
 
@@ -395,7 +427,7 @@
     </div>
 </div>
 <script>
-    const WORKER_URL = "https://tvinfoeditor.tafbilgiislem.workers.dev"; 
+    const WORKER_URL = "https://sw.tafbilgiislem.workers.dev"; 
     
     let SHA_KEY = "", SESSION_PASS = "", settingsData = {}, settingsSha = "";
     let indexHtmlContent = "", indexHtmlSha = "";
@@ -567,24 +599,37 @@
             }
         }
 
-        // Kayan Yazı ve Saat UI Güncelleme (YENİ EKLENTİ)
         if (!settingsData.ticker) {
-            settingsData.ticker = { visible: false, showClock: true, text: "Yayın sistemine hoş geldiniz...", speed: 20 };
+            settingsData.ticker = { visible: false, showClock: true, text: "Yayın sistemine hoş geldiniz...", speed: 20, x: 0, y: 980, w: 1920, h: 100, color: "#ffffff", bgColor: "#000000", opacity: 0.8, font: "sans-serif", fontSize: 40 };
         }
         document.getElementById('ticker-text').value = settingsData.ticker.text;
         document.getElementById('ticker-speed').value = settingsData.ticker.speed;
+        document.getElementById('ticker-x').value = settingsData.ticker.x || 0;
+        document.getElementById('ticker-y').value = settingsData.ticker.y || 980;
+        document.getElementById('ticker-w').value = settingsData.ticker.w || 1920;
+        document.getElementById('ticker-h').value = settingsData.ticker.h || 100;
+        document.getElementById('ticker-color').value = settingsData.ticker.color || "#ffffff";
+        document.getElementById('ticker-bg-color').value = settingsData.ticker.bgColor || "#000000";
+        document.getElementById('ticker-opacity').value = settingsData.ticker.opacity !== undefined ? settingsData.ticker.opacity : 0.8;
+        document.getElementById('ticker-font-size').value = settingsData.ticker.fontSize || 40;
+        document.getElementById('ticker-font').value = settingsData.ticker.font || "sans-serif";
+
         document.getElementById('btn-ticker-toggle').style.background = settingsData.ticker.visible ? "#10b981" : "#991b1b";
         document.getElementById('btn-clock-toggle').style.background = settingsData.ticker.showClock ? "#10b981" : "#991b1b";
         document.getElementById('btn-clock-toggle').innerText = settingsData.ticker.showClock ? "SAAT AÇIK" : "SAAT KAPALI";
         
         window.syncDummyElement('left');
         window.syncDummyElement('right');
+        window.syncDummyElement('ticker');
     };
 
-    window.syncDummyElement = function(side) {
-        const id = side === 'left' ? 'mini_left' : 'mini_right';
-        if(!settingsData.mini_screens) return;
-        const ms = settingsData.mini_screens[side];
+    window.syncDummyElement = function(type) {
+        const id = type === 'left' ? 'mini_left' : (type === 'right' ? 'mini_right' : 'ticker_dummy');
+        let ms;
+        if(type === 'ticker') ms = settingsData.ticker;
+        else ms = settingsData.mini_screens ? settingsData.mini_screens[type] : null;
+
+        if(!ms) return;
         let el = document.getElementById(id);
         const svg = document.querySelector('#canvas-inner svg');
         if(!svg) return;
@@ -594,16 +639,22 @@
                 el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                 el.id = id;
                 el.setAttribute("class", "duzenlenebilir mini-screen-dummy");
-                el.setAttribute("fill", side === 'left' ? "rgba(59, 130, 246, 0.4)" : "rgba(245, 158, 11, 0.4)");
-                el.setAttribute("stroke", side === 'left' ? "#3b82f6" : "#f59e0b");
                 el.setAttribute("stroke-width", "6");
                 window.setD(el, "locked", "false");
                 svg.appendChild(el);
             }
-            el.setAttribute("x", ms.x || 50);
-            el.setAttribute("y", ms.y || 50);
-            el.setAttribute("width", ms.w || 400);
-            el.setAttribute("height", ms.h || 250);
+            if(type === 'ticker') {
+                el.setAttribute("fill", ms.bgColor || "#000000");
+                el.setAttribute("fill-opacity", ms.opacity !== undefined ? ms.opacity : 0.8);
+                el.setAttribute("stroke", "#ec4899");
+            } else {
+                el.setAttribute("fill", type === 'left' ? "rgba(59, 130, 246, 0.4)" : "rgba(245, 158, 11, 0.4)");
+                el.setAttribute("stroke", type === 'left' ? "#3b82f6" : "#f59e0b");
+            }
+            el.setAttribute("x", ms.x !== undefined ? ms.x : (type === 'ticker' ? 0 : 50));
+            el.setAttribute("y", ms.y !== undefined ? ms.y : (type === 'ticker' ? 980 : 50));
+            el.setAttribute("width", ms.w !== undefined ? ms.w : (type === 'ticker' ? 1920 : 400));
+            el.setAttribute("height", ms.h !== undefined ? ms.h : (type === 'ticker' ? 100 : 250));
         } else {
             if(el) {
                 el.remove();
@@ -639,7 +690,6 @@
         window.saveAllSettingsToCloud(true);
     };
 
-    // YENİ: KAYAN YAZI VE SAAT İŞLEMLERİ
     window.toggleTicker = function() {
         if(!settingsData.ticker) return;
         settingsData.ticker.visible = !settingsData.ticker.visible;
@@ -658,6 +708,18 @@
         if(!settingsData.ticker) return;
         settingsData.ticker.text = document.getElementById('ticker-text').value;
         settingsData.ticker.speed = parseInt(document.getElementById('ticker-speed').value) || 20;
+        settingsData.ticker.x = parseInt(document.getElementById('ticker-x').value) || 0;
+        settingsData.ticker.y = parseInt(document.getElementById('ticker-y').value) || 980;
+        settingsData.ticker.w = parseInt(document.getElementById('ticker-w').value) || 1920;
+        settingsData.ticker.h = parseInt(document.getElementById('ticker-h').value) || 100;
+        settingsData.ticker.color = document.getElementById('ticker-color').value || "#ffffff";
+        settingsData.ticker.bgColor = document.getElementById('ticker-bg-color').value || "#000000";
+        settingsData.ticker.opacity = parseFloat(document.getElementById('ticker-opacity').value);
+        if(isNaN(settingsData.ticker.opacity)) settingsData.ticker.opacity = 0.8;
+        settingsData.ticker.fontSize = parseInt(document.getElementById('ticker-font-size').value) || 40;
+        settingsData.ticker.font = document.getElementById('ticker-font').value || "sans-serif";
+        
+        window.syncDummyElement('ticker');
         window.saveAllSettingsToCloud(true);
     };
 
@@ -773,6 +835,7 @@
             const svg = document.querySelector('#canvas-inner svg').cloneNode(true);
             const dl = svg.querySelector('#mini_left'); if(dl) dl.remove();
             const dr = svg.querySelector('#mini_right'); if(dr) dr.remove();
+            const dt = svg.querySelector('#ticker_dummy'); if(dt) dt.remove();
 
             const svgText = new XMLSerializer().serializeToString(svg); 
             const b64 = btoa(unescape(encodeURIComponent(svgText)));
@@ -854,17 +917,27 @@
         if(el.tagName === 'image' || el.tagName === 'rect') window.applyShapeMask(el);
         if(window.updateEditorUI) window.updateEditorUI(el);
 
-        if (id === 'mini_left' || id === 'mini_right') {
-            const side = id === 'mini_left' ? 'left' : 'right';
-            settingsData.mini_screens[side].x = Math.round(parseFloat(el.getAttribute('x')));
-            settingsData.mini_screens[side].y = Math.round(parseFloat(el.getAttribute('y')));
-            settingsData.mini_screens[side].w = Math.round(parseFloat(el.getAttribute('width')));
-            settingsData.mini_screens[side].h = Math.round(parseFloat(el.getAttribute('height')));
-            
-            document.getElementById(side==='left'?'m38u-x':'right-x').value = settingsData.mini_screens[side].x;
-            document.getElementById(side==='left'?'m38u-y':'right-y').value = settingsData.mini_screens[side].y;
-            document.getElementById(side==='left'?'m38u-w':'right-w').value = settingsData.mini_screens[side].w;
-            document.getElementById(side==='left'?'m38u-h':'right-h').value = settingsData.mini_screens[side].h;
+        if (id === 'mini_left' || id === 'mini_right' || id === 'ticker_dummy') {
+            if(id === 'ticker_dummy') {
+                settingsData.ticker.x = Math.round(parseFloat(el.getAttribute('x')));
+                settingsData.ticker.y = Math.round(parseFloat(el.getAttribute('y')));
+                settingsData.ticker.w = Math.round(parseFloat(el.getAttribute('width')));
+                settingsData.ticker.h = Math.round(parseFloat(el.getAttribute('height')));
+                document.getElementById('ticker-x').value = settingsData.ticker.x;
+                document.getElementById('ticker-y').value = settingsData.ticker.y;
+                document.getElementById('ticker-w').value = settingsData.ticker.w;
+                document.getElementById('ticker-h').value = settingsData.ticker.h;
+            } else {
+                const side = id === 'mini_left' ? 'left' : 'right';
+                settingsData.mini_screens[side].x = Math.round(parseFloat(el.getAttribute('x')));
+                settingsData.mini_screens[side].y = Math.round(parseFloat(el.getAttribute('y')));
+                settingsData.mini_screens[side].w = Math.round(parseFloat(el.getAttribute('width')));
+                settingsData.mini_screens[side].h = Math.round(parseFloat(el.getAttribute('height')));
+                document.getElementById(side==='left'?'m38u-x':'right-x').value = settingsData.mini_screens[side].x;
+                document.getElementById(side==='left'?'m38u-y':'right-y').value = settingsData.mini_screens[side].y;
+                document.getElementById(side==='left'?'m38u-w':'right-w').value = settingsData.mini_screens[side].w;
+                document.getElementById(side==='left'?'m38u-h':'right-h').value = settingsData.mini_screens[side].h;
+            }
             window.saveAllSettingsToCloud(true);
         }
     };
@@ -885,6 +958,7 @@
         }
         if(key === 'rx' || key === 'mask-shape') window.applyShapeMask(el);
         if(key === 'angle') window.applyTransforms(el);
+        if(key === 'solid-color' || key === 'fill-type' || key === 'color1' || key === 'color2') window.applyFill(el);
         
         if (elUI) {
             const badge = document.getElementById('val-' + key + '-' + id);
@@ -1075,8 +1149,9 @@
             if (moved) { e.preventDefault(); selectedEl.setAttribute("x", x); selectedEl.setAttribute("y", y); if(selectedEl.tagName === 'image' || selectedEl.tagName === 'rect') window.applyShapeMask(selectedEl); if(selectedEl.tagName === 'text') window.applyTextCurve(selectedEl); if(window.updateEditorUI) window.updateEditorUI(selectedEl); isModified = true; }
             if (e.key === 'Delete' || e.key === 'Backspace') { 
                 e.preventDefault(); 
-                if(selectedEl.id === 'mini_left' || selectedEl.id === 'mini_right') {
-                    window.toggleMiniScreen(selectedEl.id === 'mini_left' ? 'left' : 'right');
+                if(selectedEl.id === 'mini_left' || selectedEl.id === 'mini_right' || selectedEl.id === 'ticker_dummy') {
+                    if(selectedEl.id === 'ticker_dummy') window.toggleTicker();
+                    else window.toggleMiniScreen(selectedEl.id === 'mini_left' ? 'left' : 'right');
                 } else {
                     selectedEl.remove(); document.getElementById('control-layer').innerHTML = ''; selectedEl = null; window.saveState(); window.renderEditor(); 
                 }
@@ -1418,21 +1493,40 @@
             try { wrapper.releasePointerCapture(e.pointerId); } catch(err){} 
             isDraggingElement = false; 
             if (isPanning) { isPanning = false; document.getElementById('svg-wrapper').classList.remove('panning'); return; }
-            if (isDrawing) { isDrawing = false; selectedEl = currentPath; currentPath = null; isDrawingMode = false; document.getElementById('btn-draw').classList.remove('active'); document.getElementById('svg-wrapper').classList.remove('draw-mode'); window.saveState(); window.renderEditor(); window.updateUI(selectedEl); return; }
+            if (isDrawing) { 
+                isDrawing = false; 
+                selectedEl = currentPath; currentPath = null; 
+                window.saveState(); 
+                window.setupLayers();
+                window.renderEditor(); 
+                window.updateUI(selectedEl); 
+                return; 
+            }
             if (isDraggingGuide) { isDraggingGuide = false; currentGuide = null; window.saveState(); return; }
             
             if (isModified && selectedEl && selectedEl.classList.contains('mini-screen-dummy')) {
-                const side = selectedEl.id === 'mini_left' ? 'left' : 'right';
-                settingsData.mini_screens[side].x = Math.round(parseFloat(selectedEl.getAttribute('x')));
-                settingsData.mini_screens[side].y = Math.round(parseFloat(selectedEl.getAttribute('y')));
-                settingsData.mini_screens[side].w = Math.round(parseFloat(selectedEl.getAttribute('width')));
-                settingsData.mini_screens[side].h = Math.round(parseFloat(selectedEl.getAttribute('height')));
-                
-                document.getElementById(side==='left'?'m38u-x':'right-x').value = settingsData.mini_screens[side].x;
-                document.getElementById(side==='left'?'m38u-y':'right-y').value = settingsData.mini_screens[side].y;
-                document.getElementById(side==='left'?'m38u-w':'right-w').value = settingsData.mini_screens[side].w;
-                document.getElementById(side==='left'?'m38u-h':'right-h').value = settingsData.mini_screens[side].h;
-                
+                const side = selectedEl.id === 'mini_left' ? 'left' : (selectedEl.id === 'mini_right' ? 'right' : 'ticker');
+                if (side === 'ticker') {
+                    settingsData.ticker.x = Math.round(parseFloat(selectedEl.getAttribute('x')));
+                    settingsData.ticker.y = Math.round(parseFloat(selectedEl.getAttribute('y')));
+                    settingsData.ticker.w = Math.round(parseFloat(selectedEl.getAttribute('width')));
+                    settingsData.ticker.h = Math.round(parseFloat(selectedEl.getAttribute('height')));
+                    
+                    document.getElementById('ticker-x').value = settingsData.ticker.x;
+                    document.getElementById('ticker-y').value = settingsData.ticker.y;
+                    document.getElementById('ticker-w').value = settingsData.ticker.w;
+                    document.getElementById('ticker-h').value = settingsData.ticker.h;
+                } else {
+                    settingsData.mini_screens[side].x = Math.round(parseFloat(selectedEl.getAttribute('x')));
+                    settingsData.mini_screens[side].y = Math.round(parseFloat(selectedEl.getAttribute('y')));
+                    settingsData.mini_screens[side].w = Math.round(parseFloat(selectedEl.getAttribute('width')));
+                    settingsData.mini_screens[side].h = Math.round(parseFloat(selectedEl.getAttribute('height')));
+                    
+                    document.getElementById(side==='left'?'m38u-x':'right-x').value = settingsData.mini_screens[side].x;
+                    document.getElementById(side==='left'?'m38u-y':'right-y').value = settingsData.mini_screens[side].y;
+                    document.getElementById(side==='left'?'m38u-w':'right-w').value = settingsData.mini_screens[side].w;
+                    document.getElementById(side==='left'?'m38u-h':'right-h').value = settingsData.mini_screens[side].h;
+                }
                 window.saveAllSettingsToCloud(true);
             }
 
@@ -1570,12 +1664,19 @@
             const isMiniDummy = el.classList.contains('mini-screen-dummy');
 
             if (isMiniDummy) {
-                const sideName = id === 'mini_left' ? 'SOL EKRAN (M3U8)' : 'SAĞ EKRAN (RESİMLER)';
+                let sideName = 'MİNİ EKRAN';
+                let iconColor = '#fff';
+                let iconType = 'ph-television';
+                
+                if(id === 'mini_left') { sideName = 'SOL EKRAN (M3U8)'; iconColor = '#3b82f6'; }
+                if(id === 'mini_right') { sideName = 'SAĞ EKRAN (RESİMLER)'; iconColor = '#f59e0b'; }
+                if(id === 'ticker_dummy') { sideName = 'KAYAN YAZI (TICKER)'; iconColor = '#ec4899'; iconType = 'ph-article'; }
+
                 f.innerHTML = `
                 <div style="text-align:center; padding:20px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:12px;">
-                    <i class="ph ph-television" style="font-size:40px; color:#3b82f6; margin-bottom:10px; display:block;"></i>
+                    <i class="ph ${iconType}" style="font-size:40px; color:${iconColor}; margin-bottom:10px; display:block;"></i>
                     <h3 style="margin:0 0 10px 0; color:#fff;">SİSTEM KATMANI:<br>${sideName}</h3>
-                    <p style="font-size:12px; color:#94a3b8; line-height:1.5;">Bu alan ana yayındaki mini ekranın boyutunu ve yerini belirler.<br><br><b>Fare ile tutup sürükleyebilir veya köşelerinden büyütebilirsiniz.</b> Her hareket otomatik olarak JSON'a kaydedilir.</p>
+                    <p style="font-size:12px; color:#94a3b8; line-height:1.5;">Bu alan ana yayındaki eklentinin boyutunu ve yerini belirler.<br><br><b>Fare ile tutup sürükleyebilir veya köşelerinden büyütebilirsiniz.</b> Her hareket otomatik olarak JSON'a kaydedilir.</p>
                 </div>`;
                 return;
             }
