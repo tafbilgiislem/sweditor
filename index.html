@@ -271,7 +271,7 @@
                         <input type="number" id="right-h" placeholder="Yükseklik" style="flex:1; margin:0;" onchange="window.updateMiniScreenSetting('right')">
                     </div>
 
-                    <button class="action-btn active" style="width:100%; background:#3b82f6;" onclick="window.saveAllSettingsToCloud()"><i class="ph ph-cloud-arrow-up"></i> YAYIN AYARLARINI KAYDET</button>
+                    <button class="action-btn active" style="width:100%; background:#3b82f6;" onclick="window.saveAllSettingsToCloud()"><i class="ph ph-cloud-arrow-up"></i> YAYIN AYARLARINI KAYDET (JSON)</button>
                 </div>
             </details>
             
@@ -285,8 +285,8 @@
                         <button id="btn-clock-toggle" onclick="window.toggleClock()" class="action-btn" style="flex:1; background:#8b5cf6;">SAAT AÇIK</button>
                     </div>
                     
-                    <div class="label-text" style="color:#ec4899;">KAYAN YAZI METNİ</div>
-                    <input type="text" id="ticker-text" placeholder="Ekranda kayacak metni buraya yazın..." oninput="window.updateTickerSetting()" style="margin-bottom:10px;">
+                    <div class="label-text" style="color:#ec4899;">KAYAN YAZI METNİ (Sondakika, Duyuru vb.)</div>
+                    <input type="text" id="ticker-text" placeholder="Ekranda kayacak metni buraya yazın..." onchange="window.updateTickerSetting()" style="margin-bottom:10px;">
                     
                     <div style="display:flex; gap:5px; margin-bottom:5px;">
                         <input type="number" id="ticker-x" placeholder="X" style="flex:1; margin:0;" onchange="window.updateTickerSetting()">
@@ -300,8 +300,9 @@
             </details>
 
             <details style="margin-bottom: 10px;">
-                <summary style="font-size:11px; font-weight:bold; color:#f59e0b; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-film-script" style="font-size:14px;"></i> SEÇİLİ SLAYT AYARLARI</summary>
+                <summary style="font-size:11px; font-weight:bold; color:#f59e0b; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-film-script" style="font-size:14px;"></i> SEÇİLİ SLAYT AYARLARI (JSON)</summary>
                 <div class="group-box" style="margin-top:5px;">
+                    <div style="font-size:10px; color:#94a3b8; margin-bottom:10px; font-style:italic;">Değişiklikler doğrudan settings.json dosyasına işlenir.</div>
                     <div class="input-group" style="margin-bottom:10px;">
                         <span class="label-text">BU SLAYTIN EKRANDA KALMA SÜRESİ (ms)</span>
                         <input type="number" id="slide-time" value="5000">
@@ -309,12 +310,39 @@
                     <div class="input-group" style="margin-bottom:10px;">
                         <span class="label-text">BU SLAYT İÇİN GEÇİŞ EFEKTİ</span>
                         <select id="slide-effect" class="font-select">
-                            <option value="fade">Fade</option>
-                            <option value="slide">Slide</option>
+                            <option value="fade">Fade (Yumuşak Geçiş)</option>
+                            <option value="slide">Slide (Kaydırma)</option>
+                            <option value="zoom">Zoom (Yakınlaştırma)</option>
+                            <option value="cube">Cube (3D Küp)</option>
+                            <option value="coverflow">Coverflow (3D Galeri)</option>
+                            <option value="flip">Flip (Kart Çevirme)</option>
                             <option value="none">Efektsiz</option>
                         </select>
                     </div>
                     <button class="action-btn" style="width:100%; background:#f59e0b; color:black;" onclick="window.saveAllSettingsToCloud()"><i class="ph ph-database"></i> AYARLARI KAYDET (JSON)</button>
+                </div>
+            </details>
+
+            <details style="margin-bottom: 10px;">
+                <summary style="font-size:11px; font-weight:bold; color:#10b981; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-globe" style="font-size:14px;"></i> İNDEX.HTML EFEKT AYARLARI</summary>
+                <div class="group-box" style="margin-top:5px;">
+                    <div style="font-size:10px; color:#94a3b8; margin-bottom:10px; font-style:italic;">index.html dosyasındaki CSS geçiş (.active) sürelerini düzenler.</div>
+                    <div class="input-group" style="margin-bottom:10px;">
+                        <span class="label-text">EFEKT SEÇİMİ</span>
+                        <select id="html-effect-select" class="font-select" onchange="window.updateHtmlEffectUI()">
+                            <option value="fade">Fade (Yumuşak Geçiş)</option>
+                            <option value="slide">Slide (Kaydırma)</option>
+                            <option value="zoom">Zoom (Yakınlaştırma)</option>
+                            <option value="cube">Cube (3D Küp)</option>
+                            <option value="coverflow">Coverflow (3D Galeri)</option>
+                            <option value="flip">Flip (Kart Çevirme)</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom:10px;">
+                        <span class="label-text">GEÇİŞ SÜRESİ (Saniye / "1.5" gibi)</span>
+                        <input type="number" step="0.1" id="html-effect-duration" value="1.5">
+                    </div>
+                    <button class="action-btn" style="width:100%; background:#10b981; color:white;" onclick="window.saveHtmlSettings()"><i class="ph ph-code"></i> İNDEX.HTML'E KAYDET</button>
                 </div>
             </details>
 
@@ -340,9 +368,9 @@
                 <div class="group-box" style="margin-top:5px; margin-bottom:5px;">
                     <div class="action-row" style="margin-bottom:0;">
                         <button onclick="window.addNewText()" class="action-btn" style="background:#475569;"><i class="ph ph-text-t"></i> YAZI</button>
-                        <button onclick="document.getElementById('img-in').click()" class="action-btn" style="background:#475569;"><i class="ph ph-image-square"></i> RESİM</button>
+                        <button onclick="document.getElementById('img-in').click()" class="action-btn" style="background:#475569;" title="Sürükle-Bırak da Yapabilirsiniz"><i class="ph ph-image-square"></i> RESİM</button>
                         <button onclick="window.addShape('rect')" class="action-btn" style="background:#475569;"><i class="ph ph-square"></i> KARE</button>
-                        <button id="btn-draw" onclick="window.toggleDrawMode()" class="action-btn draw" style="background:#8b5cf6;"><i class="ph ph-pencil-simple"></i> ÇİZİM</button>
+                        <button id="btn-draw" onclick="window.toggleDrawMode()" class="action-btn draw" style="background:#8b5cf6;" title="Fırça Aracı"><i class="ph ph-pencil-simple"></i> ÇİZİM</button>
                     </div>
                 </div>
             </details>
@@ -350,8 +378,11 @@
             <details style="margin-bottom: 10px;" open id="auto-text-panel">
                 <summary style="font-size:11px; font-weight:bold; color:#f472b6; cursor:pointer; margin-bottom:5px; display:flex; align-items:center; gap:6px;"><i class="ph ph-lightning" style="font-size:14px;"></i> OTOMATİK METİN YERLEŞTİRME</summary>
                 <div class="group-box" style="margin-top:5px; margin-bottom:5px; padding: 12px; border: 1px solid var(--border);">
-                    <div id="auto-fields-list"></div>
-                    <div style="font-size:10px; color:#94a3b8; margin-top:10px; font-style:italic;">* Bir metni değişken yapmak için sağ panelden 'Değişken Adı' tanımlayın.</div>
+                    <div id="auto-fields-list">
+                        </div>
+                    <div style="font-size:10px; color:#94a3b8; margin-top:10px; font-style:italic;">
+                        * Bir metni değişken yapmak için sağ panelden 'Değişken Adı' tanımlayın.
+                    </div>
                 </div>
             </details>
 
@@ -380,24 +411,27 @@
     let indexHtmlContent = "", indexHtmlSha = "";
     let currentActiveTab = 'tab-layout';
 
-    // --- TICKER PRO İÇİN EKLENEN DEĞİŞKENLER VE FONKSİYONLAR ---
-    const googleFonts = [
+    // --- TICKER PRO İÇİN EKLENEN FONT LİSTESİ ---
+    const tickerFonts = [
         { name: "Varsayılan", val: "sans-serif" }, { name: "Roboto", val: "'Roboto', sans-serif" },
         { name: "Montserrat", val: "'Montserrat', sans-serif" }, { name: "Poppins", val: "'Poppins', sans-serif" },
-        { name: "Open Sans", val: "'Open Sans', sans-serif" }, { name: "Lato", val: "'Lato', sans-serif" },
         { name: "Oswald", val: "'Oswald', sans-serif" }, { name: "Bebas Neue", val: "'Bebas Neue', sans-serif" }
     ];
 
+    // --- TICKER VE NORMAL NESNE EVRENSEL GÜNCELLEYİCİ ---
     window.universalUpdate = function(id, key, val) {
         const isTicker = id === 'ticker_dummy';
         const el = document.getElementById(id);
+
         if (isTicker) {
             if (key === 'text') {
                 settingsData.ticker.text = val;
                 if(document.getElementById('ticker-text')) document.getElementById('ticker-text').value = val;
             } else if (['x','y','w','h','fontSize','speed','opacity','shadowBlur'].includes(key)) {
                 settingsData.ticker[key] = parseFloat(val);
-            } else { settingsData.ticker[key] = val; }
+            } else {
+                settingsData.ticker[key] = val;
+            }
 
             if (key === 'w') el.setAttribute('width', val);
             if (key === 'h') el.setAttribute('height', val);
@@ -413,10 +447,10 @@
             if (['x','y','w','h'].includes(key)) window.changeProp(id, key, val);
             else window.changeSetting(id, key, val);
         }
+
         const badge = document.getElementById(`val-${key}-${id}`);
         if (badge) badge.innerText = val + (['opacity','speed'].includes(key) ? '' : 'px');
     };
-    // -------------------------------------------------------------
 
     window.showToast = function(msg, type = 'success') {
         const container = document.getElementById('toast-container');
@@ -453,6 +487,16 @@
 
     window.updateEditorUI = null;
 
+    const googleFonts = [
+        { name: "Varsayılan", val: "sans-serif" }, { name: "Roboto", val: "'Roboto', sans-serif" },
+        { name: "Montserrat", val: "'Montserrat', sans-serif" }, { name: "Poppins", val: "'Poppins', sans-serif" },
+        { name: "Open Sans", val: "'Open Sans', sans-serif" }, { name: "Lato", val: "'Lato', sans-serif" },
+        { name: "Merriweather", val: "'Merriweather', serif" }, { name: "Nunito", val: "'Nunito', sans-serif" },
+        { name: "Oswald", val: "'Oswald', sans-serif" }, { name: "Pacifico", val: "'Pacifico', cursive" },
+        { name: "Playfair Display", val: "'Playfair Display', serif" }, { name: "Raleway", val: "'Raleway', sans-serif" },
+        { name: "Ubuntu", val: "'Ubuntu', sans-serif" }
+    ];
+
     window.getCanvasCenter = function() {
         const svg = document.querySelector('#canvas-inner svg');
         if(!svg) return { cx: 960, cy: 540 };
@@ -467,6 +511,7 @@
         if(!passVal) { window.showToast("Şifrenizi girin!", "error"); return; }
         SESSION_PASS = passVal; 
         await window.loadSettings();
+        await window.loadIndexHtml();
         await window.loadSlide();    
     };
     
@@ -493,14 +538,26 @@
             row.innerHTML = `
                 <div class="label-row"><span class="label-text" style="color:#f472b6;"><i class="ph ph-text-aa"></i> ${varName}</span></div>
                 <input type="text" value="${currentVal.replace(/"/g, '&quot;')}" 
-                       oninput="window.changeSetting('${el.id}', 'raw-text', this.value)" 
+                       oninput="window.updateVarValue('${el.id}', this.value)" 
                        onchange="window.saveState()" 
                        style="border-color:rgba(244,114,182,0.3);">
             `;
             list.appendChild(row);
         });
 
-        if(!hasVars) { list.innerHTML = `<div style="font-size:11px; color:#64748b; text-align:center;">Henüz değişken tanımlanmadı.</div>`; }
+        if(!hasVars) {
+            list.innerHTML = `<div style="font-size:11px; color:#64748b; text-align:center;">Henüz değişken tanımlanmadı.</div>`;
+        }
+    };
+
+    window.updateVarValue = function(id, val) {
+        const el = document.getElementById(id);
+        if(!el) return;
+        window.changeSetting(id, 'raw-text', val);
+        if(selectedEl && selectedEl.id === id) {
+            const inputs = document.querySelectorAll('input[oninput*="raw-text"]');
+            inputs.forEach(input => { if(!input.getAttribute('oninput').includes('updateVarValue')) input.value = val; });
+        }
     };
 
     window.loadSettings = async function() {
@@ -510,11 +567,16 @@
                 const data = await res.json();
                 settingsSha = data.sha || (data.content && data.content.sha) || "";
                 let parsedData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-                settingsData = parsedData;
-                if(!settingsData.slides) settingsData.slides = [];
-                if(!settingsData.mini_screens) settingsData.mini_screens = { left: {visible:true, x:50, y:800, w:400, h:250, url:""}, right: {visible:true, x:1470, y:800, w:400, h:250, images:[]} };
+                
+                if (Array.isArray(parsedData)) {
+                    settingsData = { slides: parsedData, mini_screens: { left: {visible:true, x:50, y:800, w:400, h:250, url:""}, right: {visible:true, x:1470, y:800, w:400, h:250, images:[]} } };
+                } else {
+                    settingsData = parsedData;
+                    if(!settingsData.slides) settingsData.slides = [];
+                    if(!settingsData.mini_screens) settingsData.mini_screens = { left: {visible:true, x:50, y:800, w:400, h:250, url:""}, right: {visible:true, x:1470, y:800, w:400, h:250, images:[]} };
+                }
             } else { 
-                settingsData = { slides: [], mini_screens: { left: {visible:true, x:50, y:800, w:400, h:250, url:""}, right: {visible:true, x:1470, y:800, w:400, h:250, images:[]} } };
+                settingsData = { slides: [ {file: "slayt.svg", effect: "fade", duration: 5000} ], mini_screens: { left: {visible:true, x:50, y:800, w:400, h:250, url:""}, right: {visible:true, x:1470, y:800, w:400, h:250, images:[]} } };
             }
             window.updateSettingsUI();
         } catch (e) { 
@@ -531,6 +593,9 @@
         if (slideConfig) { 
             document.getElementById('slide-time').value = slideConfig.duration || 3000; 
             document.getElementById('slide-effect').value = slideConfig.effect || 'fade'; 
+        } else { 
+            document.getElementById('slide-time').value = 3000; 
+            document.getElementById('slide-effect').value = 'fade'; 
         }
 
         if(settingsData.mini_screens) {
@@ -564,6 +629,7 @@
 
         document.getElementById('btn-ticker-toggle').style.background = settingsData.ticker.visible ? "#10b981" : "#991b1b";
         document.getElementById('btn-clock-toggle').style.background = settingsData.ticker.showClock ? "#10b981" : "#991b1b";
+        document.getElementById('btn-clock-toggle').innerText = settingsData.ticker.showClock ? "SAAT AÇIK" : "SAAT KAPALI";
         
         window.syncDummyElement('left');
         window.syncDummyElement('right');
@@ -659,12 +725,14 @@
         settingsData.ticker.y = parseInt(document.getElementById('ticker-y').value) || 980;
         settingsData.ticker.w = parseInt(document.getElementById('ticker-w').value) || 1920;
         settingsData.ticker.h = parseInt(document.getElementById('ticker-h').value) || 100;
+        
         window.syncDummyElement('ticker');
         window.saveAllSettingsToCloud(true);
     };
 
     window.saveAllSettingsToCloud = async function(silent = false) {
         if (!WORKER_URL || WORKER_URL === "") { window.showToast("Worker URL eksik!", "error"); return; }
+        
         try {
             const currentFile = document.getElementById('file-selector').value;
             const timeVal = parseInt(document.getElementById('slide-time').value) || 3000;
@@ -673,7 +741,11 @@
             if(!settingsData.slides) settingsData.slides = [];
             let found = false;
             settingsData.slides.forEach(s => {
-                if (s.file === currentFile) { s.duration = timeVal; s.effect = effectVal; found = true; }
+                if (s.file === currentFile) {
+                    s.duration = timeVal;
+                    s.effect = effectVal;
+                    found = true;
+                }
             });
             if (!found) { settingsData.slides.push({ file: currentFile, effect: effectVal, duration: timeVal }); }
 
@@ -686,6 +758,61 @@
                 if(!silent) window.showToast("Tüm Yayın Ayarları Başarıyla Kaydedildi!");
             }
         } catch (e) { if(!silent) window.showToast("Ayarlar kaydedilemedi.", "error"); }
+    };
+
+    window.loadIndexHtml = async function() {
+        try {
+            const res = await fetch(WORKER_URL, { headers: {"X-Auth-Key": SESSION_PASS, "X-File-Name": "index.html"} });
+            if (res.ok) {
+                const data = await res.json();
+                indexHtmlSha = data.sha || (data.content && data.content.sha) || "";
+                indexHtmlContent = decodeURIComponent(escape(atob(data.content)));
+                window.updateHtmlEffectUI();
+            }
+        } catch (e) {}
+    };
+
+    window.updateHtmlEffectUI = function() {
+        if(!indexHtmlContent) return;
+        const effect = document.getElementById('html-effect-select').value;
+        const blockRegex = new RegExp(`\\.${effect}\\.active[^\\{]*\\{([^}]*)\\}`, "i");
+        const match = indexHtmlContent.match(blockRegex);
+        
+        if (match && match[1]) {
+            const transMatch = match[1].match(/transition:[^;]*?([\d\.]+)(s|ms)/i);
+            if (transMatch && transMatch[1]) { document.getElementById('html-effect-duration').value = transMatch[1]; } 
+            else { document.getElementById('html-effect-duration').value = "1.5"; }
+        } else { document.getElementById('html-effect-duration').value = "1.5"; }
+    };
+
+    window.saveHtmlSettings = async function() {
+        if(!indexHtmlContent) { window.showToast("index.html içeriği okunamadı. Sayfayı yenileyin.", "error"); return; }
+        try {
+            const effect = document.getElementById('html-effect-select').value;
+            const duration = document.getElementById('html-effect-duration').value;
+            const blockRegex = new RegExp(`(\\.${effect}\\.active[^\\{]*\\{)([^}]*)(\\})`, "i");
+            
+            if (blockRegex.test(indexHtmlContent)) {
+                indexHtmlContent = indexHtmlContent.replace(blockRegex, function(fullMatch, p1, p2, p3) {
+                    let updatedInner = p2;
+                    if (/transition:/i.test(p2)) { updatedInner = p2.replace(/(transition:[^;]*?)([\d\.]+)(s|ms)/gi, `$1${duration}$3`); } 
+                    else { updatedInner = p2 + `transition: ${duration}s;`; }
+                    return p1 + updatedInner + p3;
+                });
+            } else { window.showToast(`'${effect}' için CSS kuralı bulunamadı!`, "error"); return; }
+
+            const b64 = btoa(unescape(encodeURIComponent(indexHtmlContent)));
+            const putRes = await fetch(WORKER_URL, {
+                method: "PUT",
+                headers: { "X-Auth-Key": SESSION_PASS, "X-File-Name": "index.html" },
+                body: JSON.stringify({message: `Efekt Güncelleme: ${effect}`, content: b64, sha: indexHtmlSha})
+            });
+
+            if(putRes.ok) {
+                try { const data = await putRes.json(); indexHtmlSha = data.content?.sha || data.sha || indexHtmlSha; } catch(e) {}
+                window.showToast("İndex.html Başarıyla Güncellendi!");
+            } else { window.showToast("İndex.html Kayıt Hatası!", "error"); }
+        } catch(e) { window.showToast("index.html kaydedilirken hata oluştu.", "error"); }
     };
 
     window.loadSlide = async function() {
@@ -708,14 +835,17 @@
 
     window.saveData = async function() {
         if (!WORKER_URL || WORKER_URL === "") { window.showToast("Worker URL Eksik!", "error"); return; }
+        
         try {
             document.getElementById('control-layer').innerHTML = ""; window.hideGuides(true);
             
             const svg = document.querySelector('#canvas-inner svg').cloneNode(true);
-            // DUMMY ELEMANLARIN TEMİZLENMESİ (TICKER PRO ENTEGRASYONU)
-            ['ticker_dummy', 'mini_left', 'mini_right'].forEach(id => {
-                const d = svg.querySelector('#' + id);
-                if(d) d.remove();
+            
+            // TICKER VE MINI EKRANLARI YAYINDAN ÖNCE TEMİZLE
+            const dummyIds = ['ticker_dummy', 'mini_left', 'mini_right'];
+            dummyIds.forEach(dummyId => {
+                const dummy = svg.querySelector('#' + dummyId);
+                if (dummy) dummy.remove();
             });
 
             const svgText = new XMLSerializer().serializeToString(svg); 
@@ -831,6 +961,13 @@
         if(filterType === 'opacity') el.setAttribute('opacity', val);
         else window.setD(el, filterType, val);
         window.applyFilters(el);
+        
+        if (elUI) {
+            const badge = document.getElementById('val-' + (filterType==='opacity'?'op':(filterType==='shadow-x'?'sx':(filterType==='shadow-y'?'sy':(filterType==='shadow-blur'?'sb':'bl')))) + '-' + id);
+            if (badge) badge.innerText = (filterType==='opacity' ? Math.round(val*100)+'%' : val+'px');
+            if (elUI.type === 'range' && elUI.nextElementSibling && elUI.nextElementSibling.type === 'number') elUI.nextElementSibling.value = val;
+            else if (elUI.type === 'number' && elUI.previousElementSibling && elUI.previousElementSibling.type === 'range') elUI.previousElementSibling.value = val;
+        }
     };
 
     window.handleImageFile = function(file) {
@@ -873,6 +1010,33 @@
 
     window.hideGuides = function(hide) { const gg = document.getElementById('guides-group'); if(gg) gg.style.display = hide ? 'none' : 'block'; };
     window.clearGuides = function() { const gg = document.getElementById('guides-group'); if(gg) { gg.innerHTML = ''; window.saveState(); } };
+    window.openExport = function(type) { document.getElementById('export-format').value = type; document.getElementById('export-modal').style.display = 'flex'; };
+    window.executeExport = function() {
+        const format = document.getElementById('export-format').value; const scale = parseInt(document.getElementById('export-scale').value); const scope = document.getElementById('export-scope').value;
+        const svg = document.querySelector('#canvas-inner svg'); if(!svg) return;
+        document.getElementById('control-layer').innerHTML = ""; window.renderEditor(); window.hideGuides(true); document.getElementById('export-modal').style.display = 'none';
+        
+        let hiddenElements = [];
+        if (scope === 'selected') {
+            if(!selectedEl) { window.showToast("Önce bir nesne seçmelisiniz!", "error"); window.hideGuides(false); return; }
+            document.querySelectorAll('.duzenlenebilir, #canvas-background').forEach(el => { if(el !== selectedEl) { hiddenElements.push({el: el, display: el.style.display}); el.style.display = 'none'; } });
+        }
+
+        const originalWidth = svg.getAttribute('width'); const originalHeight = svg.getAttribute('height');
+        const vb = svg.viewBox.baseVal; const targetW = (vb.width || 1920) * scale; const targetH = (vb.height || 1080) * scale;
+        svg.setAttribute('width', targetW); svg.setAttribute('height', targetH);
+        const svgData = new XMLSerializer().serializeToString(svg);
+        
+        if (format === 'png') {
+            const canvas = document.createElement("canvas"); const ctx = canvas.getContext("2d"); const img = new Image();
+            img.onload = function() { canvas.width = targetW; canvas.height = targetH; ctx.drawImage(img, 0, 0); const a = document.createElement("a"); a.download = "tasarim.png"; a.href = canvas.toDataURL("image/png"); a.click(); finishExport(); };
+            img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
+        } else {
+            const blob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"}); const url = URL.createObjectURL(blob);
+            const a = document.createElement("a"); a.download = "tasarim_vektor.svg"; a.href = url; a.click(); finishExport();
+        }
+        function finishExport() { svg.setAttribute('width', originalWidth || "100%"); svg.setAttribute('height', originalHeight || "100%"); hiddenElements.forEach(item => item.el.style.display = item.display); window.hideGuides(false); if(selectedEl) window.updateEditorUI(selectedEl); }
+    };
 
     window.updateRulers = function() {
         const hRuler = document.getElementById('horizontal-ruler'); const vRuler = document.getElementById('vertical-ruler'); if(!hRuler || !vRuler) return;
@@ -922,6 +1086,30 @@
 
     window.toggleDrawMode = function() { isDrawingMode = !isDrawingMode; document.getElementById('btn-draw').classList.toggle('active', isDrawingMode); document.getElementById('svg-wrapper').classList.toggle('draw-mode', isDrawingMode); selectedEl = null; document.getElementById('control-layer').innerHTML = ""; window.renderEditor(); };
 
+    window.applyTextStyle = function(id, style, val) {
+        const el = document.getElementById(id); if(!el || el.tagName !== 'text') return;
+        const rawText = window.getD(el, 'raw-text') || el.textContent;
+        if(style === 'normal') { el.innerHTML = ''; el.textContent = rawText; window.setD(el, 'text-style', 'normal'); window.applyTextCurve(el); }
+        else if(style === 'neon') { window.setD(el, 'text-style', 'neon'); el.innerHTML = `<tspan font-weight="bold" fill="#ffffff" stroke="${window.getD(el, 'solid-color')||'#000'}" stroke-width="2" filter="drop-shadow(0 0 15px ${window.getD(el, 'solid-color')||'#000'})">${rawText}</tspan>`; }
+        else if(style === '3d') { window.setD(el, 'text-style', '3d'); el.innerHTML = `<tspan font-weight="bold" fill="${window.getD(el, 'solid-color')||'#000'}" stroke="#000000" stroke-width="3" filter="drop-shadow(6px 6px 0 #000000)">${rawText}</tspan>`; }
+        else if(style === 'hollow') { window.setD(el, 'text-style', 'hollow'); el.innerHTML = `<tspan fill="none" stroke="${window.getD(el, 'solid-color')||'#000'}" stroke-width="4">${rawText}</tspan>`; }
+        else if(style === 'bold') { window.setD(el, 'bold', window.getD(el, 'bold') === 'true' ? 'false' : 'true'); el.setAttribute('font-weight', window.getD(el, 'bold') === 'true' ? 'bold' : 'normal'); }
+        else if(style === 'italic') { window.setD(el, 'italic', window.getD(el, 'italic') === 'true' ? 'false' : 'true'); el.setAttribute('font-style', window.getD(el, 'italic') === 'true' ? 'italic' : 'normal'); }
+        else if(style === 'underline') { window.setD(el, 'underline', window.getD(el, 'underline') === 'true' ? 'false' : 'true'); el.setAttribute('text-decoration', window.getD(el, 'underline') === 'true' ? 'underline' : 'none'); }
+        else if(style === 'align') { el.setAttribute('text-anchor', val); window.autoFitText(el); } 
+        window.saveState(); window.renderEditor(); if(window.updateEditorUI) window.updateEditorUI(el);
+    };
+    
+    window.alignElement = function(id, type) {
+        const el = document.getElementById(id); if(!el) return; const svg = document.querySelector('#canvas-inner svg'); const vb = svg.viewBox.baseVal; 
+        let bbox = {x:0, y:0, width:0, height:0}; try { bbox = el.getBBox(); } catch(e){}
+        if (el.tagName === 'text') { if(type === 'center-h') el.setAttribute('x', vb.width/2); if(type === 'center-v') el.setAttribute('y', vb.height/2); if(type === 'left') el.setAttribute('x', bbox.width/2); if(type === 'right') el.setAttribute('x', vb.width - bbox.width/2); } 
+        else { let nw = parseFloat(el.getAttribute('width')) || bbox.width; let nh = parseFloat(el.getAttribute('height')) || bbox.height; if(type === 'center-h') el.setAttribute('x', (vb.width/2) - (nw/2)); if(type === 'center-v') el.setAttribute('y', (vb.height/2) - (nh/2)); if(type === 'left') el.setAttribute('x', 0); if(type === 'right') el.setAttribute('x', vb.width - nw); } 
+        if(el.tagName === 'image' || el.tagName === 'rect') window.applyShapeMask(el); window.saveState(); if(window.updateEditorUI) window.updateEditorUI(el);
+    };
+
+    window.toggleFlip = function(id, dir) { const el = document.getElementById(id); if(!el) return; if(dir === 'x') window.setD(el, 'flip-x', window.getD(el, 'flip-x') === "-1" ? "1" : "-1"); else window.setD(el, 'flip-y', window.getD(el, 'flip-y') === "-1" ? "1" : "-1"); window.applyTransforms(el); window.saveState(); };
+    
     window.applyTransforms = function(el) {
         let cx = 0, cy = 0;
         if(el.tagName === 'text') { cx = parseFloat(el.getAttribute('x')) || 0; cy = parseFloat(el.getAttribute('y')) || 0; } 
@@ -936,6 +1124,8 @@
         try { const eyeDropper = new EyeDropper(); const result = await eyeDropper.open(); const color = result.sRGBHex; const el = document.getElementById(id); if(el) { window.addRecentColor(color); if (dataKey) window.setD(el, dataKey.replace(/([A-Z])/g, "-$1").toLowerCase(), color); if (dataKey === 'color1' || dataKey === 'color2' || dataKey === 'solidColor') window.applyFill(el); else { el.setAttribute(attrToSet, color); } window.saveState(); window.renderProperties(); } } catch (e) {}
     };
     
+    window.applyRecentColor = function(id, color) { const el = document.getElementById(id); if(!el) return; const fillType = window.getD(el, 'fill-type') || 'solid'; if(fillType === 'solid') { window.setD(el, 'solid-color', color); window.applyFill(el); } else { window.setD(el, 'color1', color); window.applyFill(el); } window.saveState(); window.renderProperties(); };
+
     document.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
         if (e.code === 'Space') { e.preventDefault(); isSpacePressed = true; document.getElementById('svg-wrapper').classList.add('pan-mode'); return; }
@@ -983,16 +1173,32 @@
     window.moveLayer = function(id, dir) { 
         const el = document.getElementById(id); if(!el) return; 
         const parent = el.parentNode;
-        if (dir === 'top') { const guides = document.getElementById('guides-group'); if (guides) parent.insertBefore(el, guides); else parent.appendChild(el); } 
-        else if (dir === 'bottom') { const bg = document.getElementById('canvas-background'); if (bg && bg.nextSibling) parent.insertBefore(el, bg.nextSibling); else parent.insertBefore(el, parent.firstChild); } 
-        else if (dir === 1 && el.nextElementSibling && el.nextElementSibling.id !== 'guides-group') { parent.insertBefore(el.nextElementSibling, el); } 
-        else if (dir === -1 && el.previousElementSibling && el.previousElementSibling.id !== 'canvas-background') { parent.insertBefore(el, el.previousElementSibling); }
+        
+        if (dir === 'top') {
+            const guides = document.getElementById('guides-group');
+            if (guides) parent.insertBefore(el, guides);
+            else parent.appendChild(el);
+        } else if (dir === 'bottom') {
+            const bg = document.getElementById('canvas-background');
+            if (bg && bg.nextSibling) parent.insertBefore(el, bg.nextSibling);
+            else parent.insertBefore(el, parent.firstChild);
+        } else if (dir === 1 && el.nextElementSibling && el.nextElementSibling.id !== 'guides-group') {
+            parent.insertBefore(el.nextElementSibling, el); 
+        } else if (dir === -1 && el.previousElementSibling && el.previousElementSibling.id !== 'canvas-background') {
+            parent.insertBefore(el, el.previousElementSibling); 
+        }
+        
         window.saveState(); if(window.updateEditorUI) window.updateEditorUI(el); window.renderEditor(); 
     };
 
     window.toggleVisibility = function(id) {
         const el = document.getElementById(id); if(!el) return;
-        if (el.getAttribute('visibility') === 'hidden') { el.removeAttribute('visibility'); } else { el.setAttribute('visibility', 'hidden'); if (selectedEl === el) { selectedEl = null; document.getElementById('control-layer').innerHTML = ""; } }
+        if (el.getAttribute('visibility') === 'hidden') {
+            el.removeAttribute('visibility');
+        } else {
+            el.setAttribute('visibility', 'hidden');
+            if (selectedEl === el) { selectedEl = null; document.getElementById('control-layer').innerHTML = ""; }
+        }
         window.saveState(); window.renderEditor();
     };
 
@@ -1025,29 +1231,93 @@
 
     window.autoFitText = function(el) { 
         if (el.tagName !== 'text') return; 
+        
         const boundRectId = window.getD(el, 'bound-rect');
         if (boundRectId) {
             const rect = document.getElementById(boundRectId);
             if (rect && (rect.tagName === 'rect' || rect.tagName === 'image')) {
-                const rx = parseFloat(rect.getAttribute('x')) || 0; const ry = parseFloat(rect.getAttribute('y')) || 0; const rw = parseFloat(rect.getAttribute('width')) || 0; const rh = parseFloat(rect.getAttribute('height')) || 0;
-                el.setAttribute('x', rx + rw / 2); el.setAttribute('y', ry + rh / 2); el.setAttribute('text-anchor', 'middle'); el.setAttribute('dominant-baseline', 'central');
-                window.setD(el, 'max-width', Math.max(10, rw - 40)); window.setD(el, 'max-height', Math.max(10, rh - 40)); 
-                el.removeAttribute('textLength'); el.removeAttribute('lengthAdjust'); const tp = el.querySelector('textPath'); if (tp) { tp.removeAttribute('textLength'); tp.removeAttribute('lengthAdjust'); }
+                const rx = parseFloat(rect.getAttribute('x')) || 0;
+                const ry = parseFloat(rect.getAttribute('y')) || 0;
+                const rw = parseFloat(rect.getAttribute('width')) || 0;
+                const rh = parseFloat(rect.getAttribute('height')) || 0;
+                
+                el.setAttribute('x', rx + rw / 2);
+                el.setAttribute('y', ry + rh / 2);
+                el.setAttribute('text-anchor', 'middle');
+                el.setAttribute('dominant-baseline', 'central');
+                
+                window.setD(el, 'max-width', Math.max(10, rw - 40)); 
+                window.setD(el, 'max-height', Math.max(10, rh - 40)); 
+                
+                el.removeAttribute('textLength');
+                el.removeAttribute('lengthAdjust');
+                const tp = el.querySelector('textPath');
+                if (tp) { tp.removeAttribute('textLength'); tp.removeAttribute('lengthAdjust'); }
             }
         }
-        const mw = parseFloat(window.getD(el, 'max-width')) || 0; const mh = parseFloat(window.getD(el, 'max-height')) || 0; const baseFs = parseFloat(window.getD(el, 'base-font-size')) || 60; 
-        if (mw > 0 || mh > 0) { el.removeAttribute('textLength'); el.removeAttribute('lengthAdjust'); const tp = el.querySelector('textPath'); if (tp) { tp.removeAttribute('textLength'); tp.removeAttribute('lengthAdjust'); } }
+
+        const mw = parseFloat(window.getD(el, 'max-width')) || 0; 
+        const mh = parseFloat(window.getD(el, 'max-height')) || 0; 
+        const baseFs = parseFloat(window.getD(el, 'base-font-size')) || 60; 
+        
+        if (mw > 0 || mh > 0) {
+            el.removeAttribute('textLength');
+            el.removeAttribute('lengthAdjust');
+            const tp = el.querySelector('textPath');
+            if (tp) { tp.removeAttribute('textLength'); tp.removeAttribute('lengthAdjust'); }
+        }
+
         el.style.fontSize = baseFs + "px"; el.setAttribute("font-size", baseFs); 
+        
         if (mw > 0 || mh > 0) { 
             let bbox = {width:0, height:0}; try { bbox = el.getBBox(); } catch(e){} 
-            let scaleW = 1; let scaleH = 1;
-            if (mw > 0 && bbox.width > mw && bbox.width > 0) { scaleW = mw / bbox.width; }
-            if (mh > 0 && bbox.height > mh && bbox.height > 0) { scaleH = mh / bbox.height; }
+            let scaleW = 1;
+            let scaleH = 1;
+            
+            if (mw > 0 && bbox.width > mw && bbox.width > 0) { 
+                scaleW = mw / bbox.width;
+            }
+            if (mh > 0 && bbox.height > mh && bbox.height > 0) {
+                scaleH = mh / bbox.height;
+            }
+            
             const finalScale = Math.min(scaleW, scaleH);
-            if(finalScale < 1) { const newFs = baseFs * finalScale; el.style.fontSize = newFs + "px"; el.setAttribute("font-size", newFs); }
+            if(finalScale < 1) {
+                const newFs = baseFs * finalScale; 
+                el.style.fontSize = newFs + "px"; el.setAttribute("font-size", newFs); 
+            }
         }
     };
     
+    window.applyTextCurve = function(el) {
+        if (el.tagName !== 'text') return; const curve = parseFloat(window.getD(el, 'curve')) || 0; if(!window.getD(el, 'raw-text')) window.setD(el, 'raw-text', el.textContent); const rawText = window.getD(el, 'raw-text');
+        
+        el.innerHTML = ''; el.textContent = rawText; 
+        
+        if (curve === 0) { 
+            const style = window.getD(el, 'text-style') || 'normal';
+            if(style !== 'normal') window.applyTextStyle(el.id, style, el.getAttribute('text-anchor'));
+        } else {
+            const svg = document.querySelector('#canvas-inner svg'); let defs = svg.querySelector('defs'); if (!defs) { defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"); svg.prepend(defs); }
+            const pathId = "curve_" + el.id; let curvePath = defs.querySelector("#" + pathId); if (!curvePath) { curvePath = document.createElementNS("http://www.w3.org/2000/svg", "path"); curvePath.id = pathId; curvePath.setAttribute("fill", "none"); defs.appendChild(curvePath); }
+            const x = parseFloat(el.getAttribute('x')) || 0; const y = parseFloat(el.getAttribute('y')) || 0; const curveStrength = curve * 2.5; 
+            curvePath.setAttribute("d", `M ${x - 1500}, ${y - curveStrength/2} Q ${x}, ${y + curveStrength} ${x + 1500}, ${y - curveStrength/2}`); 
+            
+            el.innerHTML = '';
+            const tp = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
+            tp.setAttribute("href", "#" + pathId); tp.setAttribute("startOffset", "50%"); tp.setAttribute("text-anchor", "middle"); tp.textContent = rawText;
+            
+            const style = window.getD(el, 'text-style') || 'normal';
+            if(style === 'neon') { tp.setAttribute("font-weight", "bold"); tp.setAttribute("fill", "#ffffff"); tp.setAttribute("stroke", window.getD(el, 'solid-color')||"#000"); tp.setAttribute("stroke-width", "2"); tp.setAttribute("filter", `drop-shadow(0 0 15px ${window.getD(el, 'solid-color')||'#000'})`); } 
+            else if(style === '3d') { tp.setAttribute("font-weight", "bold"); tp.setAttribute("fill", window.getD(el, 'solid-color')||"#000"); tp.setAttribute("stroke", "#000000"); tp.setAttribute("stroke-width", "3"); tp.setAttribute("filter", `drop-shadow(6px 6px 0 #000000)`); } 
+            else if (style === 'hollow') { tp.setAttribute("fill", "none"); tp.setAttribute("stroke", window.getD(el, 'solid-color')||"#000"); tp.setAttribute("stroke-width", "4"); }
+            
+            const w = el.getAttribute('textLength');
+            if (w) { tp.setAttribute('textLength', w); tp.setAttribute('lengthAdjust', 'spacingAndGlyphs'); }
+            el.appendChild(tp);
+        } window.autoFitText(el);
+    };
+
     window.describeRoundedRect = function(r, s, x, y, w, h) { if (r <= 0) return `M ${x} ${y} H ${x + w} V ${y + h} H ${x} Z`; r = Math.min(r, w / 2, h / 2); const kappa = (4 * (r * (1 - s)) * Math.tan(Math.PI / 4)) / 3; const pts = [ [x + r, y], [x + w - r, y], [x + w, y + r], [x + w, y + h - r], [x + w - r, y + h], [x + r, y + h], [x, y + h - r], [x, y + r] ]; return `M ${pts[0][0]} ${pts[0][1]} L ${pts[1][0]} ${pts[1][1]} C ${pts[1][0] + kappa} ${pts[1][1]} ${pts[2][0]} ${pts[2][1] - kappa} ${pts[2][0]} ${pts[2][1]} L ${pts[3][0]} ${pts[3][1]} C ${pts[3][0]} ${pts[3][1] + kappa} ${pts[4][0] + kappa} ${pts[4][1]} ${pts[4][0]} ${pts[4][1]} L ${pts[5][0]} ${pts[5][1]} C ${pts[5][0] - kappa} ${pts[5][1]} ${pts[6][0]} ${pts[6][1] + kappa} ${pts[6][0]} ${pts[6][1]} L ${pts[7][0]} ${pts[7][1]} C ${pts[7][0]} ${pts[7][1] - kappa} ${pts[0][0] - kappa} ${pts[0][1]} ${pts[0][0]} ${pts[0][1]} Z`; };
     
     window.applyShapeMask = function(el) { 
@@ -1070,6 +1340,7 @@
         mainSvg.querySelectorAll('.duzenlenebilir:not(.mini-screen-dummy)').forEach(el => {
             if(!el.id) el.id = "el_" + Math.random().toString(36).substr(2,9);
             if(window.getD(el, 'locked') === "true") el.classList.add('locked');
+            if(el.tagName === 'text' && window.getD(el, 'curve')) window.applyTextCurve(el);
             if((el.tagName === 'image' || el.tagName === 'rect') && window.getD(el, 'mask-shape') && window.getD(el, 'mask-shape') !== "none") window.applyShapeMask(el);
             if(window.getD(el, 'angle') || window.getD(el, 'flip-x') || window.getD(el, 'flip-y')) window.applyTransforms(el);
             if(window.getD(el, 'shadow-blur') || window.getD(el, 'blur') || window.getD(el, 'blend')) window.applyFilters(el);
@@ -1196,6 +1467,7 @@
 
                 selectedEl.setAttribute("x", newX); selectedEl.setAttribute("y", newY);
                 if((selectedEl.tagName === 'image' || selectedEl.tagName === 'rect') && window.getD(selectedEl, 'mask-shape') && window.getD(selectedEl, 'mask-shape') !== "none") window.applyShapeMask(selectedEl); 
+                if(selectedEl.tagName === 'text' && window.getD(selectedEl, 'curve')) window.applyTextCurve(selectedEl);
                 
                 window.updateUI(selectedEl, snapX, snapY);
                 if(selectedEl.tagName === 'rect' || selectedEl.tagName === 'image') {
@@ -1214,7 +1486,6 @@
                 return; 
             }
 
-            // --- TICKER PRO: SÜRÜKLE BIRAK SENKRONİZASYONU ---
             if (isModified && selectedEl && selectedEl.id === 'ticker_dummy') {
                 const t = settingsData.ticker;
                 t.x = Math.round(parseFloat(selectedEl.getAttribute('x')));
@@ -1226,9 +1497,9 @@
                 if(document.getElementById('ticker-y')) document.getElementById('ticker-y').value = t.y;
                 if(document.getElementById('ticker-w')) document.getElementById('ticker-w').value = t.w;
                 if(document.getElementById('ticker-h')) document.getElementById('ticker-h').value = t.h;
+                
                 window.saveAllSettingsToCloud(true);
             }
-            // ---------------------------------------------------
 
             if (isDrawing) { 
                 isDrawing = false; 
@@ -1359,89 +1630,400 @@
         });
     };
 
-    // --- TICKER PRO: GELİŞMİŞ ÖZELLİK PANELİ ---
+    function createPropGroup(title, content) {
+        return `<div class="prop-group"><div class="prop-group-title">${title}</div>${content}</div>`;
+    }
+
     window.renderProperties = function() {
         const f = document.getElementById('editor-fields');
-        if (!selectedEl || !selectedEl.tagName) { 
-            f.innerHTML = `<div style="text-align:center; color:#64748b; margin-top:50px; font-style:italic; font-size:13px;">
-                <i class="ph ph-cursor-click" style="font-size:32px; display:block; margin-bottom:15px; color:var(--accent); opacity:0.5;"></i>
-                👆 Düzenlemek için sahneden veya katmanlardan bir nesne seçin.
-            </div>`;
-            return; 
-        }
+        if (!selectedEl || !selectedEl.tagName) { window.renderEditor(); return; }
         
         const currentScroll = f.scrollTop;
         const el = selectedEl; 
         const id = el.id; 
-        const tag = el.tagName.toLowerCase();
-        const isTicker = id === 'ticker_dummy';
-        const isLocked = window.getD(el, 'locked') === "true";
 
-        const getV = (key, attr, def) => {
-            if (isTicker) return settingsData.ticker[key] !== undefined ? settingsData.ticker[key] : def;
-            return window.getD(el, key) || el.getAttribute(attr) || def;
-        };
-
-        const isText = tag === 'text' || isTicker;
-        
-        let typeName = isTicker ? "KAYAN YAZI (TICKER)" : tag.toUpperCase();
-        let headerIcon = isTicker ? "ph-article" : (isText ? "ph-text-t" : "ph-square");
-
-        let headerHtml = `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--border);">
-                <div style="font-size:14px; color:white; font-weight:bold; display:flex; align-items:center; gap:8px;">
-                    <i class="ph ${headerIcon}" style="color:${isTicker ? '#ec4899' : 'var(--accent)'};"></i> ${typeName}
-                </div>
-                ${!isTicker ? `<div class="delete-btn" style="cursor:pointer; color:#ef4444;" onclick="if(confirm('Sil?')){document.getElementById('${id}').remove(); selectedEl=null; window.saveState(); window.renderEditor();}"><i class="ph ph-trash"></i></div>` : ''}
-            </div>
-        `;
-
-        let tabsNav = `
-            <div class="tabs-header">
-                <button class="tab-btn ${currentActiveTab === 'tab-layout' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-layout')">Düzen</button>
-                <button class="tab-btn ${currentActiveTab === 'tab-style' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-style')">Stil</button>
-                ${isText ? `<button class="tab-btn ${currentActiveTab === 'tab-text' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-text')">Metin / Ticker</button>` : ''}
-            </div>
-        `;
-
-        let layoutHtml = `<div class="prop-group">
-            <div class="prop-group-title">KONUM & BOYUT</div>
-            <div class="label-row"><span class="label-text">GENİŞLİK (W)</span><span class="value-badge" id="val-w-${id}">${getV('w','width',100)}px</span></div>
-            <input type="range" min="10" max="1920" value="${getV('w','width',100)}" oninput="window.universalUpdate('${id}', 'w', this.value)">
-            <div class="label-row" style="margin-top:10px;"><span class="label-text">YÜKSEKLİK (H)</span><span class="value-badge" id="val-h-${id}">${getV('h','height',100)}px</span></div>
-            <input type="range" min="10" max="500" value="${getV('h','height',100)}" oninput="window.universalUpdate('${id}', 'h', this.value)">
-        </div>`;
-
-        let styleHtml = `<div class="prop-group">
-            <div class="prop-group-title">GÖRÜNÜM & EFEKT</div>
-            <div class="label-text">ARKA PLAN RENGİ</div>
-            <input type="color" value="${getV('bgColor','fill','#000000')}" oninput="window.universalUpdate('${id}', 'bgColor', this.value)">
-            <div class="label-row" style="margin-top:10px;"><span class="label-text">SAYDAMLIK (OPAKLIK)</span><span class="value-badge" id="val-opacity-${id}">${getV('opacity','fill-opacity',1)}</span></div>
-            <input type="range" min="0" max="1" step="0.1" value="${getV('opacity','fill-opacity',1)}" oninput="window.universalUpdate('${id}', 'opacity', this.value)">
-            <div class="label-row" style="margin-top:10px;"><span class="label-text">GÖLGE (BLUR)</span><span class="value-badge" id="val-shadowBlur-${id}">${getV('shadowBlur','',0)}px</span></div>
-            <input type="range" min="0" max="50" value="${getV('shadowBlur','',0)}" oninput="window.universalUpdate('${id}', 'shadowBlur', this.value)">
-        </div>`;
-
-        let textHtml = isText ? `<div class="prop-group">
-            <div class="prop-group-title">METİN VE FONT</div>
-            <input type="text" value="${getV('text','raw-text','')}" oninput="window.universalUpdate('${id}', 'text', this.value)" style="margin-bottom:10px;" placeholder="Mesajınızı yazın...">
-            <div class="label-text">YAZI TİPİ</div>
-            <select class="font-select" onchange="window.universalUpdate('${id}', 'font', this.value)">
-                ${googleFonts.map(f => `<option value="${f.val}" ${getV('font','', '').includes(f.val) ? 'selected' : ''}>${f.name}</option>`).join('')}
-            </select>
-            <div class="label-row" style="margin-top:10px;"><span class="label-text">YAZI BOYUTU</span><span class="value-badge" id="val-fontSize-${id}">${getV('fontSize','font-size',40)}px</span></div>
-            <input type="range" min="10" max="200" value="${getV('fontSize','font-size',40)}" oninput="window.universalUpdate('${id}', 'fontSize', this.value)">
-            <div class="label-text" style="margin-top:10px;">YAZI RENGİ</div>
-            <input type="color" value="${getV('color','fill','#ffffff')}" oninput="window.universalUpdate('${id}', 'color', this.value)">
-            ${isTicker ? `<div class="label-row" style="margin-top:10px;"><span class="label-text">KAYMA HIZI (DÜŞÜK=HIZLI)</span><span class="value-badge" id="val-speed-${id}">${getV('speed', '', 20)}</span></div><input type="number" value="${getV('speed', '', 20)}" oninput="window.universalUpdate('${id}', 'speed', this.value)">` : ''}
-        </div>` : "";
-
-        f.innerHTML = headerHtml + tabsNav + 
-            `<div id="tab-layout" class="tab-content ${currentActiveTab==='tab-layout'?'active':''}">${layoutHtml}</div>` +
-            `<div id="tab-style" class="tab-content ${currentActiveTab==='tab-style'?'active':''}">${styleHtml}</div>` +
-            `<div id="tab-text" class="tab-content ${currentActiveTab==='tab-text'?'active':''}">${textHtml}</div>`;
+        // ==========================================
+        // SADECE TICKER İÇİN ÖZEL MENÜ
+        // ==========================================
+        if (id === 'ticker_dummy') {
+            const getV = (key, def) => settingsData.ticker[key] !== undefined ? settingsData.ticker[key] : def;
             
-        f.scrollTop = currentScroll;
+            let headerHtml = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--border);">
+                    <div style="font-size:14px; color:white; font-weight:bold; display:flex; align-items:center; gap:8px;">
+                        <i class="ph ph-article" style="color:#ec4899;"></i> KAYAN YAZI (TICKER)
+                    </div>
+                </div>
+            `;
+            let tabsNav = `
+                <div class="tabs-header">
+                    <button class="tab-btn ${currentActiveTab === 'tab-layout' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-layout')">Düzen</button>
+                    <button class="tab-btn ${currentActiveTab === 'tab-style' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-style')">Stil</button>
+                    <button class="tab-btn ${currentActiveTab === 'tab-text' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-text')">Metin / Hız</button>
+                </div>
+            `;
+            let layoutHtml = `<div class="prop-group">
+                <div class="prop-group-title">KONUM & BOYUT</div>
+                <div class="label-row"><span class="label-text">GENİŞLİK (W)</span><span class="value-badge">${getV('w',100)}px</span></div>
+                <input type="range" min="10" max="1920" value="${getV('w',100)}" oninput="window.universalUpdate('${id}', 'w', this.value)">
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">YÜKSEKLİK (H)</span><span class="value-badge">${getV('h',100)}px</span></div>
+                <input type="range" min="10" max="500" value="${getV('h',100)}" oninput="window.universalUpdate('${id}', 'h', this.value)">
+            </div>`;
+            let styleHtml = `<div class="prop-group">
+                <div class="prop-group-title">GÖRÜNÜM & EFEKT</div>
+                <div class="label-text">ARKA PLAN RENGİ</div>
+                <input type="color" value="${getV('bgColor','#000000')}" oninput="window.universalUpdate('${id}', 'bgColor', this.value)">
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">SAYDAMLIK (OPAKLIK)</span></div>
+                <input type="range" min="0" max="1" step="0.1" value="${getV('opacity',1)}" oninput="window.universalUpdate('${id}', 'opacity', this.value)">
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">GÖLGE (BLUR)</span></div>
+                <input type="range" min="0" max="50" value="${getV('shadowBlur',0)}" oninput="window.universalUpdate('${id}', 'shadowBlur', this.value)">
+            </div>`;
+            let textHtml = `<div class="prop-group">
+                <div class="prop-group-title">METİN VE FONT</div>
+                <input type="text" value="${getV('text','')}" oninput="window.universalUpdate('${id}', 'text', this.value)" style="margin-bottom:10px;" placeholder="Mesajınızı yazın...">
+                <div class="label-text">YAZI TİPİ</div>
+                <select class="font-select" onchange="window.universalUpdate('${id}', 'font', this.value)">
+                    ${googleFonts.map(f => `<option value="${f.val}" ${getV('font', '').includes(f.name) ? 'selected' : ''}>${f.name}</option>`).join('')}
+                </select>
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">YAZI BOYUTU</span></div>
+                <input type="range" min="10" max="200" value="${getV('fontSize',40)}" oninput="window.universalUpdate('${id}', 'fontSize', this.value)">
+                <div class="label-text" style="margin-top:10px;">YAZI RENGİ</div>
+                <input type="color" value="${getV('color','#ffffff')}" oninput="window.universalUpdate('${id}', 'color', this.value)">
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">KAYMA HIZI (DÜŞÜK=HIZLI)</span></div>
+                <input type="number" value="${getV('speed', 20)}" oninput="window.universalUpdate('${id}', 'speed', this.value)">
+            </div>`;
+
+            f.innerHTML = headerHtml + tabsNav + 
+                `<div id="tab-layout" class="tab-content ${currentActiveTab==='tab-layout'?'active':''}">${layoutHtml}</div>` +
+                `<div id="tab-style" class="tab-content ${currentActiveTab==='tab-style'?'active':''}">${styleHtml}</div>` +
+                `<div id="tab-text" class="tab-content ${currentActiveTab==='tab-text'?'active':''}">${textHtml}</div>`;
+            f.scrollTop = currentScroll;
+            return; // Ticker işlemi burada biter, alttaki normal nesne kodlarına geçmez.
+        }
+
+        // ==========================================
+        // ESKİSİ GİBİ: NORMAL NESNELER İÇİN FULL ÖZELLİK PANELİ
+        // ==========================================
+        try {
+            const tag = el.tagName.toLowerCase();
+            const isLocked = window.getD(el, 'locked') === "true"; 
+            const isPath = tag === 'path'; 
+            const isText = tag === 'text'; 
+            const isShape = tag === 'rect'; 
+            const isImage = tag === 'image'; 
+            const isIcon = tag === 'svg' || tag === 'g';
+            const isMiniDummy = el.classList.contains('mini-screen-dummy');
+
+            if (isMiniDummy) {
+                let sideName = 'MİNİ EKRAN';
+                let iconColor = '#fff';
+                let iconType = 'ph-television';
+                
+                if(id === 'mini_left') { sideName = 'SOL EKRAN (M3U8)'; iconColor = '#3b82f6'; }
+                if(id === 'mini_right') { sideName = 'SAĞ EKRAN (RESİMLER)'; iconColor = '#f59e0b'; }
+
+                f.innerHTML = `
+                <div style="text-align:center; padding:20px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:12px;">
+                    <i class="ph ${iconType}" style="font-size:40px; color:${iconColor}; margin-bottom:10px; display:block;"></i>
+                    <h3 style="margin:0 0 10px 0; color:#fff;">SİSTEM KATMANI:<br>${sideName}</h3>
+                    <p style="font-size:12px; color:#94a3b8; line-height:1.5;">Bu alan ana yayındaki eklentinin boyutunu ve yerini belirler.<br><br><b>Fare ile tutup sürükleyebilir veya köşelerinden büyütebilirsiniz.</b> Her hareket otomatik olarak JSON'a kaydedilir.</p>
+                </div>`;
+                return;
+            }
+            
+            let typeName = tag.toUpperCase(); let headerIcon = 'ph-square';
+            if (isShape) { typeName = 'ŞEKİL'; headerIcon = 'ph-square'; } 
+            if (isIcon) { typeName = 'İKON'; headerIcon = 'ph-shapes'; } 
+            if (isPath) { typeName = 'ÇİZİM'; headerIcon = 'ph-scribble-loop'; } 
+            if (isImage) { typeName = 'RESİM'; headerIcon = 'ph-image'; } 
+            if (isText) { typeName = 'METİN'; headerIcon = 'ph-text-t'; }
+
+            let layoutHtml = ""; let styleHtml = ""; let textHtml = ""; let codeHtml = "";
+
+            let headerHtml = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid var(--border);">
+                    <div style="font-size:14px; color:white; font-weight:bold; letter-spacing:1px; display:flex; align-items:center; gap:8px;">
+                        <i class="ph ${headerIcon}" style="color:var(--accent);"></i> ${typeName} AYARLARI ${isLocked ? '<i class="ph ph-lock-key" style="color:#ef4444;"></i>' : ''}
+                    </div>
+                    <div class="delete-btn" style="cursor:pointer; color:#94a3b8; font-size:20px; transition:0.2s;" title="Sil" onclick="if(confirm('Silinecek?')){ document.getElementById('${id}').remove(); selectedEl=null; window.saveState(); window.renderEditor(); document.getElementById('control-layer').innerHTML=''; }"><i class="ph ph-x-circle"></i></div>
+                </div>
+                <div class="action-row" style="margin-bottom:20px;">
+                    <button class="action-btn" onclick="window.toggleLock('${id}')" style="background:${isLocked?'var(--error)':'#334155'}"><i class="ph ${isLocked?'ph-lock-key-open':'ph-lock-key'}"></i> ${isLocked ? 'KİLİDİ AÇ' : 'KİLİTLE'}</button>
+                    <button class="action-btn special" onclick="window.cloneElement('${id}')" ${isLocked ? 'disabled':''}><i class="ph ph-copy"></i> KOPYALA</button>
+                </div>
+            `;
+
+            if (isLocked) { 
+                f.innerHTML = headerHtml + `<div style="text-align:center; color:#ef4444; font-size:12px; margin-top:30px;"><i class="ph ph-lock-key" style="font-size:40px; display:block; margin-bottom:10px; opacity:0.5;"></i> Bu öğe kilitli. Düzenlemek için kilidini açın.</div>`; 
+                return; 
+            }
+
+            let isTextTabActive = (currentActiveTab === 'tab-text' && isText) ? 'active' : '';
+            let isStyleTabActive = (currentActiveTab === 'tab-style') ? 'active' : '';
+            let isCodeTabActive = (currentActiveTab === 'tab-code') ? 'active' : '';
+            let isLayoutTabActive = (currentActiveTab === 'tab-layout' || (currentActiveTab === 'tab-text' && !isText)) ? 'active' : '';
+            if (!isTextTabActive && !isLayoutTabActive && !isStyleTabActive && !isCodeTabActive) { isLayoutTabActive = 'active'; }
+
+            let tabsNav = `
+                <div class="tabs-header">
+                    <button class="tab-btn ${isLayoutTabActive}" onclick="window.switchTab(this, 'tab-layout')"><i class="ph ph-bounding-box"></i> Düzen</button>
+                    <button class="tab-btn ${isStyleTabActive}" onclick="window.switchTab(this, 'tab-style')"><i class="ph ph-palette"></i> Stil</button>
+                    ${isText ? `<button class="tab-btn ${isTextTabActive}" onclick="window.switchTab(this, 'tab-text')"><i class="ph ph-text-t"></i> Metin</button>` : ''}
+                    <button class="tab-btn ${isCodeTabActive}" onclick="window.switchTab(this, 'tab-code')"><i class="ph ph-code"></i> Kod</button>
+                </div>
+            `;
+
+            if(!isPath) {
+                let alignHtml = `
+                <div class="action-row" style="margin-bottom:8px;">
+                    <button class="action-btn" onclick="window.alignElement('${id}', 'left')"><i class="ph ph-align-left"></i> SOL</button>
+                    <button class="action-btn" onclick="window.alignElement('${id}', 'center-h')"><i class="ph ph-align-center-horizontal"></i> ORTA</button>
+                    <button class="action-btn" onclick="window.alignElement('${id}', 'right')"><i class="ph ph-align-right"></i> SAĞ</button>
+                </div>
+                <div class="action-row" style="margin-bottom:10px;">
+                    <button class="action-btn" onclick="window.alignElement('${id}', 'center-v')"><i class="ph ph-align-center-vertical"></i> DİKEY ORTA</button>
+                    <button class="action-btn" onclick="window.toggleFlip('${id}', 'x')"><i class="ph ph-arrows-left-right"></i> YATAY ÇEVİR</button>
+                    <button class="action-btn" onclick="window.toggleFlip('${id}', 'y')"><i class="ph ph-arrows-down-up"></i> DİKEY ÇEVİR</button>
+                </div>`;
+                layoutHtml += createPropGroup("<i class='ph ph-intersect'></i> Hizalama & Çevirme", alignHtml);
+            }
+
+            if (!isPath) {
+                let bbox = {x:0, y:0, width:0, height:0}; try { bbox = el.getBBox(); } catch(e){}
+                const x = Math.round(parseFloat(el.getAttribute("x")) || bbox.x || 0); const y = Math.round(parseFloat(el.getAttribute("y")) || bbox.y || 0);
+                let w = 0, h = 0;
+                
+                if(isText) { 
+                    w = Math.round(parseFloat(el.getAttribute("textLength")) || bbox.width || 0); 
+                    h = Math.round(parseFloat(window.getD(el, "base-font-size")) || 60); 
+                } else { 
+                    w = Math.round(parseFloat(el.getAttribute("width")) || bbox.width || 0); 
+                    h = Math.round(parseFloat(el.getAttribute("height")) || bbox.height || 0); 
+                }
+                
+                let posHtml = `
+                    <div class="label-row"><span class="label-text">X KONUMU</span><span class="value-badge" id="val-x-${id}">${x}px</span></div>
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <input type="range" min="-1000" max="3000" value="${x}" style="flex:1;" oninput="window.changeProp('${id}', 'x', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${x}" style="width:70px; padding:8px;" oninput="window.changeProp('${id}', 'x', this.value, this);" onchange="window.saveState()">
+                    </div>
+                    <div class="label-row"><span class="label-text">Y KONUMU</span><span class="value-badge" id="val-y-${id}">${y}px</span></div>
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <input type="range" min="-1000" max="3000" value="${y}" style="flex:1;" oninput="window.changeProp('${id}', 'y', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${y}" style="width:70px; padding:8px;" oninput="window.changeProp('${id}', 'y', this.value, this);" onchange="window.saveState()">
+                    </div>
+                    <div class="label-row"><span class="label-text">${isText ? 'GENİŞLİK (ESNETME W)' : 'GENİŞLİK (W)'}</span><span class="value-badge" id="val-w-${id}">${w}px</span></div>
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <input type="range" min="1" max="2500" value="${w}" style="flex:1;" oninput="window.changeProp('${id}', 'w', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${w}" style="width:70px; padding:8px;" oninput="window.changeProp('${id}', 'w', this.value, this);" onchange="window.saveState()">
+                    </div>
+                    <div class="label-row"><span class="label-text">${isText ? 'YAZI PUNTO (H)' : 'YÜKSEKLİK (H)'}</span><span class="value-badge" id="val-h-${id}">${h}px</span></div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="range" min="1" max="2500" value="${h}" style="flex:1;" oninput="window.changeProp('${id}', 'h', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${h}" style="width:70px; padding:8px;" oninput="window.changeProp('${id}', 'h', this.value, this);" onchange="window.saveState()">
+                    </div>`;
+                layoutHtml += createPropGroup("<i class='ph ph-arrows-out'></i> Konum ve Boyut", posHtml);
+                
+                const angle = parseFloat(window.getD(el, 'angle')) || 0;
+                let transHtml = `
+                    <div class="label-row" style="margin-top:0;"><span class="label-text">DÖNDÜRME AÇISI</span><span class="value-badge" id="val-angle-${id}">${angle}°</span></div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <input type="range" min="0" max="360" value="${angle}" style="flex:1;" oninput="window.changeSetting('${id}', 'angle', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${angle}" style="width:70px; padding:8px;" oninput="window.changeSetting('${id}', 'angle', this.value, this);" onchange="window.saveState()">
+                    </div>`;
+                layoutHtml += createPropGroup("<i class='ph ph-arrows-clockwise'></i> Dönüştürme", transHtml);
+            }
+
+            if (isShape || isImage) {
+                const rx = parseFloat(window.getD(el, 'rx')) || 0; const maskShape = window.getD(el, 'mask-shape') || 'none';
+                let bbox = {width:0, height:0}; try { bbox = el.getBBox(); }catch(e){} const maxR = Math.min(bbox.width, bbox.height) / 2;
+                let formHtml = `<div class="label-text" style="margin-bottom:5px;">MASKELEME ŞEKLİ</div><select class="font-select" style="margin-bottom:15px;" onchange="window.changeSetting('${id}', 'mask-shape', this.value); window.saveState();"><option value="none" ${maskShape === 'none' ? 'selected' : ''}>Yok (Düz)</option><option value="squircle" ${maskShape === 'squircle' ? 'selected' : ''}>Oval Kare (Squircle)</option><option value="circle" ${maskShape === 'circle' ? 'selected' : ''}>Daire</option><option value="triangle" ${maskShape === 'triangle' ? 'selected' : ''}>Üçgen</option><option value="star" ${maskShape === 'star' ? 'selected' : ''}>Yıldız</option></select>
+                <div class="label-row"><span class="label-text">KÖŞE YARIÇAPI (SQUIRCLE)</span><span class="value-badge" id="val-rx-${id}">${Math.round(rx)}px</span></div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="range" min="0" max="${maxR}" value="${rx}" style="flex:1;" oninput="window.changeSetting('${id}', 'rx', this.value, this);" onchange="window.saveState()">
+                    <input type="number" value="${rx}" style="width:70px; padding:8px;" oninput="window.changeSetting('${id}', 'rx', this.value, this);" onchange="window.saveState()">
+                </div>`;
+                layoutHtml += createPropGroup("<i class='ph ph-scissors'></i> Form & Maskeleme", formHtml);
+            }
+
+            if (!isImage) {
+                const fillType = window.getD(el, 'fill-type') || 'solid'; const col1 = window.getD(el, 'color1') || '#10b981'; const col2 = window.getD(el, 'color2') || '#3b82f6'; const solidCol = window.getD(el, 'solid-color') || (el.getAttribute('fill') === 'none' ? el.getAttribute('stroke') : el.getAttribute('fill')) || "#ffffff";
+                let swatchHtml = `<div class="label-text" style="margin-top:15px; margin-bottom:8px;">PROJE RENKLERİ</div><div class="swatch-container">` + recentColors.map(c => `<div class="color-swatch" style="background:${c}" onclick="window.applyRecentColor('${id}', '${c}')" title="${c}"></div>`).join('') + `</div>`;
+                let fillHtml = `<div class="label-text" style="margin-bottom:5px;">DOLGU TİPİ</div><select class="font-select" style="margin-bottom:15px;" onchange="window.changeSetting('${id}', 'fill-type', this.value); window.renderProperties(); window.saveState();"><option value="solid" ${fillType === 'solid' ? 'selected' : ''}>Düz Renk</option><option value="gradient" ${fillType === 'gradient' ? 'selected' : ''}>Renk Geçişi (Gradient)</option></select>`;
+                if (fillType === 'solid') { fillHtml += `<div class="label-text" style="margin-bottom:5px;">${isPath?'ÇİZGİ':'İÇ'} RENK</div><div style="display:flex; gap:10px; align-items:center;"><input type="color" value="${safeColor(solidCol)}" oninput="window.changeSetting('${id}', 'solid-color', this.value); this.nextElementSibling.nextElementSibling.value=this.value;" onchange="window.addRecentColor(this.value); window.saveState();" style="width:45px; height:45px; cursor:pointer; border:none; background:none; border-radius:8px;"><button class="action-btn" style="flex:0 0 45px; padding:12px; background:#334155; font-size:18px;" onclick="window.pickColor('${id}', 'solidColor', 'fill')" title="Göz Damlası"><i class="ph ph-drop"></i></button><input type="text" value="${safeColor(solidCol)}" style="flex:1;" oninput="window.changeSetting('${id}', 'solid-color', this.value); this.previousElementSibling.previousElementSibling.value=this.value;" onchange="window.addRecentColor(this.value); window.saveState();"></div>`; } 
+                else { fillHtml += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"><div class="input-group"><span class="label-text">RENK 1</span><div style="display:flex; gap:5px; align-items:center;"><input type="color" value="${safeColor(col1)}" oninput="window.changeSetting('${id}', 'color1', this.value);" onchange="window.addRecentColor(this.value); window.saveState();" style="width:35px; height:35px; cursor:pointer; border:none; background:none;"><button class="action-btn" style="padding:8px; background:#334155; font-size:16px;" onclick="window.pickColor('${id}', 'color1', '')"><i class="ph ph-drop"></i></button></div></div><div class="input-group"><span class="label-text">RENK 2</span><div style="display:flex; gap:5px; align-items:center;"><input type="color" value="${safeColor(col2)}" oninput="window.changeSetting('${id}', 'color2', this.value);" onchange="window.addRecentColor(this.value); window.saveState();" style="width:35px; height:35px; cursor:pointer; border:none; background:none;"><button class="action-btn" style="padding:8px; background:#334155; font-size:16px;" onclick="window.pickColor('${id}', 'color2', '')"><i class="ph ph-drop"></i></button></div></div></div>`; }
+                fillHtml += swatchHtml;
+                styleHtml += createPropGroup("<i class='ph ph-paint-bucket'></i> Dolgu & Renk", fillHtml);
+            }
+
+            const strokeCol = el.getAttribute('stroke') || '#000000'; const strokeW = parseFloat(el.getAttribute('stroke-width')) || 0; const dash = el.getAttribute('stroke-dasharray') || 'none';
+            let strokeHtml = `<div class="label-text" style="margin-bottom:5px;">ÇİZGİ RENGİ</div><div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;"><input type="color" value="${safeColor(strokeCol)}" oninput="const t=document.getElementById('${id}'); t.setAttribute('stroke', this.value); t.setAttribute('paint-order', 'stroke fill'); t.setAttribute('stroke-linejoin', 'round'); this.nextElementSibling.nextElementSibling.value=this.value;" onchange="window.addRecentColor(this.value); window.saveState();" style="width:45px; height:45px; cursor:pointer; border:none; background:none; border-radius:8px;"><button class="action-btn" style="flex:0 0 45px; padding:12px; background:#334155; font-size:18px;" onclick="window.pickColor('${id}', '', 'stroke')" title="Göz Damlası"><i class="ph ph-drop"></i></button><input type="text" value="${safeColor(strokeCol)}" style="flex:1;" oninput="const t=document.getElementById('${id}'); t.setAttribute('stroke', this.value); t.setAttribute('paint-order', 'stroke fill'); t.setAttribute('stroke-linejoin', 'round'); this.previousElementSibling.previousElementSibling.value=this.value;" onchange="window.addRecentColor(this.value); window.saveState();"></div>
+            <div class="label-row"><span class="label-text">KALINLIK</span><span class="value-badge" id="val-sw-${id}">${strokeW}px</span></div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+                <input type="range" min="0" max="50" value="${strokeW}" style="flex:1;" oninput="const t=document.getElementById('${id}'); t.setAttribute('stroke-width', this.value); t.setAttribute('paint-order', 'stroke fill'); document.getElementById('val-sw-${id}').innerText=this.value+'px'; this.nextElementSibling.value=this.value;" onchange="window.saveState()">
+                <input type="number" value="${strokeW}" style="width:70px; padding:8px;" oninput="const t=document.getElementById('${id}'); t.setAttribute('stroke-width', this.value); t.setAttribute('paint-order', 'stroke fill'); document.getElementById('val-sw-${id}').innerText=this.value+'px'; this.previousElementSibling.value=this.value;" onchange="window.saveState()">
+            </div>
+            <div class="label-text" style="margin-bottom:5px;">ÇİZGİ TİPİ</div>
+            <select class="font-select" onchange="document.getElementById('${id}').setAttribute('stroke-dasharray', this.value); window.saveState();"><option value="none" ${dash === 'none' ? 'selected' : ''}>Düz</option><option value="5,5" ${dash === '5,5' ? 'selected' : ''}>Kesikli</option><option value="2,2" ${dash === '2,2' ? 'selected' : ''}>Noktalı</option></select>`;
+            styleHtml += createPropGroup("<i class='ph ph-square-logo'></i> Kenarlık & Çizgi", strokeHtml);
+
+            let opacityVal = parseFloat(el.getAttribute('opacity')); if (isNaN(opacityVal)) opacityVal = 1;
+            const sX = parseFloat(window.getD(el, 'shadow-x')) || 0, sY = parseFloat(window.getD(el, 'shadow-y')) || 0, sB = parseFloat(window.getD(el, 'shadow-blur')) || 0, sC = window.getD(el, 'shadow-color') || '#000000', bl = parseFloat(window.getD(el, 'blur')) || 0; const blend = window.getD(el, 'blend') || 'normal';
+            
+            let fxHtml = `
+            <div class="label-row"><span class="label-text">SAYDAMLIK (OPACITY)</span><span class="value-badge" id="val-opacity-${id}">${Math.round(opacityVal*100)}%</span></div>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+                <input type="range" min="0" max="1" step="0.05" value="${opacityVal}" style="flex:1;" oninput="window.changeFilter('${id}', 'opacity', this.value, this);" onchange="window.saveState()">
+                <input type="number" min="0" max="1" step="0.05" value="${opacityVal}" style="width:70px; padding:8px;" oninput="window.changeFilter('${id}', 'opacity', this.value, this);" onchange="window.saveState()">
+            </div>
+            <div class="label-text" style="margin-bottom:5px;">KARIŞIM MODU (BLEND)</div>
+            <select class="font-select" style="margin-bottom:15px;" onchange="window.changeFilter('${id}', 'blend', this.value); window.saveState();">
+                <option value="normal" ${blend === 'normal' ? 'selected' : ''}>Normal</option><option value="multiply" ${blend === 'multiply' ? 'selected' : ''}>Çoğalt (Multiply)</option><option value="screen" ${blend === 'screen' ? 'selected' : ''}>Ekran (Screen)</option><option value="overlay" ${blend === 'overlay' ? 'selected' : ''}>Kaplama (Overlay)</option>
+            </select>
+            <div class="group-box">
+                <div class="label-text" style="color:white; margin-bottom:10px;"><i class="ph ph-drop-half-bottom"></i> GÖLGE VE BLUR</div>
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+                    <input type="color" value="${sC}" oninput="window.changeFilter('${id}', 'shadow-color', this.value); this.nextElementSibling.nextElementSibling.value=this.value;" onchange="window.addRecentColor(this.value); window.saveState();" style="width:40px; height:40px; cursor:pointer; border-radius:8px; border:none; background:none;">
+                    <button class="action-btn" style="padding:10px; background:#334155; font-size:16px;" onclick="window.pickColor('${id}', 'shadow-color', '')"><i class="ph ph-drop"></i></button>
+                    <input type="text" value="${sC}" style="flex:1;" oninput="window.changeFilter('${id}', 'shadow-color', this.value); this.previousElementSibling.previousElementSibling.value=this.value;" onchange="window.addRecentColor(this.value); window.saveState();">
+                </div>
+                <div class="label-row"><span class="label-text">GÖLGE X</span><span class="value-badge" id="val-shadow-x-${id}">${sX}px</span></div>
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+                    <input type="range" min="-100" max="100" value="${sX}" style="flex:1;" oninput="window.changeFilter('${id}', 'shadow-x', this.value, this);" onchange="window.saveState()">
+                    <input type="number" value="${sX}" style="width:70px; padding:8px;" oninput="window.changeFilter('${id}', 'shadow-x', this.value, this);" onchange="window.saveState()">
+                </div>
+                <div class="label-row"><span class="label-text">GÖLGE Y</span><span class="value-badge" id="val-shadow-y-${id}">${sY}px</span></div>
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+                    <input type="range" min="-100" max="100" value="${sY}" style="flex:1;" oninput="window.changeFilter('${id}', 'shadow-y', this.value, this);" onchange="window.saveState()">
+                    <input type="number" value="${sY}" style="width:70px; padding:8px;" oninput="window.changeFilter('${id}', 'shadow-y', this.value, this);" onchange="window.saveState()">
+                </div>
+                <div class="label-row"><span class="label-text">GÖLGE YAYILMASI</span><span class="value-badge" id="val-shadow-blur-${id}">${sB}px</span></div>
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+                    <input type="range" min="0" max="100" value="${sB}" style="flex:1;" oninput="window.changeFilter('${id}', 'shadow-blur', this.value, this);" onchange="window.saveState()">
+                    <input type="number" value="${sB}" style="width:70px; padding:8px;" oninput="window.changeFilter('${id}', 'shadow-blur', this.value, this);" onchange="window.saveState()">
+                </div>
+                <div class="label-row"><span class="label-text">NESNE BULANIKLIĞI</span><span class="value-badge" id="val-blur-${id}">${bl}px</span></div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="range" min="0" max="100" value="${bl}" style="flex:1;" oninput="window.changeFilter('${id}', 'blur', this.value, this);" onchange="window.saveState()">
+                    <input type="number" value="${bl}" style="width:70px; padding:8px;" oninput="window.changeFilter('${id}', 'blur', this.value, this);" onchange="window.saveState()">
+                </div>
+            </div>`;
+            styleHtml += createPropGroup("<i class='ph ph-magic-wand'></i> Efektler & Görünüm", fxHtml);
+
+            if (isText) {
+                const rawText = (window.getD(el, 'raw-text') || el.textContent).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                const varName = window.getD(el, 'var-name') || "";
+                let rectOptions = `<option value="">-- Serbest Bırak (Sabitleme Yok) --</option>`;
+                document.querySelectorAll('#canvas-inner svg rect.duzenlenebilir, #canvas-inner svg image.duzenlenebilir').forEach(r => {
+                    const isSelected = window.getD(el, 'bound-rect') === r.id ? 'selected' : '';
+                    rectOptions += `<option value="${r.id}" ${isSelected}>Şekil: ${r.id}</option>`;
+                });
+
+                let contentHtml = `
+                    <div style="margin-bottom:10px;">
+                        <div class="label-text" style="margin-bottom:5px;">METİN İÇERİĞİ</div>
+                        <input type="text" value="${rawText}" oninput="window.changeSetting('${id}', 'raw-text', this.value); window.refreshAutoTextFields();" onchange="window.saveState()" placeholder="Metni girin..." style="margin-bottom:10px;">
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <div class="label-text" style="color:#f472b6; margin-bottom:5px;">OTOMATİK DEĞİŞKEN ADI (Örn: FIYAT)</div>
+                        <input type="text" value="${varName}" placeholder="Boş bırakırsanız listede görünmez" 
+                               oninput="this.value = this.value.toUpperCase(); window.setD(document.getElementById('${id}'), 'var-name', this.value); window.refreshAutoTextFields();" 
+                               onchange="window.saveState()" style="border-color:#f472b6;">
+                    </div>
+                    <div style="padding:10px; background:rgba(16, 185, 129, 0.1); border:1px solid #10b981; border-radius:8px; margin-top:10px;">
+                        <div class="label-text" style="color:#10b981; margin-bottom:5px;"><i class="ph ph-intersect"></i> BİR KUTUYA SABİTLE (ORTALA & SIĞDIR)</div>
+                        <div style="font-size:10px; color:#94a3b8; margin-bottom:8px; font-style:italic;">Seçilen kutunun tam ortasına yapışır ve taşmayı önler.</div>
+                        <select class="font-select" style="border-color:#10b981; background:#0f172a;" onchange="window.changeSetting('${id}', 'bound-rect', this.value); window.autoFitText(document.getElementById('${id}')); window.updateEditorUI(document.getElementById('${id}')); window.saveState();">
+                            ${rectOptions}
+                        </select>
+                    </div>
+                `;
+                textHtml += createPropGroup("<i class='ph ph-text-t'></i> Metin ve Sabitleme", contentHtml);
+
+                const ls = parseFloat(el.getAttribute("letter-spacing")) || 0; const currentFont = el.getAttribute("font-family") || "sans-serif"; const curve = parseFloat(window.getD(el, 'curve')) || 0; const mw = parseFloat(window.getD(el, 'max-width')) || 0; const mh = parseFloat(window.getD(el, 'max-height')) || 0;
+                const isB = el.getAttribute('font-weight') === 'bold'; const isI = el.getAttribute('font-style') === 'italic'; const isU = el.getAttribute('text-decoration') === 'underline';
+                const tAlign = el.getAttribute('text-anchor') || 'middle';
+                let fontOptionsHtml = googleFonts.map(font => `<option value="${font.val}" style="font-family: ${font.val}" ${currentFont.includes(font.name) ? "selected" : ""}>${font.name}</option>`).join('');
+                
+                let fontHtml = `<select class="font-select" style="margin-bottom:15px;" onchange="const t=document.getElementById('${id}'); t.setAttribute('font-family', this.value); t.style.fontFamily=this.value; window.applyTextCurve(t); if(window.updateEditorUI) window.updateEditorUI(t); window.saveState();">${fontOptionsHtml}</select>
+                    <div style="display:flex; gap:5px; margin-bottom:15px;">
+                        <button class="action-btn ${isB?'active':''}" style="flex:1; font-size:16px;" onclick="window.applyTextStyle('${id}', 'bold')"><i class="ph ph-text-b"></i></button>
+                        <button class="action-btn ${isI?'active':''}" style="flex:1; font-size:16px;" onclick="window.applyTextStyle('${id}', 'italic')"><i class="ph ph-text-italic"></i></button>
+                        <button class="action-btn ${isU?'active':''}" style="flex:1; font-size:16px;" onclick="window.applyTextStyle('${id}', 'underline')"><i class="ph ph-text-underline"></i></button>
+                        <div style="width:1px; background:var(--border); margin:0 5px;"></div>
+                        <button class="action-btn ${tAlign==='start'?'active':''}" style="flex:1; font-size:16px;" onclick="window.applyTextStyle('${id}', 'align', 'start')"><i class="ph ph-text-align-left"></i></button>
+                        <button class="action-btn ${tAlign==='middle'?'active':''}" style="flex:1; font-size:16px;" onclick="window.applyTextStyle('${id}', 'align', 'middle')"><i class="ph ph-text-align-center"></i></button>
+                        <button class="action-btn ${tAlign==='end'?'active':''}" style="flex:1; font-size:16px;" onclick="window.applyTextStyle('${id}', 'align', 'end')"><i class="ph ph-text-align-right"></i></button>
+                    </div>
+                    <div class="action-row" style="margin-bottom:15px;">
+                        <button class="action-btn" onclick="window.applyTextStyle('${id}', 'normal')">Stil Temizle</button>
+                        <button class="action-btn special" onclick="document.getElementById('${id}').removeAttribute('textLength'); document.getElementById('${id}').removeAttribute('lengthAdjust'); window.autoFitText(document.getElementById('${id}')); window.saveState(); window.renderProperties();"><i class="ph ph-arrows-out-line-horizontal"></i> ESNETMEYİ SIFIRLA</button>
+                    </div>
+                    <div class="action-row" style="margin-bottom:15px;"><button class="action-btn" onclick="window.applyTextStyle('${id}', 'neon')">Neon</button><button class="action-btn" onclick="window.applyTextStyle('${id}', '3d')">3D</button><button class="action-btn" onclick="window.applyTextStyle('${id}', 'hollow')">Hollow</button></div>
+                    
+                    <div class="label-row"><span class="label-text">EĞRİLİK (KAVİS)</span><span class="value-badge" id="val-curve-${id}">${curve}</span></div>
+                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+                        <input type="range" min="-100" max="100" value="${curve}" style="flex:1;" oninput="window.changeSetting('${id}', 'curve', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${curve}" style="width:70px; padding:8px;" oninput="window.changeSetting('${id}', 'curve', this.value, this);" onchange="window.saveState()">
+                    </div>
+                    <div class="label-row"><span class="label-text">HARF ARALIĞI</span><span class="value-badge" id="val-letter-spacing-${id}">${ls}px</span></div>
+                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+                        <input type="range" min="-20" max="100" value="${ls}" style="flex:1;" oninput="window.changeSetting('${id}', 'letter-spacing', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${ls}" style="width:70px; padding:8px;" oninput="window.changeSetting('${id}', 'letter-spacing', this.value, this);" onchange="window.saveState()">
+                    </div>
+                    <div class="label-row"><span class="label-text">SIĞDIRMA GENİŞLİK (MAX-W)</span><span class="value-badge" id="val-max-width-${id}">${mw === 0 ? 'KAPALI' : mw+'px'}</span></div>
+                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:15px;">
+                        <input type="range" min="0" max="2000" value="${mw}" style="flex:1;" oninput="window.changeSetting('${id}', 'max-width', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${mw}" style="width:70px; padding:8px;" oninput="window.changeSetting('${id}', 'max-width', this.value, this);" onchange="window.saveState()">
+                    </div>
+                    <div class="label-row"><span class="label-text">SIĞDIRMA YÜKSEKLİK (MAX-H)</span><span class="value-badge" id="val-max-height-${id}">${mh === 0 ? 'KAPALI' : mh+'px'}</span></div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <input type="range" min="0" max="2000" value="${mh}" style="flex:1;" oninput="window.changeSetting('${id}', 'max-height', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${mh}" style="width:70px; padding:8px;" oninput="window.changeSetting('${id}', 'max-height', this.value, this);" onchange="window.saveState()">
+                    </div>`;
+                textHtml += createPropGroup("<i class='ph ph-text-aa'></i> Yazı Tipi & Biçimlendirme", fontHtml);
+            }
+
+            const rawSvgCode = el.outerHTML.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            let editorCodeHtml = `<textarea id="raw-svg-code" style="width:100%; height:250px; background:#000; color:var(--accent); font-family:monospace; font-size:11px; padding:10px; border-radius:8px; border:1px solid var(--border); resize:vertical;" onchange="window.saveState()">${rawSvgCode}</textarea>
+            <button class="action-btn active" style="width:100%; margin-top:10px; padding:12px;" onclick="window.applyRawCode('${id}')"><i class="ph ph-terminal-window"></i> KODU UYGULA</button>`;
+            codeHtml += createPropGroup("<i class='ph ph-file-code'></i> Canlı SVG Kodu", editorCodeHtml);
+
+            f.innerHTML = headerHtml + tabsNav + 
+                `<div id="tab-layout" class="tab-content ${isLayoutTabActive}">${layoutHtml}</div>` +
+                `<div id="tab-style" class="tab-content ${isStyleTabActive}">${styleHtml}</div>` +
+                (isText ? `<div id="tab-text" class="tab-content ${isTextTabActive}">${textHtml}</div>` : '') +
+                `<div id="tab-code" class="tab-content ${isCodeTabActive}">${codeHtml}</div>`;
+
+            f.scrollTop = currentScroll;
+
+        } catch(err) {
+            console.error("Özellik Paneli Hatası:", err);
+            f.innerHTML = `<div style="color:#ef4444; padding:20px; font-size:12px; text-align:center;"><i class="ph ph-warning-circle" style="font-size:32px; display:block; margin-bottom:10px;"></i> Özellikler yüklenemedi. Lütfen nesneyi tekrar seçin.</div>`;
+        }
+    };
+
+    window.applyRawCode = function(id) {
+        try {
+            let p = new DOMParser(); 
+            let code = document.getElementById('raw-svg-code').value.trim();
+            let n;
+            if (!code.toLowerCase().startsWith('<svg')) {
+                let d = p.parseFromString('<svg xmlns="http://www.w3.org/2000/svg">' + code + '</svg>', 'image/svg+xml');
+                if(d.documentElement.tagName === 'parsererror') throw new Error('Hatalı Kod');
+                n = d.documentElement.firstElementChild;
+            } else {
+                let d = p.parseFromString(code, 'image/svg+xml'); 
+                n = d.documentElement; 
+                if(n.tagName==='parsererror') throw new Error('Hatalı Kod');
+            }
+            if(!n) throw new Error('Geçersiz SVG');
+            let o = document.getElementById(id); o.replaceWith(n); selectedEl = n; 
+            if(!selectedEl.id) selectedEl.id='el_'+Date.now(); 
+            if(!selectedEl.classList.contains('duzenlenebilir')) selectedEl.classList.add('duzenlenebilir'); 
+            window.saveState(); window.setupLayers(); window.updateEditorUI(selectedEl); window.renderEditor(); 
+            window.showToast("Özel Kod Uygulandı!");
+        } catch(err) { window.showToast('Lütfen geçerli bir SVG kodu girin.', 'error'); }
     };
 </script>
 </body>
