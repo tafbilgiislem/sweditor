@@ -421,7 +421,7 @@
         { name: "Ubuntu", val: "'Ubuntu', sans-serif" }, { name: "Bebas Neue", val: "'Bebas Neue', sans-serif" }
     ];
 
-    // Evrensel Güncelleyici - Ticker ve Normal Element Ayrımı
+    // EVRENSEL GÜNCELLEYİCİ - TICKER VE NORMAL NESNE İÇİN
     window.universalUpdate = function(id, key, val) {
         const isTicker = id === 'ticker_dummy';
         const el = document.getElementById(id);
@@ -431,7 +431,7 @@
                 settingsData.ticker.text = val;
                 if(document.getElementById('ticker-text')) document.getElementById('ticker-text').value = val;
             } else if (['x','y','w','h','fontSize','speed','opacity','shadowBlur'].includes(key)) {
-                // NaN hatası olursa 0 yapsın (yayın ekranının sağa kaymasını önler)
+                // NaN HATASI ÖNLEYİCİ: parseFloat geçersizse 0 kaydeder, yayın ekranı sağa kaymaz.
                 settingsData.ticker[key] = parseFloat(val) || 0;
             } else {
                 settingsData.ticker[key] = val;
@@ -448,12 +448,11 @@
             }
             window.saveAllSettingsToCloud(true); 
         } else {
-            // Eski orijinal nesne güncelleyiciyi çağır
+            // Normal nesneler (eski kodun gibi)
             if (['x','y','w','h'].includes(key)) window.changeProp(id, key, val);
             else window.changeSetting(id, key, val);
         }
         
-        // Rozeti (Badge) güncelle
         const badge = document.getElementById(`val-${key}-${id}`);
         if (badge) badge.innerText = val + (['opacity','speed'].includes(key) ? '' : 'px');
     };
@@ -685,7 +684,7 @@
         if(!settingsData.mini_screens) return;
         if(side === 'left') {
             settingsData.mini_screens.left.url = document.getElementById('m38u-url').value;
-            settingsData.mini_screens.left.x = parseInt(document.getElementById('m38u-x').value) || 50;
+            settingsData.mini_screens.left.x = parseInt(document.getElementById('m38u-x').value) || 0;
             settingsData.mini_screens.left.y = parseInt(document.getElementById('m38u-y').value) || 800;
             settingsData.mini_screens.left.w = parseInt(document.getElementById('m38u-w').value) || 400;
             settingsData.mini_screens.left.h = parseInt(document.getElementById('m38u-h').value) || 250;
@@ -891,7 +890,6 @@
         window.setD(rect, 'solid-color', "#10b981"); rect.setAttribute("fill", "#10b981"); window.setD(rect, 'mask-shape', "none");
         svg.appendChild(rect); selectedEl = rect; window.saveState(); window.setupLayers(); window.updateEditorUI(rect); window.renderEditor();
     };
-
     window.changeProp = function(id, prop, val, elUI) {
         const el = document.getElementById(id); if(!el) return;
         if(prop === 'x') el.setAttribute('x', val);
@@ -1304,7 +1302,7 @@
             }
         };
 
-        window.onpointermove = (e) => {
+        wrapper.onpointermove = (e) => {
             if (isPanning) { panX = panOffsetStart.x + ((e.clientX - panStart.x) / currentZoom); panY = panOffsetStart.y + ((e.clientY - panStart.y) / currentZoom); window.applyZoom(); window.syncRulerTransform(); return; }
             const p = getCoords(e);
             if (isDrawing && currentPath) { pathData += ` L ${p.x} ${p.y}`; currentPath.setAttribute("d", pathData); return; }
@@ -1403,19 +1401,28 @@
                 return; 
             }
 
-            // Sürükleme Bittiğinde Ticker'ın Koordinatlarını Anında Kaydet
-            if (isModified && selectedEl && selectedEl.id === 'ticker_dummy') {
-                const t = settingsData.ticker;
-                t.x = Math.round(parseFloat(selectedEl.getAttribute('x'))) || 0;
-                t.y = Math.round(parseFloat(selectedEl.getAttribute('y'))) || 0;
-                t.w = Math.round(parseFloat(selectedEl.getAttribute('width'))) || 1920;
-                t.h = Math.round(parseFloat(selectedEl.getAttribute('height'))) || 100;
-                
-                if(document.getElementById('ticker-x')) document.getElementById('ticker-x').value = t.x;
-                if(document.getElementById('ticker-y')) document.getElementById('ticker-y').value = t.y;
-                if(document.getElementById('ticker-w')) document.getElementById('ticker-w').value = t.w;
-                if(document.getElementById('ticker-h')) document.getElementById('ticker-h').value = t.h;
-                
+            if (isModified && selectedEl && selectedEl.classList.contains('mini-screen-dummy')) {
+                const side = selectedEl.id === 'mini_left' ? 'left' : (selectedEl.id === 'mini_right' ? 'right' : 'ticker');
+                const nx = Math.round(parseFloat(selectedEl.getAttribute('x'))) || 0;
+                const ny = Math.round(parseFloat(selectedEl.getAttribute('y'))) || 0;
+                const nw = Math.round(parseFloat(selectedEl.getAttribute('width'))) || 100;
+                const nh = Math.round(parseFloat(selectedEl.getAttribute('height'))) || 100;
+
+                if (side === 'ticker') {
+                    settingsData.ticker.x = nx; settingsData.ticker.y = ny; settingsData.ticker.w = nw; settingsData.ticker.h = nh;
+                    if(document.getElementById('ticker-x')) document.getElementById('ticker-x').value = nx;
+                    if(document.getElementById('ticker-y')) document.getElementById('ticker-y').value = ny;
+                    if(document.getElementById('ticker-w')) document.getElementById('ticker-w').value = nw;
+                    if(document.getElementById('ticker-h')) document.getElementById('ticker-h').value = nh;
+                } else {
+                    settingsData.mini_screens[side].x = nx; settingsData.mini_screens[side].y = ny;
+                    settingsData.mini_screens[side].w = nw; settingsData.mini_screens[side].h = nh;
+                    const pre = side === 'left' ? 'm38u' : 'right';
+                    if(document.getElementById(pre+'-x')) document.getElementById(pre+'-x').value = nx;
+                    if(document.getElementById(pre+'-y')) document.getElementById(pre+'-y').value = ny;
+                    if(document.getElementById(pre+'-w')) document.getElementById(pre+'-w').value = nw;
+                    if(document.getElementById(pre+'-h')) document.getElementById(pre+'-h').value = nh;
+                }
                 window.saveAllSettingsToCloud(true);
             }
 
@@ -1561,7 +1568,7 @@
         const id = el.id; 
 
         // ==========================================
-        // 1. SADECE TICKER (KAYAN YAZI) SEÇİLDİYSE AÇILACAK MENÜ
+        // 1. SADECE TICKER İÇİN ÖZEL MENÜ
         // ==========================================
         if (id === 'ticker_dummy') {
             const getV = (key, def) => settingsData.ticker[key] !== undefined ? settingsData.ticker[key] : def;
@@ -1575,9 +1582,9 @@
             `;
             let tabsNav = `
                 <div class="tabs-header">
-                    <button class="tab-btn ${currentActiveTab === 'tab-layout' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-layout')"><i class="ph ph-bounding-box"></i> Düzen</button>
-                    <button class="tab-btn ${currentActiveTab === 'tab-style' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-style')"><i class="ph ph-palette"></i> Stil</button>
-                    <button class="tab-btn ${currentActiveTab === 'tab-text' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-text')"><i class="ph ph-text-t"></i> Metin / Hız</button>
+                    <button class="tab-btn ${currentActiveTab === 'tab-layout' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-layout')">Düzen</button>
+                    <button class="tab-btn ${currentActiveTab === 'tab-style' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-style')">Stil</button>
+                    <button class="tab-btn ${currentActiveTab === 'tab-text' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-text')">Metin / Hız</button>
                 </div>
             `;
             
@@ -1612,7 +1619,7 @@
                 <input type="text" value="${getV('text','')}" oninput="window.universalUpdate('${id}', 'text', this.value)" style="margin-bottom:10px;" placeholder="Mesajınızı yazın...">
                 <div class="label-text">YAZI TİPİ</div>
                 <select class="font-select" onchange="window.universalUpdate('${id}', 'font', this.value)">
-                    ${googleFonts.map(f => `<option value="${f.val}" ${getV('font', '').includes(f.val) ? 'selected' : ''}>${f.name}</option>`).join('')}
+                    ${googleFonts.map(f => `<option value="${f.val}" ${getV('font', '').includes(f.name) ? 'selected' : ''}>${f.name}</option>`).join('')}
                 </select>
                 <div class="label-row" style="margin-top:10px;"><span class="label-text">YAZI BOYUTU</span><span class="value-badge" id="val-fontSize-${id}">${getV('fontSize',40)}px</span></div>
                 <input type="range" min="10" max="200" value="${getV('fontSize',40)}" oninput="window.universalUpdate('${id}', 'fontSize', this.value)">
@@ -1627,11 +1634,11 @@
                 `<div id="tab-style" class="tab-content ${currentActiveTab==='tab-style'?'active':''}">${styleHtml}</div>` +
                 `<div id="tab-text" class="tab-content ${currentActiveTab==='tab-text'?'active':''}">${textHtml}</div>`;
             f.scrollTop = currentScroll;
-            return; // Ticker işlemi burada biter, alttaki kodlar NORMAL nesneler içindir.
+            return; // Ticker işlemi burada biter, alttaki normal nesne kodlarına geçmez.
         }
 
         // ==========================================
-        // 2. NORMAL NESNELER İÇİN FULL ÖZELLİK PANELİ (Senin orijinal detaylı kodun)
+        // ESKİSİ GİBİ: NORMAL NESNELER İÇİN FULL ÖZELLİK PANELİ
         // ==========================================
         try {
             const tag = el.tagName.toLowerCase();
@@ -1734,7 +1741,17 @@
                     </div>
                     <div class="label-row"><span class="label-text">Y KONUMU</span><span class="value-badge" id="val-y-${id}">${y}px</span></div>
                     <div style="display:flex; gap:10px; margin-bottom:15px;">
-                    min="1" max="2500" value="${h}" style="flex:1;" oninput="window.changeProp('${id}', 'h', this.value, this);" onchange="window.saveState()">
+                        <input type="range" min="-1000" max="3000" value="${y}" style="flex:1;" oninput="window.changeProp('${id}', 'y', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${y}" style="width:70px; padding:8px;" oninput="window.changeProp('${id}', 'y', this.value, this);" onchange="window.saveState()">
+                    </div>
+                    <div class="label-row"><span class="label-text">${isText ? 'GENİŞLİK (ESNETME W)' : 'GENİŞLİK (W)'}</span><span class="value-badge" id="val-w-${id}">${w}px</span></div>
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <input type="range" min="1" max="2500" value="${w}" style="flex:1;" oninput="window.changeProp('${id}', 'w', this.value, this);" onchange="window.saveState()">
+                        <input type="number" value="${w}" style="width:70px; padding:8px;" oninput="window.changeProp('${id}', 'w', this.value, this);" onchange="window.saveState()">
+                    </div>
+                    <div class="label-row"><span class="label-text">${isText ? 'YAZI PUNTO (H)' : 'YÜKSEKLİK (H)'}</span><span class="value-badge" id="val-h-${id}">${h}px</span></div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="range" min="1" max="2500" value="${h}" style="flex:1;" oninput="window.changeProp('${id}', 'h', this.value, this);" onchange="window.saveState()">
                         <input type="number" value="${h}" style="width:70px; padding:8px;" oninput="window.changeProp('${id}', 'h', this.value, this);" onchange="window.saveState()">
                     </div>`;
                 layoutHtml += createPropGroup("<i class='ph ph-arrows-out'></i> Konum ve Boyut", posHtml);
