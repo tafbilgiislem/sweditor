@@ -3,74 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SVG Pro Studio | Premium Editor V42</title>
+    <title>SVG Pro Studio | Kusursuz CMS V42</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;700;800&family=Nunito:wght@400;700&family=Open+Sans:wght@400;700&family=Oswald:wght@400;700&family=Pacifico&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;700&family=Raleway:wght@400;700&family=Roboto:wght@400;700&family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         :root{--accent:#10b981;--bg:#0f172a;--panel:#1e293b;--border:#334155;--handle-move:#3b82f6;--handle-rotate:#f59e0b;--handle-radius:#ec4899}
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        html,body{margin:0;padding:0;width:100%;height:100vh;overflow:hidden;background:var(--bg);color:#fff;font-family:'Inter', 'Roboto', sans-serif;}
+        html,body{margin:0;padding:0;width:100%;height:100vh;height:100dvh;overflow:hidden;background:var(--bg);color:#fff;font-family:'Inter', 'Roboto', sans-serif;}
+        
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         
         #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:10000}
-        .login-card{background:var(--panel);padding:40px;border-radius:20px;width:340px;text-align:center;border:1px solid var(--border);}
+        .login-card{background:var(--panel);padding:40px;border-radius:20px;width:340px;text-align:center;border:1px solid var(--border);box-shadow:0 20px 50px rgba(0,0,0,.5)}
         .login-card input{width:100%;padding:14px;margin-bottom:15px;border-radius:10px;border:1px solid var(--border);background:#000;color:#fff;}
         .login-card button{width:100%;padding:14px;background:var(--accent);border:none;color:#fff;font-weight:700;border-radius:10px;cursor:pointer;}
         
         #app-container{display:none;height:100%;width:100%;flex-direction:row}
-        #sidebar{width:480px;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100%;z-index:100;}
+        #sidebar{width:480px;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100%;z-index:100;position:relative}
         .sidebar-scroll-area{flex-shrink:0;max-height:60%;overflow-y:auto;background:#111827;padding:15px;border-bottom:2px solid var(--border)}
-        #editor-fields{flex:1;overflow-y:auto;padding:20px;background:rgba(0,0,0,.2);padding-bottom:80px}
+        #editor-fields{flex:1;min-height:0;overflow-y:auto;padding:20px;background:rgba(0,0,0,.2);padding-bottom:80px}
         
-        #layers-list{flex:1;overflow-y:auto; max-height:200px;}
+        #layers-list{flex:1;overflow-y:auto}
         .layer-item{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-bottom:1px solid var(--border);cursor:pointer;font-size:12px;background:#1e293b;}
-        .layer-item.active{border-left:4px solid var(--accent);background:rgba(16,185,129,.15);font-weight:700}
-        .layer-actions{display:flex;gap:4px;align-items:center}
-        .layer-btn{background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:2px;}
+        .layer-item.active{border-left:4px solid var(--accent);background:rgba(16,185,129,.15);}
+        .layer-actions{display:flex;gap:4px;}
+        .layer-btn{background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;}
         
         #main-view{flex:1;background:#020617;overflow:hidden;position:relative;height:calc(100% - 25px);display:flex}
-        #zoom-container{flex:1;display:flex;align-items:center;justify-content:center;transform-origin:center center;transition:transform .2s ease-out;position:relative;}
-        #svg-wrapper{position:relative;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px #000;touch-action:none;}
+        #zoom-container{flex:1;display:flex;align-items:center;justify-content:center;transform-origin:center center;transition:transform .2s ease-out;position:relative; width:calc(100% - 20px); height:calc(100% - 20px);}
+        #svg-wrapper{position:relative;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px #000;}
         #canvas-inner{width:100%;height:100%;display:flex;}
         #canvas-inner svg{width:auto;height:auto;max-width:100%;max-height:100%;overflow:visible}
         
         .floating-tools{position:fixed;bottom:45px;left:40px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:8px;display:flex;gap:8px;z-index:500;}
-        .tool-btn{background:#0f172a;color:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:700;display:flex; align-items:center;}
-        .tool-btn.active{background:var(--accent);color:#000;}
+        .tool-btn{background:#0f172a;color:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:700;}
         
         .duzenlenebilir{cursor:move;pointer-events:all}
-        #control-layer{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;overflow:visible}
+        #control-layer{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;}
         .handle{fill:#fff;stroke-width:2;pointer-events:all;}
         .handle-resize{stroke:var(--handle-move);cursor:nwse-resize}
+        .handle-rotate{stroke:var(--handle-rotate);cursor:crosshair;fill:var(--handle-rotate)}
+        .guide-line{stroke:#06b6d4;stroke-width:3;stroke-dasharray:8,4;cursor:grab;pointer-events:all}
         
         input[type="range"]{width:100%;accent-color:var(--accent);height:6px;cursor:pointer;margin:0}
-        input[type="text"],input[type="number"],textarea{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:#000;color:#fff;outline:none;}
-        .font-select{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:#000;color:#fff;margin-bottom:5px;outline:none;cursor:pointer}
+        input[type="text"],input[type="number"],textarea{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:#000;color:#fff;}
+        .font-select{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:#000;color:#fff;}
         
-        .action-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-        .action-btn{flex:1;background:#334155;color:#fff;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex; align-items:center; justify-content:center; gap:6px;}
+        .action-row{display:flex;gap:8px;margin-bottom:10px;}
+        .action-btn{flex:1;background:#334155;color:#fff;border:none;border-radius:8px;padding:10px 15px;font-size:12px;font-weight:700;cursor:pointer;}
         .action-btn.active{background:var(--accent);}
         
         .group-box{background:rgba(0,0,0,.2);padding:12px;border-radius:10px;border:1px solid #1e293b;margin-bottom:15px}
-        .prop-group{margin-bottom:20px;}
-        .prop-group-title{font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:6px; display:flex;}
+        .prop-group-title{font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:6px;}
         
-        .tabs-header { display: flex; gap: 4px; margin-bottom: 15px; background: #0f172a; padding: 4px; border-radius: 8px; border: 1px solid var(--border); }
-        .tab-btn { flex: 1; background: transparent; border: none; color: #94a3b8; font-size: 11px; font-weight: 700; padding: 10px 4px; cursor: pointer; border-radius: 6px;}
+        .tabs-header { display: flex; gap: 4px; margin-bottom: 15px; background: #0f172a; padding: 4px; border-radius: 8px;}
+        .tab-btn { flex: 1; background: transparent; border: none; color: #94a3b8; font-size: 11px; font-weight: 700; padding: 10px 4px; cursor: pointer; border-radius: 6px; }
         .tab-btn.active { background: var(--panel); color: var(--accent); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
         .label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;width:100%}
-        .label-text{font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;}
-        .value-badge{background:#000;color:var(--accent);font-size:11px;padding:3px 6px;border-radius:4px;font-family:monospace;font-weight:700}
+        .label-text{font-size:11px;color:#94a3b8;font-weight:700;}
+        .value-badge{background:#000;color:var(--accent);font-size:11px;padding:3px 6px;border-radius:4px;font-family:monospace;}
         
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events:none;}
-        .toast { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 14px 24px; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); font-size: 13px; font-weight: 700;}
+        .toast { background: var(--panel); border: 1px solid var(--border); color: #fff; padding: 14px 24px; border-radius: 12px; display: flex; align-items: center; gap: 12px;}
 
-        .mini-screen-dummy { stroke-dasharray: 10,5; animation: dash 2s linear infinite; fill-opacity:0.3; }
+        .mini-screen-dummy { stroke-dasharray: 10,5; animation: dash 2s linear infinite; fill-opacity: 0.3;}
         @keyframes dash { to { stroke-dashoffset: -30; } }
     </style>
 </head>
@@ -79,9 +80,9 @@
 <div id="toast-container"></div>
 <div id="login-screen">
     <div class="login-card">
-        <h2 style="color:white;"><i class="ph ph-shield-check" style="color:var(--accent);"></i> Pro Studio V42</h2>
+        <h2><i class="ph ph-shield-check" style="color:var(--accent);"></i> Pro Studio</h2>
         <input type="password" id="passInput" placeholder="Sunucu Şifresi">
-        <button onclick="window.login()">Bağlan</button>
+        <button onclick="window.login()">Sunucuya Bağlan</button>
     </div>
 </div>
 
@@ -95,21 +96,19 @@
             <button class="tool-btn" onclick="window.changeZoom(0.1)"><i class="ph ph-magnifying-glass-plus"></i></button>
         </div>
         <div id="zoom-container"><div id="svg-wrapper"><div id="canvas-inner"></div><svg id="control-layer"></svg></div></div>
-        <div id="status-bar" style="position:absolute;bottom:0;width:100%;height:25px;background:#0f172a;display:flex;justify-content:space-between;padding:0 20px;font-size:11px;color:#94a3b8;"><div id="status-count">Nesne: 0</div><div>SVG Pro Ultimate</div></div>
+        <div id="status-bar" style="position:absolute;bottom:0;width:100%;height:25px;background:#0f172a;display:flex;justify-content:space-between;padding:0 20px;font-size:11px;color:#94a3b8;"><div id="status-count">Nesne Sayısı: 0</div><div>SVG Pro Studio Ultimate</div></div>
     </div>
     
     <div id="sidebar">
         <div class="sidebar-scroll-area">
-            <div style="display:flex; gap:5px; margin-bottom: 10px;">
-                <button onclick="window.saveData()" class="action-btn active" style="flex:2;"><i class="ph ph-floppy-disk"></i> KAYDET</button>
-            </div>
-            <select id="file-selector" style="width:100%; padding:10px; background:#000; color:#fff; border-radius:8px; margin-bottom:10px; border:1px solid #334155; outline:none;">
+            <button onclick="window.saveData()" class="action-btn active" style="width:100%; margin-bottom:10px;"><i class="ph ph-floppy-disk"></i> KAYDET</button>
+            <select id="file-selector" style="width:100%; padding:10px; background:#000; color:#fff; border-radius:8px; margin-bottom:10px; border:1px solid #334155;">
                 <option value="slayt.svg">Ana Slayt (slayt.svg)</option>
                 <option value="kampanya.svg">Kampanya (kampanya.svg)</option>
             </select>
 
             <details style="margin-bottom: 10px;" open>
-                <summary style="font-size:11px; font-weight:bold; color:#3b82f6; cursor:pointer;"><i class="ph ph-television"></i> MİNİ EKRAN KONTROLÜ</summary>
+                <summary style="font-size:11px; font-weight:bold; color:#3b82f6; cursor:pointer;"><i class="ph ph-television"></i> MİNİ EKRAN VE YAYIN KONTROLÜ</summary>
                 <div class="group-box" style="border-color:#3b82f6;">
                     <div class="label-text" style="color:#60a5fa;">SOL EKRAN (M3U8)</div>
                     <input type="text" id="m38u-url" placeholder="m3u8 Linki" onchange="window.updateMiniScreenSetting('left')" style="margin-bottom:5px;">
@@ -122,14 +121,13 @@
                         <input type="number" id="m38u-w" placeholder="W" onchange="window.updateMiniScreenSetting('left')">
                         <input type="number" id="m38u-h" placeholder="H" onchange="window.updateMiniScreenSetting('left')">
                     </div>
-
-                    <div class="label-text" style="color:#f59e0b;">SAĞ EKRAN (RESİMLER)</div>
-                    <textarea id="right-images" placeholder="r1.jpg, r2.jpg" style="height:40px; margin-bottom:5px;" onchange="window.updateMiniScreenSetting('right')"></textarea>
+                    <div class="label-text" style="color:#f59e0b;">SAĞ EKRAN (RESİM LİSTESİ)</div>
+                    <textarea id="right-images" placeholder="r1.jpg, r2.jpg" style="height:50px; margin-bottom:5px;" onchange="window.updateMiniScreenSetting('right')"></textarea>
                     <div style="display:flex; gap:5px; margin-bottom:5px;">
                         <input type="number" id="right-x" placeholder="X" onchange="window.updateMiniScreenSetting('right')">
                         <input type="number" id="right-y" placeholder="Y" onchange="window.updateMiniScreenSetting('right')">
                     </div>
-                    <div style="display:flex; gap:5px; margin-bottom:10px;">
+                    <div style="display:flex; gap:5px;">
                         <button id="btn-right-toggle" onclick="window.toggleMiniScreen('right')" class="action-btn">GÖSTER/GİZLE</button>
                         <input type="number" id="right-w" placeholder="W" onchange="window.updateMiniScreenSetting('right')">
                         <input type="number" id="right-h" placeholder="H" onchange="window.updateMiniScreenSetting('right')">
@@ -138,14 +136,14 @@
             </details>
             
             <details style="margin-bottom: 10px;" open>
-                <summary style="font-size:11px; font-weight:bold; color:#ec4899; cursor:pointer;"><i class="ph ph-article"></i> TICKER VE SAAT</summary>
+                <summary style="font-size:11px; font-weight:bold; color:#ec4899; cursor:pointer;"><i class="ph ph-article"></i> KAYAN YAZI (TICKER)</summary>
                 <div class="group-box" style="border-color:#ec4899;">
                     <div style="display:flex; gap:5px; margin-bottom:10px;">
                         <button id="btn-ticker-toggle" onclick="window.toggleTicker()" class="action-btn">GÖSTER/GİZLE</button>
                         <button id="btn-clock-toggle" onclick="window.toggleClock()" class="action-btn" style="background:#8b5cf6;">SAAT AÇIK</button>
                     </div>
                     <div class="label-text" style="color:#ec4899;">KAYAN YAZI METNİ</div>
-                    <input type="text" id="ticker-text" placeholder="Mesajınız..." oninput="window.updateTickerSetting()" style="margin-bottom:5px;">
+                    <input type="text" id="ticker-text" placeholder="Metin yazın..." oninput="window.updateTickerSetting()" style="margin-bottom:5px;">
                     <div style="display:flex; gap:5px; margin-bottom:5px;">
                         <input type="number" id="ticker-x" placeholder="X" onchange="window.updateTickerSetting()">
                         <input type="number" id="ticker-y" placeholder="Y" onchange="window.updateTickerSetting()">
@@ -156,20 +154,15 @@
                     </div>
                 </div>
             </details>
-            
+
             <details style="margin-bottom: 10px;" open>
                 <summary style="font-size:11px; font-weight:bold; color:#8b5cf6; cursor:pointer;"><i class="ph ph-paint-brush"></i> NESNE EKLE</summary>
-                <div class="group-box">
-                    <div class="action-row" style="margin:0;">
-                        <button onclick="window.addNewText()" class="action-btn" style="background:#475569;"><i class="ph ph-text-t"></i> YAZI</button>
-                        <button onclick="window.addShape('rect')" class="action-btn" style="background:#475569;"><i class="ph ph-square"></i> KARE</button>
-                    </div>
-                </div>
+                <div class="group-box"><div class="action-row" style="margin:0;"><button onclick="window.addNewText()" class="action-btn"><i class="ph ph-text-t"></i> YAZI</button><button onclick="window.addShape('rect')" class="action-btn"><i class="ph ph-square"></i> KARE</button></div></div>
             </details>
 
             <details style="margin-bottom: 5px;" open>
                 <summary style="font-size:11px; font-weight:bold; color:#06b6d4; cursor:pointer;"><i class="ph ph-layers"></i> KATMANLAR</summary>
-                <div class="group-box" style="padding:0; overflow:hidden;"><div id="layers-list"></div></div>
+                <div class="group-box" style="padding:0; overflow:hidden;"><div id="layers-list" style="max-height: 200px; overflow-y: auto;"></div></div>
             </details>
         </div>
         <div id="editor-fields"><div style="text-align:center; color:#64748b; margin-top:50px;">Nesne seçin.</div></div>
@@ -179,43 +172,38 @@
 <script>
     const WORKER_URL = "https://sw.tafbilgiislem.workers.dev"; 
     let SHA_KEY = "", SESSION_PASS = "", settingsData = {}, settingsSha = "", currentActiveTab = 'tab-layout';
+    const googleFonts = [{ name: "Varsayılan", val: "sans-serif" }, { name: "Roboto", val: "'Roboto', sans-serif" }, { name: "Montserrat", val: "'Montserrat', sans-serif" }, { name: "Poppins", val: "'Poppins', sans-serif" }, { name: "Oswald", val: "'Oswald', sans-serif" }, { name: "Bebas Neue", val: "'Bebas Neue', sans-serif" }, { name: "Pacifico", val: "'Pacifico', cursive" }];
+    let recentColors = ['#10b981', '#3b82f6', '#ef4444', '#f59e0b', '#8b5cf6', '#ffffff'];
+    
     let selectedEl = null, resizingEl = null, rotatingEl = null, activeHandle = null, offset = {x:0, y:0}, startP = {x:0, y:0}, startData = {}, isModified = false;
     let currentZoom = 1, panX = 0, panY = 0, historyStack = [], historyIndex = -1, isDraggingElement = false;
-    
-    const googleFonts = [{ name: "Varsayılan", val: "sans-serif" }, { name: "Roboto", val: "'Roboto', sans-serif" }, { name: "Montserrat", val: "'Montserrat', sans-serif" }, { name: "Poppins", val: "'Poppins', sans-serif" }, { name: "Oswald", val: "'Oswald', sans-serif" }, { name: "Bebas Neue", val: "'Bebas Neue', sans-serif" }];
-    let recentColors = ['#10b981', '#3b82f6', '#ef4444', '#f59e0b', '#8b5cf6', '#ffffff'];
 
+    // EVRENSEL GÜNCELLEYİCİ - Ticker Pro Entegrasyonu
     window.universalUpdate = function(id, key, val) {
-        const isTicker = id === 'ticker_dummy'; const el = document.getElementById(id);
+        const isTicker = id === 'ticker_dummy';
+        const el = document.getElementById(id);
         if (isTicker) {
             if (key === 'text') { settingsData.ticker.text = val; if(document.getElementById('ticker-text')) document.getElementById('ticker-text').value = val; } 
             else if (['x','y','w','h','fontSize','speed','opacity','shadowBlur'].includes(key)) { settingsData.ticker[key] = parseFloat(val) || 0; } 
             else { settingsData.ticker[key] = val; }
+
             if (key === 'w') el.setAttribute('width', val); if (key === 'h') el.setAttribute('height', val);
             if (key === 'x') el.setAttribute('x', val); if (key === 'y') el.setAttribute('y', val);
             if (key === 'bgColor') el.setAttribute('fill', val); if (key === 'opacity') el.setAttribute('fill-opacity', val);
             window.saveAllSettingsToCloud(true); 
         } else {
-            if (['x','y','w','h'].includes(key)) window.changeProp(id, key, val); else window.changeSetting(id, key, val);
+            if (['x','y','w','h'].includes(key)) window.changeProp(id, key, val);
+            else window.changeSetting(id, key, val);
         }
         const badge = document.getElementById(`val-${key}-${id}`);
         if (badge) badge.innerText = val + (['opacity','speed'].includes(key) ? '' : 'px');
     };
 
-    window.showToast = function(msg) {
-        const c = document.getElementById('toast-container');
-        const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<i class="ph ph-check-circle"></i> <span>${msg}</span>`;
-        c.appendChild(t); setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
-    };
-
+    window.showToast = function(msg) { const c = document.getElementById('toast-container'); const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<i class="ph ph-check-circle"></i> <span>${msg}</span>`; c.appendChild(t); setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000); };
     window.setD = function(el, key, val) { if(el) el.setAttribute('data-' + key, val); };
     window.getD = function(el, key) { return el ? el.getAttribute('data-' + key) : null; };
 
-    window.login = async function() {
-        SESSION_PASS = document.getElementById('passInput').value; 
-        await window.loadSettings(); await window.loadSlide();    
-    };
-    
+    window.login = async function() { SESSION_PASS = document.getElementById('passInput').value; await window.loadSettings(); await window.loadSlide(); };
     window.loadSettings = async function() {
         try {
             const res = await fetch(WORKER_URL, { headers: {"X-Auth-Key": SESSION_PASS, "X-File-Name": "settings.json"} });
@@ -237,7 +225,6 @@
         const t = settingsData.ticker;
         document.getElementById('ticker-text').value = t.text; document.getElementById('ticker-x').value = t.x; document.getElementById('ticker-y').value = t.y; document.getElementById('ticker-w').value = t.w; document.getElementById('ticker-h').value = t.h;
         document.getElementById('btn-ticker-toggle').style.background = t.visible ? "#10b981" : "#991b1b"; document.getElementById('btn-clock-toggle').style.background = t.showClock ? "#10b981" : "#991b1b";
-        
         window.syncDummyElement('left'); window.syncDummyElement('right'); window.syncDummyElement('ticker');
     };
 
@@ -246,10 +233,10 @@
         const ms = type === 'ticker' ? settingsData.ticker : settingsData.mini_screens[type];
         let el = document.getElementById(id); const svg = document.querySelector('#canvas-inner svg');
         if(ms.visible && svg) {
-            if(!el) { el = document.createElementNS("http://www.w3.org/2000/svg", "rect"); el.id = id; el.setAttribute("class", "duzenlenebilir mini-screen-dummy"); el.setAttribute("stroke-width", "6"); svg.appendChild(el); }
+            if(!el) { el = document.createElementNS("http://www.w3.org/2000/svg", "rect"); el.id = id; el.setAttribute("class", "duzenlenebilir mini-screen-dummy"); el.setAttribute("stroke-width", "6"); window.setD(el, "locked", "false"); svg.appendChild(el); }
             if(type === 'ticker') { el.setAttribute("fill", ms.bgColor || "#000"); el.setAttribute("fill-opacity", ms.opacity); el.setAttribute("stroke", "#ec4899"); } 
             else { el.setAttribute("fill", type === 'left' ? "rgba(59, 130, 246, 0.4)" : "rgba(245, 158, 11, 0.4)"); el.setAttribute("stroke", type === 'left' ? "#3b82f6" : "#f59e0b"); }
-            el.setAttribute("x", ms.x || 0); el.setAttribute("y", ms.y || 0); el.setAttribute("width", ms.w || 100); el.setAttribute("height", ms.h || 100);
+            el.setAttribute("x", !isNaN(ms.x) ? ms.x : 0); el.setAttribute("y", !isNaN(ms.y) ? ms.y : 0); el.setAttribute("width", !isNaN(ms.w) ? ms.w : 100); el.setAttribute("height", !isNaN(ms.h) ? ms.h : 100);
         } else if(el) { el.remove(); if(selectedEl?.id === id) { selectedEl = null; document.getElementById('control-layer').innerHTML=""; window.renderProperties(); } }
     };
 
@@ -269,6 +256,7 @@
         const res = await fetch(WORKER_URL, { method: "PUT", headers: { "X-Auth-Key": SESSION_PASS, "X-File-Name": "settings.json" }, body: JSON.stringify({content: b64, sha: settingsSha}) });
         if(res.ok) { const d = await res.json(); settingsSha = d.content?.sha || d.sha; if(!silent) window.showToast("Kaydedildi!"); }
     };
+
     window.loadSlide = async function() {
         const file = document.getElementById('file-selector').value;
         const res = await fetch(WORKER_URL, { headers: {"X-Auth-Key": SESSION_PASS, "X-File-Name": file} });
@@ -283,7 +271,7 @@
     window.saveData = async function() {
         document.getElementById('control-layer').innerHTML = ""; 
         const svg = document.querySelector('#canvas-inner svg').cloneNode(true);
-        // KAYIT ÖNCESİ DUMMY TEMİZLİĞİ (TICKER EKRANDA KALMAZ)
+        // DUMMY (SAHTE) KATMANLARI YAYINDAN SİL (KUSURSUZ YAYIN İÇİN)
         ['ticker_dummy', 'mini_left', 'mini_right'].forEach(id => { const d = svg.querySelector('#'+id); if(d) d.remove(); });
         
         const b64 = btoa(unescape(encodeURIComponent(new XMLSerializer().serializeToString(svg))));
@@ -292,13 +280,15 @@
     };
 
     window.setupLayers = function() {
-        const mainSvg = document.querySelector('#canvas-inner svg'); const ctrl = document.getElementById('control-layer');
+        const mainSvg = document.querySelector('#canvas-inner svg'); 
         if (!mainSvg) return;
         mainSvg.querySelectorAll('.duzenlenebilir:not(.mini-screen-dummy)').forEach(el => {
             if(!el.id) el.id = "el_" + Math.random().toString(36).substr(2,9);
             if(window.getD(el, 'angle') || window.getD(el, 'flip-x')) window.applyTransforms(el);
             if(window.getD(el, 'shadow-blur') || window.getD(el, 'blend')) window.applyFilters(el);
             if(window.getD(el, 'fill-type')) window.applyFill(el);
+            if(el.tagName === 'text' && window.getD(el, 'curve')) window.applyTextCurve(el);
+            if((el.tagName === 'image' || el.tagName === 'rect') && window.getD(el, 'mask-shape')) window.applyShapeMask(el);
         });
         window.initEngine(mainSvg); window.renderEditor();
     };
@@ -311,7 +301,7 @@
             const p = getCoords(e); const target = e.target; isModified = false;
             if (target.classList.contains('handle')) {
                 const el = document.getElementById(target.dataset.id); if (!el || window.getD(el, 'locked') === "true") return;
-                startP = p; startData = { x: parseFloat(el.getAttribute("x"))||0, y: parseFloat(el.getAttribute("y"))||0, w: parseFloat(el.getAttribute("width"))||0, h: parseFloat(el.getAttribute("height"))||0 };
+                startP = p; startData = { x: parseFloat(el.getAttribute("x"))||0, y: parseFloat(el.getAttribute("y"))||0, w: parseFloat(el.getAttribute("width")||el.getAttribute("textLength")||0), h: parseFloat(el.getAttribute("height")||window.getD(el, "base-font-size")||0) };
                 if (target.classList.contains('handle-resize')) { resizingEl = el; activeHandle = 'resize'; }
                 try { wrapper.setPointerCapture(e.pointerId); } catch(err){} return;
             }
@@ -329,11 +319,18 @@
             
             if (resizingEl) {
                 let { x, y, w, h } = startData;
-                resizingEl.setAttribute("width", Math.max(10, w + dx)); resizingEl.setAttribute("height", Math.max(10, h + dy));
+                if(resizingEl.tagName === 'text') {
+                    if(w > 10) resizingEl.setAttribute('textLength', Math.max(10, w + dx));
+                    if(h > 5) window.setD(resizingEl, 'base-font-size', Math.max(5, h + dy));
+                    window.applyTextCurve(resizingEl);
+                } else {
+                    resizingEl.setAttribute("width", Math.max(10, w + dx)); resizingEl.setAttribute("height", Math.max(10, h + dy));
+                }
                 window.updateUI(resizingEl);
             } 
             else if (isDraggingElement) {
                 selectedEl.setAttribute("x", p.x - offset.x); selectedEl.setAttribute("y", p.y - offset.y);
+                if(selectedEl.tagName === 'text') window.applyTextCurve(selectedEl);
                 window.updateUI(selectedEl);
             }
         };
@@ -342,7 +339,7 @@
             try { wrapper.releasePointerCapture(e.pointerId); } catch(err){} 
             isDraggingElement = false; 
 
-            // MİNİ EKRAN VE TICKER SÜRÜKLE BIRAK KAYIT MOTORU
+            // SAHTE EKRANLARIN JSON'A OTOMATİK KAYIT EDİLMESİ
             if (isModified && selectedEl && selectedEl.classList.contains('mini-screen-dummy')) {
                 const side = selectedEl.id === 'mini_left' ? 'left' : (selectedEl.id === 'mini_right' ? 'right' : 'ticker');
                 const nx = Math.round(parseFloat(selectedEl.getAttribute('x'))) || 0;
@@ -372,38 +369,42 @@
         const r = document.createElementNS("http://www.w3.org/2000/svg", "rect"); r.setAttribute("x", b.x); r.setAttribute("y", b.y); r.setAttribute("width", b.width); r.setAttribute("height", b.height); r.setAttribute("fill", "none"); r.setAttribute("stroke", "var(--handle-move)"); r.setAttribute("stroke-width", "2"); g.appendChild(r);
         const h = document.createElementNS("http://www.w3.org/2000/svg", "rect"); h.setAttribute("x", b.x + b.width - 10); h.setAttribute("y", b.y + b.height - 10); h.setAttribute("width", 20); h.setAttribute("height", 20); h.setAttribute("class", "handle handle-resize"); h.dataset.id = el.id; g.appendChild(h);
     };
-    window.updateEditorUI = window.updateUI; 
-
+    window.updateEditorUI = window.updateUI;
     window.renderEditor = function() { window.renderLayers(); if(selectedEl) window.renderProperties(); else document.getElementById('editor-fields').innerHTML = `<div style="text-align:center; color:#64748b; margin-top:50px;">Nesne seçin.</div>`; };
-    window.renderLayers = function() { const list = document.getElementById('layers-list'); list.innerHTML = ""; Array.from(document.querySelectorAll('.duzenlenebilir:not(.mini-screen-dummy)')).reverse().forEach(el => { const i = document.createElement('div'); i.className = `layer-item ${selectedEl === el ? 'active' : ''}`; i.innerText = el.tagName.toUpperCase(); i.onclick = () => { selectedEl = el; window.updateUI(el); window.renderProperties(); }; list.appendChild(i); }); };
+    window.renderLayers = function() { const list = document.getElementById('layers-list'); list.innerHTML = ""; Array.from(document.querySelectorAll('.duzenlenebilir:not(.mini-screen-dummy)')).reverse().forEach(el => { const i = document.createElement('div'); i.className = `layer-item ${selectedEl === el ? 'active' : ''}`; i.innerText = window.getD(el, 'raw-text') ? `YAZI: ${window.getD(el, 'raw-text').substring(0,10)}` : el.tagName.toUpperCase(); i.onclick = () => { selectedEl = el; window.updateUI(el); window.renderProperties(); }; list.appendChild(i); }); };
+    window.switchTab = function(btn, tabId) { const wrapper = btn.closest('#editor-fields'); wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); wrapper.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); btn.classList.add('active'); wrapper.querySelector('#' + tabId).classList.add('active'); currentActiveTab = tabId; };
 
-    window.switchTab = function(btn, tabId) {
-        const wrapper = btn.closest('#editor-fields');
-        wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); wrapper.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active'); wrapper.querySelector('#' + tabId).classList.add('active'); currentActiveTab = tabId;
-    };
+    function createPropGroup(title, content) { return `<div class="prop-group"><div class="prop-group-title">${title}</div>${content}</div>`; }
 
-    // KUSURSUZ ÖZELLİK PANELİ (ESKİ METİN AYARLARI + YENİ TICKER)
+    // KUSURSUZ ÖZELLİK PANELİ (ESKİ ORİJİNAL KODLARIN TAMAMI BURADA)
     window.renderProperties = function() {
         const f = document.getElementById('editor-fields');
         if (!selectedEl) return;
         const el = selectedEl; const id = el.id; const isTicker = id === 'ticker_dummy';
-        const getV = (key, attr, def) => isTicker ? (settingsData.ticker[key] !== undefined ? settingsData.ticker[key] : def) : (el.getAttribute(attr) || def);
+        const getV = (key, attr, def) => isTicker ? (settingsData.ticker[key] !== undefined ? settingsData.ticker[key] : def) : (window.getD(el, key) || el.getAttribute(attr) || def);
         const isText = el.tagName.toLowerCase() === 'text' || isTicker;
 
         let tabsNav = `<div class="tabs-header"><button class="tab-btn ${currentActiveTab === 'tab-layout' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-layout')">Düzen</button><button class="tab-btn ${currentActiveTab === 'tab-style' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-style')">Stil</button>${isText ? `<button class="tab-btn ${currentActiveTab === 'tab-text' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-text')">Metin</button>` : ''}</div>`;
 
+        // 1. DÜZEN SEKMESİ (Hem Ticker Hem Normal)
         let layoutHtml = `<div class="prop-group"><div class="prop-group-title">KONUM & BOYUT</div>
             <div class="label-row"><span class="label-text">X KONUMU</span><span class="value-badge" id="val-x-${id}">${Math.round(getV('x','x',0))}px</span></div>
             <input type="range" min="-500" max="2500" value="${getV('x','x',0)}" oninput="window.universalUpdate('${id}', 'x', this.value)">
             <div class="label-row" style="margin-top:10px;"><span class="label-text">Y KONUMU</span><span class="value-badge" id="val-y-${id}">${Math.round(getV('y','y',0))}px</span></div>
             <input type="range" min="-500" max="1500" value="${getV('y','y',0)}" oninput="window.universalUpdate('${id}', 'y', this.value)">
             <div class="label-row" style="margin-top:10px;"><span class="label-text">GENİŞLİK (W)</span><span class="value-badge" id="val-w-${id}">${Math.round(getV('w','width',100))}px</span></div>
-            <input type="range" min="10" max="1920" value="${getV('w','width',100)}" oninput="window.universalUpdate('${id}', 'w', this.value)">
+            <input type="range" min="10" max="2500" value="${getV('w','width',100)}" oninput="window.universalUpdate('${id}', 'w', this.value)">
             <div class="label-row" style="margin-top:10px;"><span class="label-text">YÜKSEKLİK (H)</span><span class="value-badge" id="val-h-${id}">${Math.round(getV('h','height',100))}px</span></div>
-            <input type="range" min="10" max="500" value="${getV('h','height',100)}" oninput="window.universalUpdate('${id}', 'h', this.value)">
+            <input type="range" min="10" max="2500" value="${getV('h','height',100)}" oninput="window.universalUpdate('${id}', 'h', this.value)">
         </div>`;
 
+        // NORMAL NESNELER İÇİN ORİJİNAL DÖNDÜRME
+        if (!isTicker && el.tagName !== 'path') {
+            const angle = parseFloat(window.getD(el, 'angle')) || 0;
+            layoutHtml += `<div class="prop-group"><div class="prop-group-title">DÖNDÜRME</div><div class="label-row"><span class="label-text">AÇI</span><span class="value-badge" id="val-angle-${id}">${angle}°</span></div><input type="range" min="0" max="360" value="${angle}" oninput="window.changeSetting('${id}', 'angle', this.value, this)"></div>`;
+        }
+
+        // 2. STİL SEKMESİ (Dolgu, Opaklık ve Orijinal Maskeler)
         let styleHtml = `<div class="prop-group"><div class="prop-group-title">GÖRÜNÜM & EFEKT</div>
             <div class="label-text">ARKA PLAN / DOLGU RENGİ</div>
             <input type="color" value="${getV('bgColor','fill','#000000')}" oninput="window.universalUpdate('${id}', 'bgColor', this.value)">
@@ -411,6 +412,12 @@
             <input type="range" min="0" max="1" step="0.1" value="${getV('opacity','fill-opacity',1)}" oninput="window.universalUpdate('${id}', 'opacity', this.value)">
         </div>`;
 
+        if (!isTicker && (el.tagName === 'rect' || el.tagName === 'image')) {
+            const maskShape = window.getD(el, 'mask-shape') || 'none'; const rx = parseFloat(window.getD(el, 'rx')) || 0;
+            styleHtml += `<div class="prop-group"><div class="prop-group-title">MASKELEME (KESME)</div><select class="font-select" onchange="window.changeSetting('${id}', 'mask-shape', this.value); window.saveState();"><option value="none" ${maskShape === 'none' ? 'selected' : ''}>Yok</option><option value="squircle" ${maskShape === 'squircle' ? 'selected' : ''}>Oval (Squircle)</option><option value="circle" ${maskShape === 'circle' ? 'selected' : ''}>Daire</option></select><div class="label-row" style="margin-top:10px;"><span class="label-text">KÖŞE YARIÇAPI (RX)</span><span class="value-badge" id="val-rx-${id}">${rx}px</span></div><input type="range" min="0" max="300" value="${rx}" oninput="window.changeSetting('${id}', 'rx', this.value, this)"></div>`;
+        }
+
+        // 3. METİN SEKMESİ (Eski Profesyonel Özellikler Korundu)
         let textHtml = "";
         if (isText) {
             textHtml = `<div class="prop-group"><div class="prop-group-title">METİN VE FONT</div>
@@ -419,23 +426,44 @@
                 <select class="font-select" onchange="window.universalUpdate('${id}', 'font', this.value)">
                     ${googleFonts.map(f => `<option value="${f.val}" ${getV('font','', '').includes(f.name) ? 'selected' : ''}>${f.name}</option>`).join('')}
                 </select>
-                <div class="label-row" style="margin-top:10px;"><span class="label-text">YAZI BOYUTU</span><span class="value-badge" id="val-fontSize-${id}">${getV('fontSize','font-size',40)}px</span></div>
-                <input type="range" min="10" max="200" value="${getV('fontSize','font-size',40)}" oninput="window.universalUpdate('${id}', 'fontSize', this.value)">
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">YAZI BOYUTU</span><span class="value-badge" id="val-fontSize-${id}">${Math.round(getV('fontSize','font-size',40))}px</span></div>
+                <input type="range" min="10" max="500" value="${getV('fontSize','font-size',40)}" oninput="window.universalUpdate('${id}', 'fontSize', this.value)">
                 <div class="label-text" style="margin-top:10px;">YAZI RENGİ</div>
                 <input type="color" value="${getV('color','fill','#ffffff')}" oninput="window.universalUpdate('${id}', 'color', this.value)">
-                ${isTicker ? `<div class="label-row" style="margin-top:10px;"><span class="label-text">KAYMA HIZI (DÜŞÜK=HIZLI)</span><span class="value-badge" id="val-speed-${id}">${getV('speed', '', 20)}</span></div><input type="number" value="${getV('speed', '', 20)}" oninput="window.universalUpdate('${id}', 'speed', this.value)">` : ''}
             </div>`;
+            
+            // Eğer normal bir metinse Orijinal Neon, 3D ve Kavis özelliklerini göster!
+            if (!isTicker) {
+                const curve = parseFloat(window.getD(el, 'curve')) || 0;
+                textHtml += `<div class="prop-group"><div class="prop-group-title">GELİŞMİŞ METİN (NEON & 3D)</div>
+                <div style="display:flex; gap:5px; margin-bottom:10px;"><button class="action-btn" onclick="window.applyTextStyle('${id}', 'neon')">Neon</button><button class="action-btn" onclick="window.applyTextStyle('${id}', '3d')">3D</button><button class="action-btn" onclick="window.applyTextStyle('${id}', 'normal')">Temizle</button></div>
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">EĞRİLİK (KAVİS)</span><span class="value-badge" id="val-curve-${id}">${curve}</span></div>
+                <input type="range" min="-100" max="100" value="${curve}" oninput="window.changeSetting('${id}', 'curve', this.value, this)">
+                </div>`;
+            } else {
+                textHtml += `<div class="prop-group"><div class="prop-group-title">KAYAN YAZI AYARLARI</div><div class="label-row"><span class="label-text">KAYMA HIZI (DÜŞÜK=HIZLI)</span><span class="value-badge" id="val-speed-${id}">${getV('speed', '', 20)}</span></div><input type="number" value="${getV('speed', '', 20)}" oninput="window.universalUpdate('${id}', 'speed', this.value)"></div>`;
+            }
         }
 
         f.innerHTML = tabsNav + `<div id="tab-layout" class="tab-content ${currentActiveTab==='tab-layout'?'active':''}">${layoutHtml}</div><div id="tab-style" class="tab-content ${currentActiveTab==='tab-style'?'active':''}">${styleHtml}</div><div id="tab-text" class="tab-content ${currentActiveTab==='tab-text'?'active':''}">${textHtml}</div>`;
     };
 
-    window.changeProp = function(id, key, val) { const el = document.getElementById(id); if(key==='w') el.setAttribute('width', val); if(key==='h') el.setAttribute('height', val); if(key==='x') el.setAttribute('x', val); if(key==='y') el.setAttribute('y', val); window.updateUI(el); window.saveState(); };
-    window.changeSetting = function(id, key, val) { const el = document.getElementById(id); if(key==='raw-text') el.textContent = val; if(key==='font') el.style.fontFamily = val; window.saveState(); };
+    // ORİJİNAL ALT YAPILAR (SVG MANİPÜLASYONU)
+    window.changeProp = function(id, key, val) { const el = document.getElementById(id); if(key==='w') { el.setAttribute('width', val); if(el.tagName==='text') { el.setAttribute('textLength', val); el.setAttribute('lengthAdjust', 'spacingAndGlyphs'); const tp = el.querySelector('textPath'); if(tp) {tp.setAttribute('textLength', val); tp.setAttribute('lengthAdjust', 'spacingAndGlyphs');} } } if(key==='h') { el.setAttribute('height', val); if(el.tagName==='text') { window.setD(el, 'base-font-size', val); el.setAttribute('font-size', val); } } if(key==='x') el.setAttribute('x', val); if(key==='y') el.setAttribute('y', val); if(el.tagName==='text') window.applyTextCurve(el); if(el.tagName==='image' || el.tagName==='rect') window.applyShapeMask(el); window.updateUI(el); };
+    window.changeSetting = function(id, key, val) { const el = document.getElementById(id); window.setD(el, key, val); if(key==='raw-text') { el.textContent = val; el.removeAttribute('textLength'); } if(key==='font') { el.style.fontFamily = val; el.setAttribute('font-family', val); } if(key==='angle') window.applyTransforms(el); if(key==='curve') window.applyTextCurve(el); if(key==='rx' || key==='mask-shape') window.applyShapeMask(el); };
+    
+    window.applyTextStyle = function(id, style) { const el = document.getElementById(id); const rawText = window.getD(el, 'raw-text') || el.textContent; if(style === 'normal') { el.innerHTML = ''; el.textContent = rawText; window.setD(el, 'text-style', 'normal'); window.applyTextCurve(el); } else if(style === 'neon') { window.setD(el, 'text-style', 'neon'); el.innerHTML = `<tspan font-weight="bold" fill="#ffffff" stroke="${el.getAttribute('fill')||'#000'}" stroke-width="2" filter="drop-shadow(0 0 15px ${el.getAttribute('fill')||'#000'})">${rawText}</tspan>`; } else if(style === '3d') { window.setD(el, 'text-style', '3d'); el.innerHTML = `<tspan font-weight="bold" fill="${el.getAttribute('fill')||'#000'}" stroke="#000000" stroke-width="3" filter="drop-shadow(6px 6px 0 #000000)">${rawText}</tspan>`; } window.saveState(); window.renderProperties(); };
+    window.applyTextCurve = function(el) { if (el.tagName !== 'text') return; const curve = parseFloat(window.getD(el, 'curve')) || 0; const rawText = window.getD(el, 'raw-text') || el.textContent; el.innerHTML = ''; el.textContent = rawText; if (curve !== 0) { const svg = document.querySelector('#canvas-inner svg'); let defs = svg.querySelector('defs'); if (!defs) { defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"); svg.prepend(defs); } const pathId = "curve_" + el.id; let curvePath = defs.querySelector("#" + pathId); if (!curvePath) { curvePath = document.createElementNS("http://www.w3.org/2000/svg", "path"); curvePath.id = pathId; curvePath.setAttribute("fill", "none"); defs.appendChild(curvePath); } const x = parseFloat(el.getAttribute('x')) || 0; const y = parseFloat(el.getAttribute('y')) || 0; curvePath.setAttribute("d", `M ${x - 1500}, ${y - (curve*2.5)/2} Q ${x}, ${y + (curve*2.5)} ${x + 1500}, ${y - (curve*2.5)/2}`); el.innerHTML = ''; const tp = document.createElementNS("http://www.w3.org/2000/svg", "textPath"); tp.setAttribute("href", "#" + pathId); tp.setAttribute("startOffset", "50%"); tp.setAttribute("text-anchor", "middle"); tp.textContent = rawText; el.appendChild(tp); } };
+    window.describeRoundedRect = function(r, s, x, y, w, h) { if (r <= 0) return `M ${x} ${y} H ${x + w} V ${y + h} H ${x} Z`; r = Math.min(r, w / 2, h / 2); const kappa = (4 * (r * (1 - s)) * Math.tan(Math.PI / 4)) / 3; const pts = [ [x + r, y], [x + w - r, y], [x + w, y + r], [x + w, y + h - r], [x + w - r, y + h], [x + r, y + h], [x, y + h - r], [x, y + r] ]; return `M ${pts[0][0]} ${pts[0][1]} L ${pts[1][0]} ${pts[1][1]} C ${pts[1][0] + kappa} ${pts[1][1]} ${pts[2][0]} ${pts[2][1] - kappa} ${pts[2][0]} ${pts[2][1]} L ${pts[3][0]} ${pts[3][1]} C ${pts[3][0]} ${pts[3][1] + kappa} ${pts[4][0] + kappa} ${pts[4][1]} ${pts[4][0]} ${pts[4][1]} L ${pts[5][0]} ${pts[5][1]} C ${pts[5][0] - kappa} ${pts[5][1]} ${pts[6][0]} ${pts[6][1] + kappa} ${pts[6][0]} ${pts[6][1]} L ${pts[7][0]} ${pts[7][1]} C ${pts[7][0]} ${pts[7][1] - kappa} ${pts[0][0] - kappa} ${pts[0][1]} ${pts[0][0]} ${pts[0][1]} Z`; };
+    window.applyShapeMask = function(el) { if (el.tagName !== 'image' && el.tagName !== 'rect') return; if (!window.getD(el, 'mask-shape') || window.getD(el, 'mask-shape') === "none") { el.removeAttribute("clip-path"); return; } const shape = window.getD(el, 'mask-shape'); const x = parseFloat(el.getAttribute('x')) || 0, y = parseFloat(el.getAttribute('y')) || 0, w = parseFloat(el.getAttribute('width')) || 0, h = parseFloat(el.getAttribute('height')) || 0; if(w === 0 || h === 0) return; let d = ""; if (shape === 'circle') { const cx = x+w/2, cy = y+h/2, r = Math.min(w,h)/2; d = `M ${cx-r},${cy} A ${r},${r} 0 1,0 ${cx+r},${cy} A ${r},${r} 0 1,0 ${cx-r},${cy} Z`; } else if (shape === 'squircle') { d = window.describeRoundedRect((parseFloat(window.getD(el, 'rx'))||0), 0.5, x, y, w, h); } const svg = document.querySelector('#canvas-inner svg'); let defs = svg.querySelector('defs'); if (!defs) { defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"); svg.prepend(defs); } const clipId = "clip_" + el.id; let clipPath = defs.querySelector("#" + clipId); if (!clipPath) { clipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath"); clipPath.id = clipId; const path = document.createElementNS("http://www.w3.org/2000/svg", "path"); clipPath.appendChild(path); defs.appendChild(clipPath); el.setAttribute("clip-path", `url(#${clipId})`); } clipPath.querySelector('path').setAttribute("d", d); };
+    window.applyTransforms = function(el) { let cx = 0, cy = 0; if(el.tagName === 'text') { cx = parseFloat(el.getAttribute('x')) || 0; cy = parseFloat(el.getAttribute('y')) || 0; } else { cx = (parseFloat(el.getAttribute('x')) || 0) + (parseFloat(el.getAttribute('width')) || 0) / 2; cy = (parseFloat(el.getAttribute('y')) || 0) + (parseFloat(el.getAttribute('height')) || 0) / 2; } const angle = parseFloat(window.getD(el, 'angle')) || 0; el.setAttribute("transform", `rotate(${angle} ${cx} ${cy})`); };
+    window.addNewText = function() { const svg = document.querySelector('#canvas-inner svg'); const t = document.createElementNS("http://www.w3.org/2000/svg", "text"); t.id = "txt_" + Date.now(); t.setAttribute("x", 500); t.setAttribute("y", 500); t.setAttribute("font-size", "60"); t.setAttribute("fill", "#ffffff"); t.setAttribute("class", "duzenlenebilir"); t.textContent = "YENİ YAZI"; svg.appendChild(t); selectedEl = t; window.saveState(); window.setupLayers(); window.renderProperties(); };
+    window.addShape = function(type) { const svg = document.querySelector('#canvas-inner svg'); const r = document.createElementNS("http://www.w3.org/2000/svg", "rect"); r.id = "shp_" + Date.now(); r.setAttribute("x", 500); r.setAttribute("y", 500); r.setAttribute("width", 200); r.setAttribute("height", 200); r.setAttribute("fill", "#10b981"); r.setAttribute("class", "duzenlenebilir"); svg.appendChild(r); selectedEl = r; window.saveState(); window.setupLayers(); window.renderProperties(); };
     window.saveState = function() { const svg = document.querySelector('#canvas-inner svg'); if (!svg) return; historyStack.push(svg.innerHTML); historyIndex++; };
-    window.undo = function() { if (historyIndex > 0) { historyIndex--; document.querySelector('#canvas-inner svg').innerHTML = historyStack[historyIndex]; window.initEngine(document.querySelector('#canvas-inner svg')); } };
+    window.undo = function() { if (historyIndex > 0) { historyIndex--; document.querySelector('#canvas-inner svg').innerHTML = historyStack[historyIndex]; window.setupLayers(); } };
+    window.redo = function() { if (historyIndex < historyStack.length - 1) { historyIndex++; document.querySelector('#canvas-inner svg').innerHTML = historyStack[historyIndex]; window.setupLayers(); } };
     window.changeZoom = function(v) { currentZoom += v; document.getElementById('svg-wrapper').style.transform = `scale(${currentZoom})`; document.getElementById('zoom-val').innerText = Math.round(currentZoom*100) + "%"; };
-    window.resetZoom = function() { currentZoom = 1; window.changeZoom(0); };
+    window.resetZoom = function() { currentZoom = 1; document.getElementById('svg-wrapper').style.transform = `scale(1)`; document.getElementById('zoom-val').innerText = "100%"; };
 </script>
 </body>
 </html>
