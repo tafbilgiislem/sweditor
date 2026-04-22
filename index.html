@@ -411,14 +411,17 @@
     let indexHtmlContent = "", indexHtmlSha = "";
     let currentActiveTab = 'tab-layout';
 
-    // --- TICKER PRO İÇİN EKLENEN FONT LİSTESİ ---
-    const tickerFonts = [
+    const googleFonts = [
         { name: "Varsayılan", val: "sans-serif" }, { name: "Roboto", val: "'Roboto', sans-serif" },
         { name: "Montserrat", val: "'Montserrat', sans-serif" }, { name: "Poppins", val: "'Poppins', sans-serif" },
-        { name: "Oswald", val: "'Oswald', sans-serif" }, { name: "Bebas Neue", val: "'Bebas Neue', sans-serif" }
+        { name: "Open Sans", val: "'Open Sans', sans-serif" }, { name: "Lato", val: "'Lato', sans-serif" },
+        { name: "Merriweather", val: "'Merriweather', serif" }, { name: "Nunito", val: "'Nunito', sans-serif" },
+        { name: "Oswald", val: "'Oswald', sans-serif" }, { name: "Pacifico", val: "'Pacifico', cursive" },
+        { name: "Playfair Display", val: "'Playfair Display', serif" }, { name: "Raleway", val: "'Raleway', sans-serif" },
+        { name: "Ubuntu", val: "'Ubuntu', sans-serif" }, { name: "Bebas Neue", val: "'Bebas Neue', sans-serif" }
     ];
 
-    // --- TICKER VE NORMAL NESNE EVRENSEL GÜNCELLEYİCİ ---
+    // Evrensel Güncelleyici - Ticker ve Normal Element Ayrımı
     window.universalUpdate = function(id, key, val) {
         const isTicker = id === 'ticker_dummy';
         const el = document.getElementById(id);
@@ -428,7 +431,8 @@
                 settingsData.ticker.text = val;
                 if(document.getElementById('ticker-text')) document.getElementById('ticker-text').value = val;
             } else if (['x','y','w','h','fontSize','speed','opacity','shadowBlur'].includes(key)) {
-                settingsData.ticker[key] = parseFloat(val);
+                // NaN hatası olursa 0 yapsın (yayın ekranının sağa kaymasını önler)
+                settingsData.ticker[key] = parseFloat(val) || 0;
             } else {
                 settingsData.ticker[key] = val;
             }
@@ -444,10 +448,12 @@
             }
             window.saveAllSettingsToCloud(true); 
         } else {
+            // Eski orijinal nesne güncelleyiciyi çağır
             if (['x','y','w','h'].includes(key)) window.changeProp(id, key, val);
             else window.changeSetting(id, key, val);
         }
-
+        
+        // Rozeti (Badge) güncelle
         const badge = document.getElementById(`val-${key}-${id}`);
         if (badge) badge.innerText = val + (['opacity','speed'].includes(key) ? '' : 'px');
     };
@@ -486,16 +492,6 @@
     let isDrawingMode = false, isDrawing = false, currentPath = null, pathData = "", isDraggingGuide = false, currentGuide = null, isDraggingElement = false, isSpacePressed = false, isPanning = false, panStart = {x:0, y:0}, panOffsetStart = {x:0, y:0};
 
     window.updateEditorUI = null;
-
-    const googleFonts = [
-        { name: "Varsayılan", val: "sans-serif" }, { name: "Roboto", val: "'Roboto', sans-serif" },
-        { name: "Montserrat", val: "'Montserrat', sans-serif" }, { name: "Poppins", val: "'Poppins', sans-serif" },
-        { name: "Open Sans", val: "'Open Sans', sans-serif" }, { name: "Lato", val: "'Lato', sans-serif" },
-        { name: "Merriweather", val: "'Merriweather', serif" }, { name: "Nunito", val: "'Nunito', sans-serif" },
-        { name: "Oswald", val: "'Oswald', sans-serif" }, { name: "Pacifico", val: "'Pacifico', cursive" },
-        { name: "Playfair Display", val: "'Playfair Display', serif" }, { name: "Raleway", val: "'Raleway', sans-serif" },
-        { name: "Ubuntu", val: "'Ubuntu', sans-serif" }
-    ];
 
     window.getCanvasCenter = function() {
         const svg = document.querySelector('#canvas-inner svg');
@@ -665,10 +661,11 @@
                 el.setAttribute("fill", type === 'left' ? "rgba(59, 130, 246, 0.4)" : "rgba(245, 158, 11, 0.4)");
                 el.setAttribute("stroke", type === 'left' ? "#3b82f6" : "#f59e0b");
             }
-            el.setAttribute("x", ms.x !== undefined ? ms.x : (type === 'ticker' ? 0 : 50));
-            el.setAttribute("y", ms.y !== undefined ? ms.y : (type === 'ticker' ? 980 : 50));
-            el.setAttribute("width", ms.w !== undefined ? ms.w : (type === 'ticker' ? 1920 : 400));
-            el.setAttribute("height", ms.h !== undefined ? ms.h : (type === 'ticker' ? 100 : 250));
+            
+            el.setAttribute("x", !isNaN(ms.x) ? ms.x : (type === 'ticker' ? 0 : 50));
+            el.setAttribute("y", !isNaN(ms.y) ? ms.y : (type === 'ticker' ? 980 : 50));
+            el.setAttribute("width", !isNaN(ms.w) ? ms.w : (type === 'ticker' ? 1920 : 400));
+            el.setAttribute("height", !isNaN(ms.h) ? ms.h : (type === 'ticker' ? 100 : 250));
         } else {
             if(el) {
                 el.remove();
@@ -841,7 +838,7 @@
             
             const svg = document.querySelector('#canvas-inner svg').cloneNode(true);
             
-            // TICKER VE MINI EKRANLARI YAYINDAN ÖNCE TEMİZLE
+            // Dummy Elemanları yayından sil
             const dummyIds = ['ticker_dummy', 'mini_left', 'mini_right'];
             dummyIds.forEach(dummyId => {
                 const dummy = svg.querySelector('#' + dummyId);
@@ -1173,32 +1170,16 @@
     window.moveLayer = function(id, dir) { 
         const el = document.getElementById(id); if(!el) return; 
         const parent = el.parentNode;
-        
-        if (dir === 'top') {
-            const guides = document.getElementById('guides-group');
-            if (guides) parent.insertBefore(el, guides);
-            else parent.appendChild(el);
-        } else if (dir === 'bottom') {
-            const bg = document.getElementById('canvas-background');
-            if (bg && bg.nextSibling) parent.insertBefore(el, bg.nextSibling);
-            else parent.insertBefore(el, parent.firstChild);
-        } else if (dir === 1 && el.nextElementSibling && el.nextElementSibling.id !== 'guides-group') {
-            parent.insertBefore(el.nextElementSibling, el); 
-        } else if (dir === -1 && el.previousElementSibling && el.previousElementSibling.id !== 'canvas-background') {
-            parent.insertBefore(el, el.previousElementSibling); 
-        }
-        
+        if (dir === 'top') { const guides = document.getElementById('guides-group'); if (guides) parent.insertBefore(el, guides); else parent.appendChild(el); } 
+        else if (dir === 'bottom') { const bg = document.getElementById('canvas-background'); if (bg && bg.nextSibling) parent.insertBefore(el, bg.nextSibling); else parent.insertBefore(el, parent.firstChild); } 
+        else if (dir === 1 && el.nextElementSibling && el.nextElementSibling.id !== 'guides-group') { parent.insertBefore(el.nextElementSibling, el); } 
+        else if (dir === -1 && el.previousElementSibling && el.previousElementSibling.id !== 'canvas-background') { parent.insertBefore(el, el.previousElementSibling); }
         window.saveState(); if(window.updateEditorUI) window.updateEditorUI(el); window.renderEditor(); 
     };
 
     window.toggleVisibility = function(id) {
         const el = document.getElementById(id); if(!el) return;
-        if (el.getAttribute('visibility') === 'hidden') {
-            el.removeAttribute('visibility');
-        } else {
-            el.setAttribute('visibility', 'hidden');
-            if (selectedEl === el) { selectedEl = null; document.getElementById('control-layer').innerHTML = ""; }
-        }
+        if (el.getAttribute('visibility') === 'hidden') { el.removeAttribute('visibility'); } else { el.setAttribute('visibility', 'hidden'); if (selectedEl === el) { selectedEl = null; document.getElementById('control-layer').innerHTML = ""; } }
         window.saveState(); window.renderEditor();
     };
 
@@ -1231,93 +1212,29 @@
 
     window.autoFitText = function(el) { 
         if (el.tagName !== 'text') return; 
-        
         const boundRectId = window.getD(el, 'bound-rect');
         if (boundRectId) {
             const rect = document.getElementById(boundRectId);
             if (rect && (rect.tagName === 'rect' || rect.tagName === 'image')) {
-                const rx = parseFloat(rect.getAttribute('x')) || 0;
-                const ry = parseFloat(rect.getAttribute('y')) || 0;
-                const rw = parseFloat(rect.getAttribute('width')) || 0;
-                const rh = parseFloat(rect.getAttribute('height')) || 0;
-                
-                el.setAttribute('x', rx + rw / 2);
-                el.setAttribute('y', ry + rh / 2);
-                el.setAttribute('text-anchor', 'middle');
-                el.setAttribute('dominant-baseline', 'central');
-                
-                window.setD(el, 'max-width', Math.max(10, rw - 40)); 
-                window.setD(el, 'max-height', Math.max(10, rh - 40)); 
-                
-                el.removeAttribute('textLength');
-                el.removeAttribute('lengthAdjust');
-                const tp = el.querySelector('textPath');
-                if (tp) { tp.removeAttribute('textLength'); tp.removeAttribute('lengthAdjust'); }
+                const rx = parseFloat(rect.getAttribute('x')) || 0; const ry = parseFloat(rect.getAttribute('y')) || 0; const rw = parseFloat(rect.getAttribute('width')) || 0; const rh = parseFloat(rect.getAttribute('height')) || 0;
+                el.setAttribute('x', rx + rw / 2); el.setAttribute('y', ry + rh / 2); el.setAttribute('text-anchor', 'middle'); el.setAttribute('dominant-baseline', 'central');
+                window.setD(el, 'max-width', Math.max(10, rw - 40)); window.setD(el, 'max-height', Math.max(10, rh - 40)); 
+                el.removeAttribute('textLength'); el.removeAttribute('lengthAdjust'); const tp = el.querySelector('textPath'); if (tp) { tp.removeAttribute('textLength'); tp.removeAttribute('lengthAdjust'); }
             }
         }
-
-        const mw = parseFloat(window.getD(el, 'max-width')) || 0; 
-        const mh = parseFloat(window.getD(el, 'max-height')) || 0; 
-        const baseFs = parseFloat(window.getD(el, 'base-font-size')) || 60; 
-        
-        if (mw > 0 || mh > 0) {
-            el.removeAttribute('textLength');
-            el.removeAttribute('lengthAdjust');
-            const tp = el.querySelector('textPath');
-            if (tp) { tp.removeAttribute('textLength'); tp.removeAttribute('lengthAdjust'); }
-        }
-
+        const mw = parseFloat(window.getD(el, 'max-width')) || 0; const mh = parseFloat(window.getD(el, 'max-height')) || 0; const baseFs = parseFloat(window.getD(el, 'base-font-size')) || 60; 
+        if (mw > 0 || mh > 0) { el.removeAttribute('textLength'); el.removeAttribute('lengthAdjust'); const tp = el.querySelector('textPath'); if (tp) { tp.removeAttribute('textLength'); tp.removeAttribute('lengthAdjust'); } }
         el.style.fontSize = baseFs + "px"; el.setAttribute("font-size", baseFs); 
-        
         if (mw > 0 || mh > 0) { 
             let bbox = {width:0, height:0}; try { bbox = el.getBBox(); } catch(e){} 
-            let scaleW = 1;
-            let scaleH = 1;
-            
-            if (mw > 0 && bbox.width > mw && bbox.width > 0) { 
-                scaleW = mw / bbox.width;
-            }
-            if (mh > 0 && bbox.height > mh && bbox.height > 0) {
-                scaleH = mh / bbox.height;
-            }
-            
+            let scaleW = 1; let scaleH = 1;
+            if (mw > 0 && bbox.width > mw && bbox.width > 0) { scaleW = mw / bbox.width; }
+            if (mh > 0 && bbox.height > mh && bbox.height > 0) { scaleH = mh / bbox.height; }
             const finalScale = Math.min(scaleW, scaleH);
-            if(finalScale < 1) {
-                const newFs = baseFs * finalScale; 
-                el.style.fontSize = newFs + "px"; el.setAttribute("font-size", newFs); 
-            }
+            if(finalScale < 1) { const newFs = baseFs * finalScale; el.style.fontSize = newFs + "px"; el.setAttribute("font-size", newFs); }
         }
     };
     
-    window.applyTextCurve = function(el) {
-        if (el.tagName !== 'text') return; const curve = parseFloat(window.getD(el, 'curve')) || 0; if(!window.getD(el, 'raw-text')) window.setD(el, 'raw-text', el.textContent); const rawText = window.getD(el, 'raw-text');
-        
-        el.innerHTML = ''; el.textContent = rawText; 
-        
-        if (curve === 0) { 
-            const style = window.getD(el, 'text-style') || 'normal';
-            if(style !== 'normal') window.applyTextStyle(el.id, style, el.getAttribute('text-anchor'));
-        } else {
-            const svg = document.querySelector('#canvas-inner svg'); let defs = svg.querySelector('defs'); if (!defs) { defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"); svg.prepend(defs); }
-            const pathId = "curve_" + el.id; let curvePath = defs.querySelector("#" + pathId); if (!curvePath) { curvePath = document.createElementNS("http://www.w3.org/2000/svg", "path"); curvePath.id = pathId; curvePath.setAttribute("fill", "none"); defs.appendChild(curvePath); }
-            const x = parseFloat(el.getAttribute('x')) || 0; const y = parseFloat(el.getAttribute('y')) || 0; const curveStrength = curve * 2.5; 
-            curvePath.setAttribute("d", `M ${x - 1500}, ${y - curveStrength/2} Q ${x}, ${y + curveStrength} ${x + 1500}, ${y - curveStrength/2}`); 
-            
-            el.innerHTML = '';
-            const tp = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
-            tp.setAttribute("href", "#" + pathId); tp.setAttribute("startOffset", "50%"); tp.setAttribute("text-anchor", "middle"); tp.textContent = rawText;
-            
-            const style = window.getD(el, 'text-style') || 'normal';
-            if(style === 'neon') { tp.setAttribute("font-weight", "bold"); tp.setAttribute("fill", "#ffffff"); tp.setAttribute("stroke", window.getD(el, 'solid-color')||"#000"); tp.setAttribute("stroke-width", "2"); tp.setAttribute("filter", `drop-shadow(0 0 15px ${window.getD(el, 'solid-color')||'#000'})`); } 
-            else if(style === '3d') { tp.setAttribute("font-weight", "bold"); tp.setAttribute("fill", window.getD(el, 'solid-color')||"#000"); tp.setAttribute("stroke", "#000000"); tp.setAttribute("stroke-width", "3"); tp.setAttribute("filter", `drop-shadow(6px 6px 0 #000000)`); } 
-            else if (style === 'hollow') { tp.setAttribute("fill", "none"); tp.setAttribute("stroke", window.getD(el, 'solid-color')||"#000"); tp.setAttribute("stroke-width", "4"); }
-            
-            const w = el.getAttribute('textLength');
-            if (w) { tp.setAttribute('textLength', w); tp.setAttribute('lengthAdjust', 'spacingAndGlyphs'); }
-            el.appendChild(tp);
-        } window.autoFitText(el);
-    };
-
     window.describeRoundedRect = function(r, s, x, y, w, h) { if (r <= 0) return `M ${x} ${y} H ${x + w} V ${y + h} H ${x} Z`; r = Math.min(r, w / 2, h / 2); const kappa = (4 * (r * (1 - s)) * Math.tan(Math.PI / 4)) / 3; const pts = [ [x + r, y], [x + w - r, y], [x + w, y + r], [x + w, y + h - r], [x + w - r, y + h], [x + r, y + h], [x, y + h - r], [x, y + r] ]; return `M ${pts[0][0]} ${pts[0][1]} L ${pts[1][0]} ${pts[1][1]} C ${pts[1][0] + kappa} ${pts[1][1]} ${pts[2][0]} ${pts[2][1] - kappa} ${pts[2][0]} ${pts[2][1]} L ${pts[3][0]} ${pts[3][1]} C ${pts[3][0]} ${pts[3][1] + kappa} ${pts[4][0] + kappa} ${pts[4][1]} ${pts[4][0]} ${pts[4][1]} L ${pts[5][0]} ${pts[5][1]} C ${pts[5][0] - kappa} ${pts[5][1]} ${pts[6][0]} ${pts[6][1] + kappa} ${pts[6][0]} ${pts[6][1]} L ${pts[7][0]} ${pts[7][1]} C ${pts[7][0]} ${pts[7][1] - kappa} ${pts[0][0] - kappa} ${pts[0][1]} ${pts[0][0]} ${pts[0][1]} Z`; };
     
     window.applyShapeMask = function(el) { 
@@ -1486,12 +1403,13 @@
                 return; 
             }
 
+            // Sürükleme Bittiğinde Ticker'ın Koordinatlarını Anında Kaydet
             if (isModified && selectedEl && selectedEl.id === 'ticker_dummy') {
                 const t = settingsData.ticker;
-                t.x = Math.round(parseFloat(selectedEl.getAttribute('x')));
-                t.y = Math.round(parseFloat(selectedEl.getAttribute('y')));
-                t.w = Math.round(parseFloat(selectedEl.getAttribute('width')));
-                t.h = Math.round(parseFloat(selectedEl.getAttribute('height')));
+                t.x = Math.round(parseFloat(selectedEl.getAttribute('x'))) || 0;
+                t.y = Math.round(parseFloat(selectedEl.getAttribute('y'))) || 0;
+                t.w = Math.round(parseFloat(selectedEl.getAttribute('width'))) || 1920;
+                t.h = Math.round(parseFloat(selectedEl.getAttribute('height'))) || 100;
                 
                 if(document.getElementById('ticker-x')) document.getElementById('ticker-x').value = t.x;
                 if(document.getElementById('ticker-y')) document.getElementById('ticker-y').value = t.y;
@@ -1643,7 +1561,7 @@
         const id = el.id; 
 
         // ==========================================
-        // SADECE TICKER İÇİN ÖZEL MENÜ
+        // 1. SADECE TICKER (KAYAN YAZI) SEÇİLDİYSE AÇILACAK MENÜ
         // ==========================================
         if (id === 'ticker_dummy') {
             const getV = (key, def) => settingsData.ticker[key] !== undefined ? settingsData.ticker[key] : def;
@@ -1657,39 +1575,50 @@
             `;
             let tabsNav = `
                 <div class="tabs-header">
-                    <button class="tab-btn ${currentActiveTab === 'tab-layout' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-layout')">Düzen</button>
-                    <button class="tab-btn ${currentActiveTab === 'tab-style' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-style')">Stil</button>
-                    <button class="tab-btn ${currentActiveTab === 'tab-text' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-text')">Metin / Hız</button>
+                    <button class="tab-btn ${currentActiveTab === 'tab-layout' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-layout')"><i class="ph ph-bounding-box"></i> Düzen</button>
+                    <button class="tab-btn ${currentActiveTab === 'tab-style' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-style')"><i class="ph ph-palette"></i> Stil</button>
+                    <button class="tab-btn ${currentActiveTab === 'tab-text' ? 'active' : ''}" onclick="window.switchTab(this, 'tab-text')"><i class="ph ph-text-t"></i> Metin / Hız</button>
                 </div>
             `;
+            
+            // X ve Y Değerleri Yayın Ekranının Kaymaması için Eklendi (NaN Önlemli)
             let layoutHtml = `<div class="prop-group">
                 <div class="prop-group-title">KONUM & BOYUT</div>
-                <div class="label-row"><span class="label-text">GENİŞLİK (W)</span><span class="value-badge">${getV('w',100)}px</span></div>
-                <input type="range" min="10" max="1920" value="${getV('w',100)}" oninput="window.universalUpdate('${id}', 'w', this.value)">
-                <div class="label-row" style="margin-top:10px;"><span class="label-text">YÜKSEKLİK (H)</span><span class="value-badge">${getV('h',100)}px</span></div>
+                <div class="label-row"><span class="label-text">X KONUMU</span><span class="value-badge" id="val-x-${id}">${getV('x',0)}px</span></div>
+                <input type="range" min="-500" max="2500" value="${getV('x',0)}" oninput="window.universalUpdate('${id}', 'x', this.value)">
+                
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">Y KONUMU</span><span class="value-badge" id="val-y-${id}">${getV('y',980)}px</span></div>
+                <input type="range" min="-500" max="1500" value="${getV('y',980)}" oninput="window.universalUpdate('${id}', 'y', this.value)">
+                
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">GENİŞLİK (W)</span><span class="value-badge" id="val-w-${id}">${getV('w',1920)}px</span></div>
+                <input type="range" min="10" max="3000" value="${getV('w',1920)}" oninput="window.universalUpdate('${id}', 'w', this.value)">
+                
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">YÜKSEKLİK (H)</span><span class="value-badge" id="val-h-${id}">${getV('h',100)}px</span></div>
                 <input type="range" min="10" max="500" value="${getV('h',100)}" oninput="window.universalUpdate('${id}', 'h', this.value)">
             </div>`;
+
             let styleHtml = `<div class="prop-group">
                 <div class="prop-group-title">GÖRÜNÜM & EFEKT</div>
                 <div class="label-text">ARKA PLAN RENGİ</div>
                 <input type="color" value="${getV('bgColor','#000000')}" oninput="window.universalUpdate('${id}', 'bgColor', this.value)">
-                <div class="label-row" style="margin-top:10px;"><span class="label-text">SAYDAMLIK (OPAKLIK)</span></div>
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">SAYDAMLIK (OPAKLIK)</span><span class="value-badge" id="val-opacity-${id}">${getV('opacity',1)}</span></div>
                 <input type="range" min="0" max="1" step="0.1" value="${getV('opacity',1)}" oninput="window.universalUpdate('${id}', 'opacity', this.value)">
-                <div class="label-row" style="margin-top:10px;"><span class="label-text">GÖLGE (BLUR)</span></div>
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">GÖLGE (BLUR)</span><span class="value-badge" id="val-shadowBlur-${id}">${getV('shadowBlur',0)}px</span></div>
                 <input type="range" min="0" max="50" value="${getV('shadowBlur',0)}" oninput="window.universalUpdate('${id}', 'shadowBlur', this.value)">
             </div>`;
+
             let textHtml = `<div class="prop-group">
                 <div class="prop-group-title">METİN VE FONT</div>
                 <input type="text" value="${getV('text','')}" oninput="window.universalUpdate('${id}', 'text', this.value)" style="margin-bottom:10px;" placeholder="Mesajınızı yazın...">
                 <div class="label-text">YAZI TİPİ</div>
                 <select class="font-select" onchange="window.universalUpdate('${id}', 'font', this.value)">
-                    ${googleFonts.map(f => `<option value="${f.val}" ${getV('font', '').includes(f.name) ? 'selected' : ''}>${f.name}</option>`).join('')}
+                    ${googleFonts.map(f => `<option value="${f.val}" ${getV('font', '').includes(f.val) ? 'selected' : ''}>${f.name}</option>`).join('')}
                 </select>
-                <div class="label-row" style="margin-top:10px;"><span class="label-text">YAZI BOYUTU</span></div>
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">YAZI BOYUTU</span><span class="value-badge" id="val-fontSize-${id}">${getV('fontSize',40)}px</span></div>
                 <input type="range" min="10" max="200" value="${getV('fontSize',40)}" oninput="window.universalUpdate('${id}', 'fontSize', this.value)">
                 <div class="label-text" style="margin-top:10px;">YAZI RENGİ</div>
                 <input type="color" value="${getV('color','#ffffff')}" oninput="window.universalUpdate('${id}', 'color', this.value)">
-                <div class="label-row" style="margin-top:10px;"><span class="label-text">KAYMA HIZI (DÜŞÜK=HIZLI)</span></div>
+                <div class="label-row" style="margin-top:10px;"><span class="label-text">KAYMA HIZI (DÜŞÜK=HIZLI)</span><span class="value-badge" id="val-speed-${id}">${getV('speed', 20)}</span></div>
                 <input type="number" value="${getV('speed', 20)}" oninput="window.universalUpdate('${id}', 'speed', this.value)">
             </div>`;
 
@@ -1698,11 +1627,11 @@
                 `<div id="tab-style" class="tab-content ${currentActiveTab==='tab-style'?'active':''}">${styleHtml}</div>` +
                 `<div id="tab-text" class="tab-content ${currentActiveTab==='tab-text'?'active':''}">${textHtml}</div>`;
             f.scrollTop = currentScroll;
-            return; // Ticker işlemi burada biter, alttaki normal nesne kodlarına geçmez.
+            return; // Ticker işlemi burada biter, alttaki kodlar NORMAL nesneler içindir.
         }
 
         // ==========================================
-        // ESKİSİ GİBİ: NORMAL NESNELER İÇİN FULL ÖZELLİK PANELİ
+        // 2. NORMAL NESNELER İÇİN FULL ÖZELLİK PANELİ (Senin orijinal detaylı kodun)
         // ==========================================
         try {
             const tag = el.tagName.toLowerCase();
@@ -1715,13 +1644,9 @@
             const isMiniDummy = el.classList.contains('mini-screen-dummy');
 
             if (isMiniDummy) {
-                let sideName = 'MİNİ EKRAN';
-                let iconColor = '#fff';
-                let iconType = 'ph-television';
-                
+                let sideName = 'MİNİ EKRAN'; let iconColor = '#fff'; let iconType = 'ph-television';
                 if(id === 'mini_left') { sideName = 'SOL EKRAN (M3U8)'; iconColor = '#3b82f6'; }
                 if(id === 'mini_right') { sideName = 'SAĞ EKRAN (RESİMLER)'; iconColor = '#f59e0b'; }
-
                 f.innerHTML = `
                 <div style="text-align:center; padding:20px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:12px;">
                     <i class="ph ${iconType}" style="font-size:40px; color:${iconColor}; margin-bottom:10px; display:block;"></i>
@@ -1809,17 +1734,7 @@
                     </div>
                     <div class="label-row"><span class="label-text">Y KONUMU</span><span class="value-badge" id="val-y-${id}">${y}px</span></div>
                     <div style="display:flex; gap:10px; margin-bottom:15px;">
-                        <input type="range" min="-1000" max="3000" value="${y}" style="flex:1;" oninput="window.changeProp('${id}', 'y', this.value, this);" onchange="window.saveState()">
-                        <input type="number" value="${y}" style="width:70px; padding:8px;" oninput="window.changeProp('${id}', 'y', this.value, this);" onchange="window.saveState()">
-                    </div>
-                    <div class="label-row"><span class="label-text">${isText ? 'GENİŞLİK (ESNETME W)' : 'GENİŞLİK (W)'}</span><span class="value-badge" id="val-w-${id}">${w}px</span></div>
-                    <div style="display:flex; gap:10px; margin-bottom:15px;">
-                        <input type="range" min="1" max="2500" value="${w}" style="flex:1;" oninput="window.changeProp('${id}', 'w', this.value, this);" onchange="window.saveState()">
-                        <input type="number" value="${w}" style="width:70px; padding:8px;" oninput="window.changeProp('${id}', 'w', this.value, this);" onchange="window.saveState()">
-                    </div>
-                    <div class="label-row"><span class="label-text">${isText ? 'YAZI PUNTO (H)' : 'YÜKSEKLİK (H)'}</span><span class="value-badge" id="val-h-${id}">${h}px</span></div>
-                    <div style="display:flex; gap:10px;">
-                        <input type="range" min="1" max="2500" value="${h}" style="flex:1;" oninput="window.changeProp('${id}', 'h', this.value, this);" onchange="window.saveState()">
+                    min="1" max="2500" value="${h}" style="flex:1;" oninput="window.changeProp('${id}', 'h', this.value, this);" onchange="window.saveState()">
                         <input type="number" value="${h}" style="width:70px; padding:8px;" oninput="window.changeProp('${id}', 'h', this.value, this);" onchange="window.saveState()">
                     </div>`;
                 layoutHtml += createPropGroup("<i class='ph ph-arrows-out'></i> Konum ve Boyut", posHtml);
